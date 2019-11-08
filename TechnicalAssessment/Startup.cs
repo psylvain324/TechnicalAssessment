@@ -76,7 +76,7 @@ namespace TechnicalAssessment
             }
             var testTransaction = new Transaction
             {
-                TransactionId = 0,
+                TransactionId = "Inv00001",
                 CurrencyCode = "TBH",
                 Amount = 100000.00,
                 Status = TransactionStatus.Approved,

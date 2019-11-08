@@ -5,4 +5,28 @@
 <div class="text-center">
     <h1 class="display-4">Technical Assessment</h1>
     <p><a href="https://localhost">Upload Transaction CSV</a>.</p>
+    <form enctype="multipart/form-data" method="post" action="http://localhost:6062/api/ImportExport/new" id="ajaxUploadForm" novalidate="novalidate">
+        <fieldset>
+            <legend style="padding-top: 10px; padding-bottom: 10px;">Upload CSV or XML data</legend>
+ 
+            <div class="col-xs-12" style="padding: 10px;">
+                <div class="col-xs-4">
+                    <label>Upload CSV data</label>
+                </div>
+                <div class="col-xs-7">
+                    <input type="file" name="file" id="fileInput">
+                </div>
+            </div>
+ 
+            <div class="col-xs-12" style="padding: 10px;">
+                <div class="col-xs-4">
+                    <input type="submit" value="Upload New Data" id="ajaxUploadButton" class="btn">
+                </div>
+                <div class="col-xs-7">
+ 
+                </div>
+            </div>
+ 
+        </fieldset>
+    </form>
 </div>

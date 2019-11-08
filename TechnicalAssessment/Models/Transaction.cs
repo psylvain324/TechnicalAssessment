@@ -10,7 +10,7 @@ namespace TechnicalAssessment.Models
         [MinLength(10)]
         [MaxLength(10)]
         [Index(0)]
-        public int TransactionId { get; set; }
+        public string TransactionId { get; set; }
 
         [Required(ErrorMessage = "Amount is required")]
         [Display(Name = "Customer Name")]
