@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Xml;
 using System.Xml.Linq;
 using TechnicalAssessment.Models;
 
@@ -8,26 +9,28 @@ namespace TechnicalAssessment.Data
 {
     public class XmlUpload
     {
-        public void ParseXML(string filePath)
+        public void ParseTransactionXML(string filePath)
         {
-            // create document instance using XML file path
-            XDocument doc = XDocument.Load(filePath);
+            XmlDocument doc = new XmlDocument();
+            doc.Load(filePath);
 
-            // get the namespace to that within of the XML (xmlns="...")
-            XElement root = doc.Root;
-            XNamespace ns = root.GetDefaultNamespace();
+            XmlNodeList nodes = doc.DocumentElement.SelectNodes("/Transactions/Transaction");
 
-            // obtain a list of elements with specific tag
-            IEnumerable<XElement> elements = from c in doc.Descendants(ns + "exampleTagName") select c;
+            List<Transaction> transactions = new List<Transaction>();
 
-            // obtain a single element with specific tag (first instance), useful if only expecting one instance of the tag in the target doc
-            XElement element = (from c in doc.Descendants(ns + "exampleTagName" select c).First();
+            foreach (XmlNode node in nodes)
+            {
+                Transaction transaction = new Transaction
+                {
+                    TransactionId = node.Attributes["id"].Value,
+                    CurrencyCode = node.SelectSingleNode("currencycode").InnerText,
+                    TransactionDate = node.SelectSingleNode("transactiondate").InnerText,
+                    Amount = Double.Parse(node.SelectSingleNode("amount").InnerText),
+                    Status = (TransactionStatus)Enum.Parse(typeof(TransactionStatus), node.SelectSingleNode("status").InnerText)
+                };
 
-            // obtain an element from within an element, same as from doc
-            XElement embeddedElement = (from c in element.Descendants(ns + "exampleEmbeddedTagName" select c).First();
-
-            // obtain an attribute from an element
-            XAttribute attribute = element.Attribute("exampleAttributeName");
+                transactions.Add(transaction);
+            }
         }
     }
 }

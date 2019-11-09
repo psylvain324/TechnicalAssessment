@@ -70,7 +70,7 @@ namespace TechnicalAssessment
         public static void Initialize(DatabaseContext context)
         {
             context.Database.EnsureCreated();
-            if (context.Customers.Any())
+            if (context.Transactions.Any())
             {
                 return; 
             }

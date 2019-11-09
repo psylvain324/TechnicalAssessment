@@ -17,7 +17,7 @@ namespace TechnicalAssessment.Data
                 var data = line.Split(new[] { ',' });
                 var transaction = new Transaction()
                 {
-                    TransactionId = int.Parse(data[0]),
+                    TransactionId = data[0],
                     Amount = double.Parse(data[1]),
                     CurrencyCode = data[2],
                     TransactionDate = data[3],
@@ -39,7 +39,7 @@ namespace TechnicalAssessment.Data
                 var data = line.Split(new[] { ',' });
                 var transaction = new Transaction()
                 {
-                    TransactionId = int.Parse(data[0]),
+                    TransactionId = data[0],
                     Amount = double.Parse(data[1]),
                     CurrencyCode = data[2],
                     TransactionDate = data[3],
