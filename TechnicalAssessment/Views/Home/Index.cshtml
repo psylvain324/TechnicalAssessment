@@ -1,11 +1,12 @@
 ﻿@{
+    Layout = "_Layout";
     ViewData["Title"] = "Home Page";
 }
 
 <div class="text-center">
     <h1 class="display-4">Technical Assessment</h1>
     <p><a href="https://localhost">Upload Transaction CSV</a>.</p>
-    <form enctype="multipart/form-data" method="post" action="http://localhost:6062/api/ImportExport/new" id="ajaxUploadForm" novalidate="novalidate">
+    <form enctype="multipart/form-data" method="post" action="http://localhost:5001/api/ImportExport/new" id="ajaxUploadForm" novalidate="novalidate">
         <fieldset>
             <legend style="padding-top: 10px; padding-bottom: 10px;">Upload CSV or XML data</legend>
  

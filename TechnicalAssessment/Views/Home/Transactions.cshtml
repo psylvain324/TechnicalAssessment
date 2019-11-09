@@ -1,0 +1,15 @@
+﻿@model Transaction
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Transaction";
+}
+ 
+<h2>Employee</h2>
+ 
+<table class="table table-sm table-bordered table-striped">
+    <tr><th>Transaction Id:</th><td>@Model.TransactionId</td></tr>
+    <tr><th>Amount:</th><td>@Model.Amount</td></tr>
+    <tr><th>Currency Code:</th><td>@Model.CurrencyCode</td></tr>
+    <tr><th>Transaction Date:</th><td>@Model.TransactionDate</td></tr>
+    <tr><th>Status</th><td>@Model.Status</td></tr>
+</table>
