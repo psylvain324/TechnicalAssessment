@@ -45,7 +45,7 @@ namespace TechnicalAssessment
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("V1", new OpenApiInfo { Title = "2C2P Take Home API", Version = "V1" });
-                c.IncludeXmlComments(xmlPath);
+                //c.IncludeXmlComments(xmlPath);
             });
 
         }
@@ -81,6 +81,9 @@ namespace TechnicalAssessment
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}");
+                routes.MapRoute(
+                    name: "transactions",
+                    template: "{controller=Transactions}/{action=Index}");
             });
         }
 

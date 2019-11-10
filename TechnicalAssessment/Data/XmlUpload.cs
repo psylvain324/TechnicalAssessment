@@ -20,10 +20,10 @@ namespace TechnicalAssessment.Data
             {
                 Transaction transaction = new Transaction
                 {
-                    TransactionId = node.Attributes["id"].Value,
-                    CurrencyCode = node.SelectSingleNode("currencycode").InnerText,
+                    TransactionId = node.Attributes["Transaction Id"].Value,
+                    CurrencyCode = node.SelectSingleNode("Currency Code").InnerText,
                     TransactionDate = node.SelectSingleNode("transactiondate").InnerText,
-                    Amount = Double.Parse(node.SelectSingleNode("amount").InnerText),
+                    Amount = Double.Parse(node.SelectSingleNode("Amount").InnerText),
                     Status = (TransactionStatus)Enum.Parse(typeof(TransactionStatus), node.SelectSingleNode("status").InnerText)
                 };
 

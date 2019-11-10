@@ -8,12 +8,16 @@ using TechnicalAssessment.Models;
 namespace TechnicalAssessment.Controllers
 {
     [Produces("application/json")]
-    [Route("api/[controller]")]
+    [Route("Transactions")]
     [ApiController]
     public class TransactionController : Controller
     {
         private readonly DatabaseContext databaseContext;
 
+        public IActionResult Index()
+        {
+            return View();
+        }
 
         public TransactionController(DatabaseContext context)
         {
@@ -25,13 +29,14 @@ namespace TechnicalAssessment.Controllers
         /// </summary>     
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> Index()
+        [Route("/All")]
+        public async Task<IActionResult> GetAllTransactions()
         {
             return View(await databaseContext.Transactions.ToListAsync());
         }
 
         /// <summary>
-        /// Returns a Transaction record by transaction statyus
+        /// Returns a Transaction record by transaction Id
         /// </summary>
         /// <param name="transactionId"></param>
         /// <returns>A Transaction record</returns>
@@ -40,6 +45,7 @@ namespace TechnicalAssessment.Controllers
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [Route("/TransactionById/{transactionId}")]
         public async Task<IActionResult> TransactionById(string transactionId)
         {
             if (transactionId == null)
@@ -58,7 +64,7 @@ namespace TechnicalAssessment.Controllers
         }
 
         /// <summary>
-        /// Returns a Transaction record by transaction statyus
+        /// Returns a Transaction record by transaction currency code
         /// </summary>
         /// <param name="currencyCode"></param>
         /// <returns>A Transaction record</returns>
@@ -67,6 +73,7 @@ namespace TechnicalAssessment.Controllers
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [Route("/TransactionByCurrencyCode/{currencyCode}")]
         public async Task<IActionResult> TransactionByCurrencyCode(string currencyCode)
         {
             if (currencyCode == null)
@@ -85,7 +92,7 @@ namespace TechnicalAssessment.Controllers
         }
 
         /// <summary>
-        /// Returns a Transaction record by transaction statyus
+        /// Returns a Transaction record by transaction status
         /// </summary>
         /// <param name="transactionStatus"></param>
         /// <returns>A Transaction record</returns>
@@ -94,6 +101,7 @@ namespace TechnicalAssessment.Controllers
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [Route("/TransactionByStatus/{transactionStatus}")]
         public async Task<IActionResult> TransactionByStatus(TransactionStatus transactionStatus)
         {
             if (transactionStatus.ToString() == null)
