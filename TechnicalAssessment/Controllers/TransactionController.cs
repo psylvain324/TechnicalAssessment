@@ -1,5 +1,4 @@
-﻿using System;
-using System.Data.Entity;
+﻿using System.Data.Entity;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -14,6 +13,7 @@ namespace TechnicalAssessment.Controllers
     public class TransactionController : Controller
     {
         private readonly DatabaseContext databaseContext;
+
 
         public TransactionController(DatabaseContext context)
         {
@@ -30,19 +30,25 @@ namespace TechnicalAssessment.Controllers
             return View(await databaseContext.Transactions.ToListAsync());
         }
 
-
+        /// <summary>
+        /// Returns a Transaction record by transaction statyus
+        /// </summary>
+        /// <param name="transactionId"></param>
+        /// <returns>A Transaction record</returns>
+        /// <response code="201">Returns the newly created transaction</response>
+        /// <response code="400">If the transaction is null</response>     
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> TransactionById(string id)
+        public async Task<IActionResult> TransactionById(string transactionId)
         {
-            if (id == null)
+            if (transactionId == null)
             {
                 return NotFound();
             }
 
             var transaction = await databaseContext.Transactions
-                .SingleOrDefaultAsync(m => m.TransactionId == id);
+                .SingleOrDefaultAsync(m => m.TransactionId == transactionId);
             if (transaction == null)
             {
                 return NotFound();
@@ -51,6 +57,13 @@ namespace TechnicalAssessment.Controllers
             return View(transaction);
         }
 
+        /// <summary>
+        /// Returns a Transaction record by transaction statyus
+        /// </summary>
+        /// <param name="currencyCode"></param>
+        /// <returns>A Transaction record</returns>
+        /// <response code="201">Returns the newly created transaction</response>
+        /// <response code="400">If the transaction is null</response>      
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -71,6 +84,13 @@ namespace TechnicalAssessment.Controllers
             return View(transaction);
         }
 
+        /// <summary>
+        /// Returns a Transaction record by transaction statyus
+        /// </summary>
+        /// <param name="transactionStatus"></param>
+        /// <returns>A Transaction record</returns>
+        /// <response code="201">Returns the newly created transaction</response>
+        /// <response code="400">If the transaction is null</response>            
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

@@ -18,6 +18,7 @@
   <ItemGroup>
     <Folder Include="Data\" />
     <Folder Include="Views\Transactions\" />
+    <Folder Include="Models\ViewModels\" />
   </ItemGroup>
   <ItemGroup>
     <Content Remove="Views\Home\Upload.cshtml" />
@@ -25,5 +26,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="Views\Pages\Transactions.cs" />
+    <Compile Remove="Views\Pages\Details.cshtml.cs" />
+    <Compile Remove="Data\ResponseDto.cs" />
   </ItemGroup>
 </Project>
