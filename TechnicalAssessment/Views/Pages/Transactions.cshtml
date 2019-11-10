@@ -1,0 +1,38 @@
+﻿@page 
+@model Transaction
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Transaction";
+}
+ 
+<h2>Transactions</h2>
+ 
+<table class="table">
+    <tr>
+        <th>Transaction ID</th>
+        <th>Amount</th>
+        <th>Currency Code</th>
+        <th>Transaction Date</th>
+        <th>Status</th>
+    </tr>
+    @foreach (var item in Model.Transactions)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.TransactionId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Amount)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CurrencyCode)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TransactionDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Status)
+            </td>
+        </tr>
+    }
+</table>

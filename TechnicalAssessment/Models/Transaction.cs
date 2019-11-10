@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using CsvHelper.Configuration.Attributes;
 
@@ -29,6 +30,8 @@ namespace TechnicalAssessment.Models
 
         [Index(4)]
         public TransactionStatus Status { get; set; }
+
+        public ICollection<Transaction> Transactions { get; set; }
     }
 
     public enum TransactionStatus

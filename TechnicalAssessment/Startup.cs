@@ -33,10 +33,12 @@ namespace TechnicalAssessment
                 c.SwaggerDoc("V1", new OpenApiInfo { Title = "2C2P Take Home API", Version = "V1" });
             });
 
-            // Add framework services.
-            services.AddDbContext<DatabaseContext>(options =>
-              options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-      
+            // For use of external database
+            //services.AddDbContext<DatabaseContext>(options =>
+            //options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
+            //Configure in memory database and mvc routing
+            services.AddDbContext<DatabaseContext>(options => options.UseInMemoryDatabase(databaseName: "TechnicalAssementDb"));
             services.AddMvc(option => option.EnableEndpointRouting = false).AddNewtonsoftJson();
         }
 

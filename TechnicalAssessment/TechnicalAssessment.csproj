@@ -13,6 +13,7 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.0.0-rc4" />
     <PackageReference Include="EntityFramework" Version="6.3.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="3.0.0" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Data\" />
@@ -21,5 +22,8 @@
   <ItemGroup>
     <Content Remove="Views\Home\Upload.cshtml" />
     <Content Remove="Views\Transactions\Transactions.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="Views\Pages\Transactions.cs" />
   </ItemGroup>
 </Project>

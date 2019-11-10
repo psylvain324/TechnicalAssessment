@@ -30,24 +30,65 @@ namespace TechnicalAssessment.Controllers
             return View(await databaseContext.Transactions.ToListAsync());
         }
 
+
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Details(string id)
+        public async Task<IActionResult> TransactionById(string id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var blog = await databaseContext.Transactions
+            var transaction = await databaseContext.Transactions
                 .SingleOrDefaultAsync(m => m.TransactionId == id);
-            if (blog == null)
+            if (transaction == null)
             {
                 return NotFound();
             }
 
-            return View(blog);
+            return View(transaction);
+        }
+
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> TransactionByCurrencyCode(string currencyCode)
+        {
+            if (currencyCode == null)
+            {
+                return NotFound();
+            }
+
+            var transaction = await databaseContext.Transactions
+                .SingleOrDefaultAsync(m => m.CurrencyCode == currencyCode);
+            if (transaction == null)
+            {
+                return NotFound();
+            }
+
+            return View(transaction);
+        }
+
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> TransactionByStatus(TransactionStatus transactionStatus)
+        {
+            if (transactionStatus.ToString() == null)
+            {
+                return NotFound();
+            }
+
+            var transaction = await databaseContext.Transactions
+                .SingleOrDefaultAsync(m => m.Status == transactionStatus);
+            if (transaction == null)
+            {
+                return NotFound();
+            }
+
+            return View(transaction);
         }
 
         /// <summary>
@@ -65,7 +106,7 @@ namespace TechnicalAssessment.Controllers
             databaseContext.Transactions.Add(transaction);
             databaseContext.SaveChanges();
 
-            return CreatedAtRoute("GetTransaction", new { id = transaction.TransactionId }, transaction);
+            return CreatedAtRoute("TransactionById", new { id = transaction.TransactionId }, transaction);
         }
     }
 }
