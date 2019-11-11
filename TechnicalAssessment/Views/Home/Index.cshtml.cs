@@ -1,12 +1,9 @@
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using TechnicalAssessment.Controllers;
 using TechnicalAssessment.Data;
@@ -20,10 +17,11 @@ namespace TechnicalAssessment.Views.Home
         private readonly ILogger<TransactionController> _logger;
         private UploadService uploadService = new UploadService();
 
-        public IndexModel(DatabaseContext databaseContext, UploadService uploadService)
+        public IndexModel(DatabaseContext databaseContext, UploadService uploadService, ILogger<TransactionController> _logger)
         {
             this.databaseContext = databaseContext;
             this.uploadService = uploadService;
+            this._logger = _logger;
         }
 
         public IList<Transaction> Transactions { get; set; }

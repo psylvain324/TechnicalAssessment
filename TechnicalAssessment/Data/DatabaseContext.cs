@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TechnicalAssessment.Models;
+using TechnicalAssessment.Models.ViewModels;
 
 namespace TechnicalAssessment.Data
 {
@@ -12,5 +13,6 @@ namespace TechnicalAssessment.Data
 
         public DbSet<Customer> Customers { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
+        public DbSet<CurrencyViewModel> Currencies { get; set; }
     }
 }

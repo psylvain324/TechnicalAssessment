@@ -29,14 +29,6 @@ namespace TechnicalAssessment
             services.AddControllers();
             services.AddRazorPages();
 
-            // For use of external database
-            //services.AddDbContext<DatabaseContext>(options =>
-            //options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-
-            //Configure in memory database and mvc routing
-            services.AddDbContext<DatabaseContext>(options => options.UseInMemoryDatabase(databaseName: "TechnicalAssementDb"));
-            services.AddMvc(option => option.EnableEndpointRouting = false).AddNewtonsoftJson();
-
             // Register the Swagger generator, defining 1 or more Swagger documents
             services.AddSwaggerGen(c =>
             {
@@ -47,6 +39,12 @@ namespace TechnicalAssessment
                 //c.IncludeXmlComments(xmlPath);
             });
 
+            // For use of external database
+            //services.AddDbContext<DatabaseContext>(options =>
+            //options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            //Configure in memory database and mvc routing
+            services.AddMvc(option => option.EnableEndpointRouting = false).AddNewtonsoftJson();
+            services.AddDbContext<DatabaseContext>(options => options.UseInMemoryDatabase(databaseName: "TechnicalAssessmentDb"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

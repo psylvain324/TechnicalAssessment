@@ -21,6 +21,8 @@
     <Folder Include="Models\ViewModels\" />
     <Folder Include="Migrations\" />
     <Folder Include="Services\" />
+    <Folder Include="Views\Customer\" />
+    <Folder Include="Models\Dtos\" />
   </ItemGroup>
   <ItemGroup>
     <Content Remove="Views\Home\Upload.cshtml" />

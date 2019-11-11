@@ -1,12 +1,22 @@
 ﻿@page 
-@model Transaction
+@model List<Transaction>
 @{
     Layout = "_Layout";
 }
  
 <h2>Transactions</h2>
+
+<form asp-page="./Index" method="get">
+    <div class="form-actions no-color">
+        <p>
+            Find by name:
+            <input type="text" name="SearchString" value="00001" />
+            <input type="submit" value="Search" class="btn btn-default" /> |
+        </p>
+    </div>
+</form>
  
-<table class="table">
+<table class="table" onload="LoadData();">
     <tr>
         <th>Transaction ID</th>
         <th>Amount</th>
@@ -14,7 +24,7 @@
         <th>Transaction Date</th>
         <th>Status</th>
     </tr>
-    @foreach (var item in Model.Transactions)
+    @foreach (var item in Model)
     {
         <tr>
             <td>
@@ -35,3 +45,6 @@
         </tr>
     }
 </table>
+<script language="javascript">
+        var searchString = document.getElementById("demo");
+</script>
