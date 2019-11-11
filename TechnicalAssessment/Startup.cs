@@ -101,17 +101,19 @@ namespace TechnicalAssessment
                 Status = TransactionStatus.Approved,
                 TransactionDate = DateTime.Now.ToString()
             };
-            
+
+            var transactions = new Transaction[]
+            {
+                testTransaction
+            };
+
             var testCustomer = new Customer
             {
                 CustomerId = 0,
                 CustomerName = "Phillip Sylvain",
                 Email = "psylvain324@gmail.com",
-                MobileNumber = "16032862905"
-            };
-            var customers = new Customer[]
-            {
-                testCustomer
+                MobileNumber = "16032862905",
+                Transactions = transactions
             };
 
             context.Transactions.Add(testTransaction);

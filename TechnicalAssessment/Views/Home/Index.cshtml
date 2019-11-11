@@ -29,9 +29,9 @@
 </div>
 
 <script>
-function uploadFiles(input) {
+function submitForm(input) {
   var input = document.getElementById(input);
-  var url = '@Url.Action("/Transactions/All", "TransactionsController")';
+  var url = '@Url.Action("Transactions", "TransactionsController")';
   var file = input.file;
   var formData = new FormData();
   formData.append("file", file);

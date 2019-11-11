@@ -19,14 +19,14 @@ namespace TechnicalAssessment.Data
         {
         }
 
-        public string uploadTransaction(string path)
+        public string UploadTransaction(string path)
         {
             string extensionType = Path.GetExtension(path);
             try
             {
                 if (extensionType == "csv")
                 {
-                    csvUpload.uploadTransaction(path);
+                    csvUpload.UploadTransaction(path);
                 }
                 else if (extensionType == "xml")
                 {

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using TechnicalAssessment.Data;
 using TechnicalAssessment.Models;
 
-namespace TechnicalAssessment.Views.Pages
+namespace TechnicalAssessment.Views.Transactions
 {
     public class IndexModel : PageModel
     {

@@ -1,5 +1,5 @@
 @page
-@model TechnicalAssessment.Views.Pages.IndexSelectModel
+@model TechnicalAssessment.Views.Transactions.IndexSelectModel
 @{
     ViewData["Title"] = "Transactions";
 }
@@ -31,7 +31,7 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model.transactionViewModels)
+        @foreach (var item in Model.TransactionViewModels)
         {
             <tr>
                 <td>

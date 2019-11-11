@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using TechnicalAssessment.Data;
 
-namespace TechnicalAssessment.Views.Pages
+namespace TechnicalAssessment.Views.Transactions
 {
     public class IndexSelectModel : PageModel
     {
@@ -16,11 +16,11 @@ namespace TechnicalAssessment.Views.Pages
             this.databaseContext = databaseContext;
         }
 
-        public IList<TransactionViewModel> transactionViewModels { get; set; }
+        public IList<TransactionViewModel> TransactionViewModels { get; set; }
 
         public async Task OnGetAsync()
         { 
-            transactionViewModels = await databaseContext.Transactions
+            TransactionViewModels = await databaseContext.Transactions
                     .Select(p => new TransactionViewModel
                     {
                         TransactionId = p.TransactionId,

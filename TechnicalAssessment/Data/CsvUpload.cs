@@ -7,7 +7,7 @@ namespace TechnicalAssessment.Data
 {
     public class CsvUpload
     {
-        public void uploadTransaction(string path)
+        public void UploadTransaction(string path)
         {
             using var streamReader = System.IO.File.OpenText(path);
             var dbContext = new DatabaseContext(new Microsoft.EntityFrameworkCore.DbContextOptions<DatabaseContext>());
@@ -29,7 +29,7 @@ namespace TechnicalAssessment.Data
             dbContext.SaveChanges();
         }
 
-        public void uploadCustomer(string path)
+        public void UploadCustomer(string path)
         {
             using var streamReader = System.IO.File.OpenText(path);
             var dbContext = new DatabaseContext(new Microsoft.EntityFrameworkCore.DbContextOptions<DatabaseContext>());

@@ -26,7 +26,7 @@ namespace TechnicalAssessment.Controllers
         {
             if (file != null)
             {
-                uploadService.uploadTransaction(file.FileName);
+                uploadService.UploadTransaction(file.FileName);
             }
 
             return View();
