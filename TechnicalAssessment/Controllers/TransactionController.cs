@@ -1,4 +1,7 @@
-﻿using System.Data.Entity;
+﻿using System.Collections.Generic;
+using System.Data.Entity;
+using System.IO;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -13,15 +16,30 @@ namespace TechnicalAssessment.Controllers
     public class TransactionController : Controller
     {
         private readonly DatabaseContext databaseContext;
+        private UploadService uploadService;
+
+        public TransactionController(DatabaseContext databaseContext, UploadService uploadService)
+        {
+            this.databaseContext = databaseContext;
+            this.uploadService = uploadService;
+        }
 
         public IActionResult Index()
         {
             return View();
         }
 
-        public TransactionController(DatabaseContext context)
+        /// <summary>
+        /// Uploads xml or csv data to Transactions table
+        /// </summary>
+        /// <param name="file"></param>
+        /// <response code="201">Returns the newly created transaction</response>
+        /// <response code="400">If the transaction is null</response>     
+        [HttpPost]
+        public ActionResult UploadFile(IFormFile file)
         {
-            databaseContext = context;
+            uploadService.uploadTransaction(file.FileName);
+            return View();
         }
 
         /// <summary>
@@ -129,6 +147,7 @@ namespace TechnicalAssessment.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [Route("/TransactionByStatus/{transactionStatus}")]
         public ActionResult<Transaction> Create(Transaction transaction)
         {
             databaseContext.Transactions.Add(transaction);

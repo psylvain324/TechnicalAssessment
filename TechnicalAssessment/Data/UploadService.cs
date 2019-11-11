@@ -9,13 +9,13 @@ namespace TechnicalAssessment.Data
         private XmlUpload xmlUpload;
         private const string success = "File uploaded successfully";
 
-        public UploadService(CsvUpload csvUpload, XmlUpload xmlUpload)
+        private UploadService(CsvUpload csvUpload, XmlUpload xmlUpload)
         {
             this.csvUpload = csvUpload;
             this.xmlUpload = xmlUpload;
         }
 
-        private string uploadTransaction(string path)
+        public string uploadTransaction(string path)
         {
             string extensionType = Path.GetExtension(path);
             try

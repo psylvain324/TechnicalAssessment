@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -28,6 +27,7 @@ namespace TechnicalAssessment
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.AddRazorPages();
 
             // For use of external database
             //services.AddDbContext<DatabaseContext>(options =>
@@ -37,14 +37,13 @@ namespace TechnicalAssessment
             services.AddDbContext<DatabaseContext>(options => options.UseInMemoryDatabase(databaseName: "TechnicalAssementDb"));
             services.AddMvc(option => option.EnableEndpointRouting = false).AddNewtonsoftJson();
 
-            // Set the comments path for the Swagger JSON and UI.
-            var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-            var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-
             // Register the Swagger generator, defining 1 or more Swagger documents
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("V1", new OpenApiInfo { Title = "2C2P Take Home API", Version = "V1" });
+                // Set the comments path for the Swagger JSON and UI.
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 //c.IncludeXmlComments(xmlPath);
             });
 
@@ -116,6 +115,7 @@ namespace TechnicalAssessment
             };
 
             context.Transactions.Add(testTransaction);
+            context.Customers.Add(testCustomer);
             context.SaveChanges();
         }
     }
