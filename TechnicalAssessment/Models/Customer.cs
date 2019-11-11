@@ -28,6 +28,7 @@ namespace TechnicalAssessment.Models
         [Index(3)]
         public string MobileNumber { get; set; }
 
+        [Required]
         [Index(4)]
         public ICollection<Transaction> Transactions { get; set; }
     }
