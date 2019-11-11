@@ -38,5 +38,6 @@ namespace TechnicalAssessment.Models
     {
         Approved = 0,
         Failed = 1,
+        Finished = 2
     }
 }

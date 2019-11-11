@@ -15,6 +15,10 @@ namespace TechnicalAssessment.Data
             this.xmlUpload = xmlUpload;
         }
 
+        public UploadService()
+        {
+        }
+
         public string uploadTransaction(string path)
         {
             string extensionType = Path.GetExtension(path);

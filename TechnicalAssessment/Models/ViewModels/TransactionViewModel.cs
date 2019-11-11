@@ -13,6 +13,5 @@ namespace TechnicalAssessment.Data
         public string TransactionDate { get; set; }
 
         public TransactionStatus Status { get; set; }
-
     }
 }

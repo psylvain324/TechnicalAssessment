@@ -16,10 +16,12 @@
             </div>
             <div class="buttons">
                 <div class="upload-button">
-                    <div class="label">
+                    <div class="col-xs-12" style="padding: 10px;">
+                        <input name="file" type="file" onchange="submitForm('form');" />
+                    </div>
+                    <div class="col-xs-12" style="padding: 10px;">
                         <button onclick="submitForm('form')">Upload Data</button>
                     </div>
-                    <input name="files" type="file" onchange="submitForm('form');" />
                 </div>
             </div>
         </fieldset>
@@ -27,19 +29,16 @@
 </div>
 
 <script>
-function uploadFiles(inputId) {
-  var input = document.getElementById(inputId);
-  var _url = '@Url.Action("UploadFile", "MyController")';
-  var files = input.files;
+function uploadFiles(input) {
+  var input = document.getElementById(input);
+  var url = '@Url.Action("/Transactions/All", "TransactionsController")';
+  var file = input.file;
   var formData = new FormData();
-
-  for (var i = 0; i != files.length; i++) {
-    formData.append("files", files[i]);
-  }
+  formData.append("file", file);
 
   $.ajax(
     {
-      url: _url,
+      url: url,
       data: formData,
       processData: false,
       contentType: false,

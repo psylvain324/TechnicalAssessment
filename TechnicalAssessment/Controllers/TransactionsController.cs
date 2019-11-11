@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Data.Entity;
-using System.IO;
-using System.Net.Http.Headers;
+﻿using System.Data.Entity;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -16,29 +13,14 @@ namespace TechnicalAssessment.Controllers
     public class TransactionController : Controller
     {
         private readonly DatabaseContext databaseContext;
-        private UploadService uploadService;
 
-        public TransactionController(DatabaseContext databaseContext, UploadService uploadService)
+        public TransactionController(DatabaseContext databaseContext)
         {
             this.databaseContext = databaseContext;
-            this.uploadService = uploadService;
         }
 
         public IActionResult Index()
         {
-            return View();
-        }
-
-        /// <summary>
-        /// Uploads xml or csv data to Transactions table
-        /// </summary>
-        /// <param name="file"></param>
-        /// <response code="201">Returns the newly created transaction</response>
-        /// <response code="400">If the transaction is null</response>     
-        [HttpPost]
-        public ActionResult UploadFile(IFormFile file)
-        {
-            uploadService.uploadTransaction(file.FileName);
             return View();
         }
 
