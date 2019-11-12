@@ -11,13 +11,13 @@ using TechnicalAssessment.Models.ViewModels;
 namespace TechnicalAssessment.Controllers
 {
     [Produces("application/json")]
-    [Route("Transactions")]
+    [Route("/Transactions")]
     [ApiController]
-    public class TransactionController : Controller
+    public class TransactionsController : Controller
     {
         private DatabaseContext databaseContext;
 
-        public TransactionController(DatabaseContext databaseContext)
+        public TransactionsController(DatabaseContext databaseContext)
         {
             this.databaseContext = databaseContext;
         }

@@ -32,9 +32,13 @@ namespace TechnicalAssessment
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("V1", new OpenApiInfo { Title = "2C2P Take Home API", Version = "V1" });
-                //var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-                //var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-                //c.IncludeXmlComments(xmlPath);
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                try
+                {
+                    c.IncludeXmlComments(xmlPath);
+                }
+                catch (Exception) { }
             });
 
             // For use of external database
@@ -46,7 +50,6 @@ namespace TechnicalAssessment
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            /*
             app.UseExceptionHandler(config =>
             {
                 config.Run(async context =>
@@ -67,7 +70,6 @@ namespace TechnicalAssessment
                     }
                 });
             });
-            */
 
             if (env.IsDevelopment())
             {
@@ -91,13 +93,13 @@ namespace TechnicalAssessment
             app.UseMvc(routes =>
             {
                 routes.MapRoute("default", "{controller=Home}/{action=Index}");
+                routes.MapRoute("Transactions", "{controller=Transactions}/{action=Transactions}");
+                routes.MapRoute("Customers", "{controller=Customers}/{action=Customers}");
             });
         }
-        /*
         public static void Initialize(IServiceProvider serviceProvider)
         {
             DataGenerator.Initialize(serviceProvider);
         }
-        */
     }
 }

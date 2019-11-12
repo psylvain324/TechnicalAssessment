@@ -28,7 +28,7 @@
     <Folder Include="Models\ViewModels\" />
     <Folder Include="Migrations\" />
     <Folder Include="Services\" />
-    <Folder Include="Views\Customer\" />
+    <Folder Include="Views\Customers\" />
     <Folder Include="Services\Interfaces\" />
   </ItemGroup>
   <ItemGroup>
@@ -47,6 +47,12 @@
     <Compile Remove="Services\CsvUpload.cs" />
     <Compile Remove="Services\XmlUpload.cs" />
     <Compile Remove="Views\Home\Transactions.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove=".xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include=".xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Properties\Resources.Designer.cs">

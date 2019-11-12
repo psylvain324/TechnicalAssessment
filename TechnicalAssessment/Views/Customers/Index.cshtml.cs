@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc.RazorPages;
 using TechnicalAssessment.Data;
 
-namespace TechnicalAssessment.Views.Customer
+namespace TechnicalAssessment.Views.Customers
 {
     public class IndexModel : PageModel
     {

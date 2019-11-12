@@ -13,13 +13,17 @@ namespace TechnicalAssessment.Controllers
     [Produces("application/json")]
     [Route("Customers")]
     [ApiController]
-    public class CustomerController : Controller
+    public class CustomersController : Controller
     {
         private DatabaseContext databaseContext;
 
-        public CustomerController(DatabaseContext databaseContext)
+        public CustomersController(DatabaseContext databaseContext)
         {
             this.databaseContext = databaseContext;
+        }
+        public IActionResult Index()
+        {
+            return View("Customers");
         }
 
         /// <summary>
@@ -27,6 +31,7 @@ namespace TechnicalAssessment.Controllers
         /// </summary>     
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [Route("Customers")]
         public async Task<IActionResult> Customers()
         {
             return View(await databaseContext.Customers.ToListAsync());
