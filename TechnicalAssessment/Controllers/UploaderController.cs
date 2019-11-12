@@ -8,7 +8,7 @@ namespace TechnicalAssessment.Controllers
 {
     public class UploaderController : Controller
     {
-        private UploadService uploadService = new UploadService();
+        private TransactionService uploadService = new TransactionService();
 
         [HttpPost]
         public async Task<IActionResult> Index(IFormFile file)

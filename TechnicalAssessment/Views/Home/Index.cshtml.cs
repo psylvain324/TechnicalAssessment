@@ -15,9 +15,9 @@ namespace TechnicalAssessment.Views.Home
     {
         private readonly DatabaseContext databaseContext;
         private readonly ILogger<TransactionController> _logger;
-        private UploadService uploadService = new UploadService();
+        private TransactionService uploadService = new TransactionService();
 
-        public IndexModel(DatabaseContext databaseContext, UploadService uploadService, ILogger<TransactionController> _logger)
+        public IndexModel(DatabaseContext databaseContext, TransactionService uploadService, ILogger<TransactionController> _logger)
         {
             this.databaseContext = databaseContext;
             this.uploadService = uploadService;

@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace TechnicalAssessment.Models.ViewModels
 {
     public class CurrencyViewModel
     {
-        public List<string> Countries { get; set; }
-
-        public List<string> CurrencyCodes { get; set; }
+        public List<Country> Countries { get; set; }
+        public List<Currency> CurrencyCodes { get; set; }
     }
 }

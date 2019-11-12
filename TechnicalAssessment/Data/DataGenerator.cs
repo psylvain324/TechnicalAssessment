@@ -11,27 +11,46 @@ namespace TechnicalAssessment.Data
 {
     public class DataGenerator
     {
-        static List<string> GetCountryCodes()
+        static List<Country> GetCountryCodes()
         {
+            List<Country> countries = new List<Country>();
             List<string> countryCodes = CultureInfo
                 .GetCultures(CultureTypes.AllCultures)
                 .Where(c => !c.IsNeutralCulture)
                 .Where(ri => ri != null)
                 .Select(ri => ri.DisplayName)
                 .ToList();
-            return countryCodes;
+            for (int i = 0; i < countryCodes.Count; i++)
+            {
+                Country country = new Country
+                {
+                    CountryId = i,
+                    CountryCode = countryCodes[i]
+                };
+                countries.Add(country);
+            }
+            return countries;
         }
 
-        static List<string> GetCurrencyCodes()
+        static List<Currency> GetCurrencyCodes()
         {
-            List<string> codes = new List<string>();
+            List<Currency> currencies = new List<Currency>();
+            List<string> currencyCodes = new List<string>();
             var cultures = CultureInfo.GetCultures(CultureTypes.AllCultures);
             foreach (var culture in cultures)
             {
                 var region = new RegionInfo(culture.Name);
-                codes.Add(region.ISOCurrencySymbol);
+                currencyCodes.Add(region.ISOCurrencySymbol);
             }
-            return codes;
+            for (int i = 0; i < currencyCodes.Count; i++)
+            {
+                Currency currency = new Currency
+                {
+                    CurrencyId = i,
+                    CurrencyCode = currencyCodes[i]
+                };
+            }
+            return currencies;
         }
 
         public static void Initialize(IServiceProvider serviceProvider)
