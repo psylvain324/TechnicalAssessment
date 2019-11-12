@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using TechnicalAssessment.Data;
 using TechnicalAssessment.Models;
 

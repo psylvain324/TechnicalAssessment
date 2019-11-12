@@ -43,7 +43,7 @@ namespace TechnicalAssessment.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [Route("/{customerId:int}")]
-        public async Task<IActionResult> CustomerById(int customerId)
+        public async Task<IActionResult> CustomerById([FromRoute] int customerId)
         {
             var customer = await databaseContext.Customers
                 .SingleOrDefaultAsync(m => m.CustomerId == customerId);
@@ -66,8 +66,8 @@ namespace TechnicalAssessment.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [Route("/ByEmail/{email:string}")]
-        public async Task<IActionResult> CustomerByEmail(string email)
+        [Route("/Email/{email:string}")]
+        public async Task<IActionResult> CustomerByEmail([FromRoute] string email)
         {
             if (!email.Equals(typeof(MailAddress)))
             {
@@ -97,7 +97,7 @@ namespace TechnicalAssessment.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [Route("/{customerId:int}/{email:string}")]
-        public IActionResult CustomerByIdAndEmail(int customerId, string email)
+        public IActionResult CustomerByIdAndEmail([FromRoute]int customerId, [FromRoute] string email)
         {
             if (!customerId.Equals(typeof(int)) || !email.Equals(typeof(MailAddress)))
             {
@@ -124,7 +124,7 @@ namespace TechnicalAssessment.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ValidateAntiForgeryToken]
-        [Route("/Create/{customer}")]
+        [Route("/Create")]
         public async Task<IActionResult> CreateCustomer([Bind("CustomerId,CustomerName,Email,MobilePhone")] Customer customer)
         {
             if (ModelState.IsValid)
@@ -157,8 +157,8 @@ namespace TechnicalAssessment.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ValidateAntiForgeryToken]
-        [Route("/Update/{customer}")]
-        public async Task<IActionResult> UpdateCustomerAsync(int customerId, [Bind("CustomerId,CustomerName,Email,MobilePhone")]  Customer customer)
+        [Route("/Update/{customerId}")]
+        public async Task<IActionResult> UpdateCustomerAsync([FromRoute]int customerId, [Bind("CustomerId,CustomerName,Email,MobilePhone")]  Customer customer)
         {
             if (customerId != customer.CustomerId)
             {

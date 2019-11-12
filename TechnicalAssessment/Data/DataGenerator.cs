@@ -39,8 +39,15 @@ namespace TechnicalAssessment.Data
             var cultures = CultureInfo.GetCultures(CultureTypes.AllCultures);
             foreach (var culture in cultures)
             {
-                var region = new RegionInfo(culture.Name);
-                currencyCodes.Add(region.ISOCurrencySymbol);
+                try
+                {
+                    var region = new RegionInfo(culture.Name);
+                    currencyCodes.Add(region.ISOCurrencySymbol);
+                }
+                catch(Exception)
+                {
+                    continue;
+                }
             }
             for (int i = 0; i < currencyCodes.Count; i++)
             {

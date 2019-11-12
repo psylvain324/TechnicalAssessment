@@ -1,6 +1,4 @@
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.Extensions.Logging;
-using TechnicalAssessment.Controllers;
+﻿using Microsoft.AspNetCore.Mvc.RazorPages;
 using TechnicalAssessment.Data;
 
 namespace TechnicalAssessment.Views.Home
@@ -8,12 +6,10 @@ namespace TechnicalAssessment.Views.Home
     public class IndexModel : PageModel
     {
         private readonly DatabaseContext databaseContext;
-        private readonly ILogger<HomeController> homeLogger;
 
-        public IndexModel(DatabaseContext databaseContext, ILogger<HomeController> homeLogger)
+        public IndexModel(DatabaseContext databaseContext)
         {
             this.databaseContext = databaseContext;
-            this.homeLogger = homeLogger;
         }
 
     }

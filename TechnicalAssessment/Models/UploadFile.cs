@@ -5,6 +5,7 @@ namespace TechnicalAssessment.Models
 {
     public class UploadFile
     {
+        [Key]
         public int FileId { get; set; }
 
         [Display(Name = "File Name")]
@@ -13,13 +14,13 @@ namespace TechnicalAssessment.Models
         [Display(Name = "Extension Type")]
         public ExtensionTypes ExtensionType { get; set; }
 
-        [Display(Name = "Size (bytes)")]
+        [Display(Name = "Size")]
         [DisplayFormat(DataFormatString = "{0:N0}")]
         public long Size { get; set; }
 
-        [Display(Name = "Uploaded (UTC)")]
+        [Display(Name = "Upload Date")]
         [DataType(DataType.DateTime)]
-        public DateTime UploadDT { get; set; }
+        public DateTime UploadDate { get; set; }
     }
 
     public enum ExtensionTypes

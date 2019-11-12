@@ -3,14 +3,13 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Technical Assessment</h1>
-    <form id="form" name="form" action="/transactions" enctype="multipart/form-data" method="post">
+<div>
+    <h1>Technical Assessment</h1>
+    <form asp-controller="Home" asp-action="Index" method="post">
         <fieldset>
             <legend style="padding-top: 10px; padding-bottom: 10px;">Upload CSV or XML data</legend>
- 
-            <div class="col-xs-12" style="padding: 10px;">
-                <div class="col-xs-4">
+            <div style="padding-top: 10px; padding-bottom: 10px;">
+                <div>
                     <label>Upload CSV data</label>
                 </div>
             </div>

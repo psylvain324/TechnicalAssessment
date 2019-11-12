@@ -42,8 +42,8 @@ namespace TechnicalAssessment.Controllers
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [Route("/{transactionId:string}")]
-        public async Task<IActionResult> TransactionById(string transactionId)
+        [Route("/{transactionId}")]
+        public async Task<IActionResult> TransactionById([FromRoute]string transactionId)
         {
             if (transactionId == null)
             {
@@ -69,8 +69,8 @@ namespace TechnicalAssessment.Controllers
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [Route("/ByCurrencyCode/{currencyCode}")]
-        public async Task<IActionResult> TransactionByCurrencyCode(string currencyCode)
+        [Route("/CurrencyCode/{currencyCode}")]
+        public async Task<IActionResult> TransactionByCurrencyCode([FromRoute]string currencyCode)
         {
             bool isValid = ValidCurrencyCode(currencyCode);
             if(isValid == false)
@@ -98,8 +98,8 @@ namespace TechnicalAssessment.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [Route("/TransactionByStatus/{transactionStatus}")]
-        public async Task<IActionResult> TransactionByStatus(TransactionStatus transactionStatus)
+        [Route("/Status/{transactionStatus}")]
+        public async Task<IActionResult> TransactionByStatus([FromRoute]TransactionStatus transactionStatus)
         {
             if (transactionStatus.ToString() == null)
             {
@@ -116,12 +116,6 @@ namespace TechnicalAssessment.Controllers
             return View(transaction);
         }
 
-        // GET: Transactions/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
-
         /// <summary>
         /// POST: Transaction Create
         /// </summary>
@@ -132,7 +126,7 @@ namespace TechnicalAssessment.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ValidateAntiForgeryToken]
-        [Route("/Create/{transaction}")]
+        [Route("/Create")]
         public async Task<IActionResult> CreateTransaction([Bind("TransactionId,Amount,CurrencyCode,TransactionDate,Status")] Transaction transaction)
         {
             if (ModelState.IsValid)
@@ -140,22 +134,6 @@ namespace TechnicalAssessment.Controllers
                 databaseContext.Add(transaction);
                 await databaseContext.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
-            }
-            return View(transaction);
-        }
-
-        // GET: Transactions/UpdateTransaction/{transactionId}
-        public async Task<IActionResult> UpdateTransaction(string transactionId)
-        {
-            if (transactionId == null)
-            {
-                return BadRequest();
-            }
-
-            var transaction = await databaseContext.Transactions.SingleOrDefaultAsync(m => m.TransactionId == transactionId);
-            if (transaction == null)
-            {
-                return NotFound();
             }
             return View(transaction);
         }
@@ -171,8 +149,8 @@ namespace TechnicalAssessment.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ValidateAntiForgeryToken]
-        [Route("/Update/{transaction}")]
-        public async Task<IActionResult> UpdateTransactionAsync(string transactionId, [Bind("TransactionId,Amount,CurrencyCode,TransactionDate,Status")] Transaction transaction)
+        [Route("/Update/{transactionId}")]
+        public async Task<IActionResult> UpdateTransactionAsync([FromRoute]string transactionId, [Bind("TransactionId,Amount,CurrencyCode,TransactionDate,Status")] Transaction transaction)
         {
             if (transactionId != transaction.TransactionId)
             {
