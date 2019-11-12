@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using TechnicalAssessment.Models;
+using TechnicalAssessment.Models.ViewModels;
 
 namespace TechnicalAssessment.Controllers
 {

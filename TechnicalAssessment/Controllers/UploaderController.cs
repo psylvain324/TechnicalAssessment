@@ -3,12 +3,17 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using TechnicalAssessment.Data;
+using TechnicalAssessment.Services;
 
 namespace TechnicalAssessment.Controllers
 {
+    [Produces("application/json")]
+    [Route("Uploads")]
+    [ApiController]
     public class UploaderController : Controller
     {
-        private TransactionService uploadService = new TransactionService();
+        private TransactionService transactionService = new TransactionService();
+        private CustomerService customerService = new CustomerService();
 
         [HttpPost]
         public async Task<IActionResult> Index(IFormFile file)
@@ -26,7 +31,7 @@ namespace TechnicalAssessment.Controllers
         {
             if (file != null)
             {
-                uploadService.UploadTransaction(file.FileName);
+                transactionService.UploadTransaction(file.FileName);
             }
 
             return View();

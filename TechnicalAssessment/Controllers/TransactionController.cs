@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
 using System.Data.Entity;
-using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using TechnicalAssessment.Data;
 using TechnicalAssessment.Models;
 
@@ -22,40 +22,31 @@ namespace TechnicalAssessment.Controllers
             this.databaseContext = databaseContext;
         }
 
-        [HttpGet]
-        public IActionResult Index()
-        {
-            var transactions = databaseContext.Transactions.ToList();
-            return View(transactions);
-        }
-
         /// <summary>
-        /// Gets all Transactions
+        /// Get: All Transactions
         /// </summary>     
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [Route("/All")]
-        public async Task<IActionResult> GetAllTransactions()
+        public async Task<IActionResult> Transactions()
         {
             return View(await databaseContext.Transactions.ToListAsync());
         }
 
         /// <summary>
-        /// Returns a Transaction record by transaction Id
+        /// GET: Transaction by TransactionId
         /// </summary>
         /// <param name="transactionId"></param>
-        /// <returns>A Transaction record</returns>
         /// <response code="200">If a valid request was made</response>
-        /// <response code="400">If the transaction is null or invalid</response>     
+        /// <response code="404">If the Transaction was not found</response>     
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [Route("/TransactionById/{transactionId}")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [Route("/{transactionId:string}")]
         public async Task<IActionResult> TransactionById(string transactionId)
         {
             if (transactionId == null)
             {
-                return NotFound();
+                return BadRequest();
             }
 
             var transaction = await databaseContext.Transactions
@@ -69,16 +60,15 @@ namespace TechnicalAssessment.Controllers
         }
 
         /// <summary>
-        /// Returns a Transaction record by transaction currency code
+        /// GET: Transaction by Currency Code
         /// </summary>
         /// <param name="currencyCode"></param>
-        /// <returns>A Transaction record</returns>
-        /// <response code="201">Returns the newly created transaction</response>
-        /// <response code="400">If the transaction is null</response>      
+        /// <response code="200">If a valid request was made</response>
+        /// <response code="404">If the transaction did not return a result</response>        
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [Route("/TransactionByCurrencyCode/{currencyCode}")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [Route("/ByCurrencyCode/{currencyCode}")]
         public async Task<IActionResult> TransactionByCurrencyCode(string currencyCode)
         {
             var transaction = await databaseContext.Transactions
@@ -92,15 +82,16 @@ namespace TechnicalAssessment.Controllers
         }
 
         /// <summary>
-        /// Returns a Transaction record by transaction status
+        /// GET: Transaction by Status
         /// </summary>
         /// <param name="transactionStatus"></param>
-        /// <returns>A Transaction record</returns>
         /// <response code="201">Returns the newly created transaction</response>
-        /// <response code="400">If the Transaction is null</response>            
+        /// <response code="400">If the Transaction Request is null or invalid</response>
+        /// <response code="404">If the transaction did not return a result</response>    
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [Route("/TransactionByStatus/{transactionStatus}")]
         public async Task<IActionResult> TransactionByStatus(TransactionStatus transactionStatus)
         {
@@ -119,38 +110,92 @@ namespace TechnicalAssessment.Controllers
             return View(transaction);
         }
 
-        /// <summary>
-        /// Creates a Transaction record.
-        /// </summary>
-        /// <param name="transaction"></param>
-        /// <returns>A newly created Transaction</returns>
-        /// <response code="201">Returns the newly created Transaction</response>
-        /// <response code="400">If the Transaction is null</response>            
-        [HttpPost]
-        [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [Route("/Create/{transaction}")]
-        public ActionResult<Transaction> CreateTransaction(Transaction transaction)
+        // GET: Transactions/Create
+        public IActionResult Create()
         {
-            databaseContext.Transactions.Add(transaction);
-            databaseContext.SaveChanges();
-            return RedirectToAction("Index");
+            return View();
         }
 
         /// <summary>
-        /// Updates a Transaction record.
+        /// POST: Transaction Create
         /// </summary>
         /// <param name="transaction"></param>
-        /// <returns>A newly created Transaction</returns>
+        /// <response code="201">Returns the newly created Transaction</response>
+        /// <response code="400">If the Transaction is null or invalid</response>            
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ValidateAntiForgeryToken]
+        [Route("/Create/{transaction}")]
+        public async Task<IActionResult> CreateTransaction([Bind("TransactionId,Amount,CurrencyCode,TransactionDate,Status")] Transaction transaction)
+        {
+            if (ModelState.IsValid)
+            {
+                databaseContext.Add(transaction);
+                await databaseContext.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            return View(transaction);
+        }
+
+        // GET: Transactions/UpdateTransaction/{transactionId}
+        public async Task<IActionResult> UpdateTransaction(string transactionId)
+        {
+            if (transactionId == null)
+            {
+                return BadRequest();
+            }
+
+            var transaction = await databaseContext.Transactions.SingleOrDefaultAsync(m => m.TransactionId == transactionId);
+            if (transaction == null)
+            {
+                return NotFound();
+            }
+            return View(transaction);
+        }
+
+        /// <summary>
+        /// PATCH: Update Transaction
+        /// </summary>
+        /// <param name="transaction"></param>
+        /// <param name="transactionId"></param>
         /// <response code="201">Returns the newly updated Transaction</response>
         /// <response code="400">If the Transaction is null or invalid</response>    
-        [HttpPost]
+        [HttpPatch]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ValidateAntiForgeryToken]
         [Route("/Update/{transaction}")]
-        public IActionResult UpdateTransaction(Transaction transaction)
+        public async Task<IActionResult> UpdateTransactionAsync(string transactionId, [Bind("TransactionId,Amount,CurrencyCode,TransactionDate,Status")] Transaction transaction)
         {
-            databaseContext.Transactions.Update(transaction);
-            databaseContext.SaveChanges();
-            return RedirectToAction("Index");
+            if (transactionId != transaction.TransactionId)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    databaseContext.Update(transaction);
+                    await databaseContext.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!TransactionExists(transaction.TransactionId))
+                    {
+                        return NotFound();
+                    }
+                    throw;
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            return View(transaction);
+        }
+
+        private bool TransactionExists(string transactionId)
+        {
+            return databaseContext.Transactions.Any(e => e.TransactionId == transactionId);
         }
     }
 }

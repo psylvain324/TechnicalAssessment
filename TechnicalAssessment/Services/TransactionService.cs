@@ -10,11 +10,6 @@ namespace TechnicalAssessment.Data
     {
         private const string success = "File uploaded successfully";
 
-        public TransactionService()
-        {
-
-        }
-
         public string UploadTransaction(string path)
         {
             string extensionType = Path.GetExtension(path);
@@ -65,9 +60,7 @@ namespace TechnicalAssessment.Data
             doc.Load(filePath);
 
             XmlNodeList nodes = doc.DocumentElement.SelectNodes("/Transactions/Transaction");
-
             List<Transaction> transactions = new List<Transaction>();
-
             foreach (XmlNode node in nodes)
             {
                 Transaction transaction = new Transaction
@@ -75,7 +68,7 @@ namespace TechnicalAssessment.Data
                     TransactionId = node.Attributes["Transaction Id"].Value,
                     CurrencyCode = node.SelectSingleNode("Currency Code").InnerText,
                     TransactionDate = node.SelectSingleNode("transactiondate").InnerText,
-                    Amount = Double.Parse(node.SelectSingleNode("Amount").InnerText),
+                    Amount = double.Parse(node.SelectSingleNode("Amount").InnerText),
                     Status = (TransactionStatus)Enum.Parse(typeof(TransactionStatus), node.SelectSingleNode("status").InnerText)
                 };
 

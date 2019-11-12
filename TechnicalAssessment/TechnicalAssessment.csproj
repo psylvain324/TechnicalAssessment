@@ -22,7 +22,6 @@
     <Folder Include="Migrations\" />
     <Folder Include="Services\" />
     <Folder Include="Views\Customer\" />
-    <Folder Include="Models\Dtos\" />
   </ItemGroup>
   <ItemGroup>
     <Content Remove="Views\Home\Upload.cshtml" />
@@ -34,5 +33,7 @@
     <Compile Remove="Views\Pages\Details.cshtml.cs" />
     <Compile Remove="Data\ResponseDto.cs" />
     <Compile Remove="Views\Home\Transactions.cshtml.cs" />
+    <Compile Remove="Models\ErrorViewModel.cs" />
+    <Compile Remove="Models\ErrorModel.cs" />
   </ItemGroup>
 </Project>

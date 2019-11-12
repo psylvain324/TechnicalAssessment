@@ -14,14 +14,14 @@ namespace TechnicalAssessment.Views.Home
     public class IndexModel : PageModel
     {
         private readonly DatabaseContext databaseContext;
-        private readonly ILogger<TransactionController> _logger;
+        private readonly ILogger<TransactionController> logger;
         private TransactionService uploadService = new TransactionService();
 
-        public IndexModel(DatabaseContext databaseContext, TransactionService uploadService, ILogger<TransactionController> _logger)
+        public IndexModel(DatabaseContext databaseContext, TransactionService uploadService, ILogger<TransactionController> logger)
         {
             this.databaseContext = databaseContext;
             this.uploadService = uploadService;
-            this._logger = _logger;
+            this.logger = logger;
         }
 
         public IList<Transaction> Transactions { get; set; }
@@ -42,7 +42,7 @@ namespace TechnicalAssessment.Views.Home
             }
             catch(Exception e)
             {
-                _logger.LogInformation(e.Message);
+                logger.LogInformation(e.Message);
             }
 
             return RedirectToAction("Index");

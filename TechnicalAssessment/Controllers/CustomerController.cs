@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using TechnicalAssessment.Data;
 using TechnicalAssessment.Models;
+using System;
+using Microsoft.EntityFrameworkCore;
 
 namespace TechnicalAssessment.Controllers
 {
@@ -21,36 +23,27 @@ namespace TechnicalAssessment.Controllers
             this.databaseContext = databaseContext;
         }
 
-        [HttpGet]
-        public IActionResult Index()
-        {
-            var customers = databaseContext.Customers.ToList();
-            return View(customers);
-        }
-
         /// <summary>
-        /// Gets all Customers
+        /// Get: All Customers
         /// </summary>     
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [Route("/All")]
-        public async Task<IActionResult> GetAllCustomers()
+        public async Task<IActionResult> Customers()
         {
             return View(await databaseContext.Customers.ToListAsync());
         }
 
         /// <summary>
-        /// Returns a Customer record by Customer Id
+        /// GET: Customer by CustomerId
         /// </summary>
         /// <param name="customerId"></param>
-        /// <returns>A Customer record</returns>
         /// <response code="200">If a valid request was made</response>
-        /// <response code="400">If the Customer is null or invalid</response>     
+        /// <response code="404">If the transaction did not return a result</response>      
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [Route("/CustomerById/{customerId}")]
-        public async Task<IActionResult> GetCustomerById(int customerId)
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [Route("/{customerId:int}")]
+        public async Task<IActionResult> CustomerById(int customerId)
         {
             var customer = await databaseContext.Customers
                 .SingleOrDefaultAsync(m => m.CustomerId == customerId);
@@ -63,17 +56,18 @@ namespace TechnicalAssessment.Controllers
         }
 
         /// <summary>
-        /// Returns a Customer record by Email
+        /// GET: Customer by Email
         /// </summary>
         /// <param name="email"></param>
-        /// <returns>A Customer record</returns>
         /// <response code="200">If a valid request was made</response>
-        /// <response code="400">If the Customer is null</response>      
+        /// <response code="400">If the Customer is null</response>
+        /// <response code="404">If the Customer was not found</response>   
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [Route("/CustomerByEmail/{email}")]
-        public async Task<IActionResult> GetCustomerByEmail(string email)
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [Route("/ByEmail/{email:string}")]
+        public async Task<IActionResult> CustomerByEmail(string email)
         {
             if (!email.Equals(typeof(MailAddress)))
             {
@@ -91,68 +85,109 @@ namespace TechnicalAssessment.Controllers
         }
 
         /// <summary>
-        /// Returns a Customer record by Id and Email
+        /// GET: Customer by CustomerId and Email
         /// </summary>
         /// <param name="customerId"></param>
         /// <param name="email"></param>
-        /// <returns>A Customer record</returns>
         /// <response code="200">If a valid request was made</response>
-        /// <response code="400">If the Customer is null</response>            
+        /// <response code="400">If the CustomerID or Email is null or invalid</response>
+        /// <response code="404">If the Customer was not found</response>   
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [Route("/CustomerByIdAndEmail/{customerId}/{email}")]
-        public IActionResult GetCustomerByIdAndEmail(int customerId, string email)
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [Route("/{customerId:int}/{email:string}")]
+        public IActionResult CustomerByIdAndEmail(int customerId, string email)
         {
             if (!customerId.Equals(typeof(int)) || !email.Equals(typeof(MailAddress)))
             {
                 return BadRequest();
             }
 
-            var customers = databaseContext.Customers.Select(c =>
-                new { customerId, email }).ToList();
-            if (customers == null)
+            var customer = databaseContext.Customers.Select(c =>
+                new { customerId, email }).FirstOrDefault();
+            if (customer == null)
             {
                 return NotFound();
             }
 
-            return View(customers);
+            return View(customer);
         }
 
         /// <summary>
-        /// Creates a Customer record.
+        /// POST: Customer
         /// </summary>
         /// <param name="customer"></param>
-        /// <returns>A newly created Customer</returns>
         /// <response code="201">Returns the newly created Customer</response>
         /// <response code="400">If the Customer is null or invalid</response>            
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ValidateAntiForgeryToken]
         [Route("/Create/{customer}")]
-        public ActionResult<Customer> CreateCustomer(Customer customer)
+        public async Task<IActionResult> CreateCustomer([Bind("CustomerId,CustomerName,Email,MobilePhone")] Customer customer)
         {
-            databaseContext.Customers.Add(customer);
-            databaseContext.SaveChanges();
-            return RedirectToAction("Index");
+            if (ModelState.IsValid)
+            {
+                databaseContext.Add(customer);
+                await databaseContext.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            return View(customer);
+        }
+
+        // GET: Customers/UpdateCustomer/{customerId}
+        public async Task<IActionResult> UpdateCustomer(int customerId)
+        {
+            var customer = await databaseContext.Customers.SingleOrDefaultAsync(m => m.CustomerId == customerId);
+            if (customer == null)
+            {
+                return NotFound();
+            }
+            return View(customer);
         }
 
         /// <summary>
-        /// Updates a Customer record.
+        /// PATCH: Customer
         /// </summary>
         /// <param name="customer"></param>
-        /// <returns>A newly updated Customer</returns>
         /// <response code="201">Returns the newly updated Customer</response>
         /// <response code="400">If the Customer is null or invalid</response>            
-        [HttpPost]
+        [HttpPatch]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ValidateAntiForgeryToken]
         [Route("/Update/{customer}")]
-        public IActionResult UpdateCustomer(Customer customer)
+        public async Task<IActionResult> UpdateCustomerAsync(int customerId, [Bind("CustomerId,CustomerName,Email,MobilePhone")]  Customer customer)
         {
-            databaseContext.Customers.Update(customer);
-            databaseContext.SaveChanges();
-            return RedirectToAction("Index");
+            if (customerId != customer.CustomerId)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    databaseContext.Update(customer);
+                    await databaseContext.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!CustomerExists(customer.CustomerId))
+                    {
+                        return NotFound();
+                    }
+                    throw;
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            return View(customer);
+        }
+
+        private bool CustomerExists(int customerId)
+        {
+            return databaseContext.Customers.Any(e => e.CustomerId == customerId);
         }
     }
 }

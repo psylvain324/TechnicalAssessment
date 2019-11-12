@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Xml;
 using TechnicalAssessment.Data;
 using TechnicalAssessment.Models;
 
@@ -7,9 +9,28 @@ namespace TechnicalAssessment.Services
 {
     public class CustomerService
     {
-        public CustomerService()
-        {
+        private const string success = "File uploaded successfully";
 
+        public string UploadTransaction(string path)
+        {
+            string extensionType = Path.GetExtension(path);
+            try
+            {
+                if (extensionType == "csv")
+                {
+                    UploadCustomerCsv(path);
+                }
+                else if (extensionType == "xml")
+                {
+                    ParseCustomerXml(path);
+                }
+            }
+            catch (Exception e)
+            {
+                return e.Message;
+            }
+
+            return success;
         }
 
         public void UploadCustomerCsv(string path)
@@ -43,6 +64,28 @@ namespace TechnicalAssessment.Services
             }
 
             dbContext.SaveChanges();
+        }
+
+        public void ParseCustomerXml(string filePath)
+        {
+            XmlDocument doc = new XmlDocument();
+            doc.Load(filePath);
+
+            XmlNodeList nodes = doc.DocumentElement.SelectNodes("/Customers/Customer");
+            List<Transaction> transactions = new List<Transaction>();
+            foreach (XmlNode node in nodes)
+            {
+                Transaction transaction = new Transaction
+                {
+                    TransactionId = node.Attributes["Transaction Id"].Value,
+                    CurrencyCode = node.SelectSingleNode("Currency Code").InnerText,
+                    TransactionDate = node.SelectSingleNode("transactiondate").InnerText,
+                    Amount = double.Parse(node.SelectSingleNode("Amount").InnerText),
+                    Status = (TransactionStatus)Enum.Parse(typeof(TransactionStatus), node.SelectSingleNode("status").InnerText)
+                };
+
+                transactions.Add(transaction);
+            }
         }
     }
 }

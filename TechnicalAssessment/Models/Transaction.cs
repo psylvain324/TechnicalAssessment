@@ -30,10 +30,10 @@ namespace TechnicalAssessment.Models
         [CsvHelper.Configuration.Attributes.Index(4)]
         public TransactionStatus Status { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Transaction Status is required.")]
         [ForeignKey("CustomerId")]
         [CsvHelper.Configuration.Attributes.Index(5)]
-        public Customer CustomerTransaction { get; set; }
+        public int CustomerId { get; set; }
     }
 
     public enum TransactionStatus
