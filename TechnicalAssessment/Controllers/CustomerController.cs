@@ -1,5 +1,4 @@
 ﻿using System.Net.Mail;
-using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -42,7 +41,7 @@ namespace TechnicalAssessment.Controllers
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [Route("/{customerId:int}")]
+        [Route("/{customerId}")]
         public async Task<IActionResult> CustomerById([FromRoute] int customerId)
         {
             var customer = await databaseContext.Customers
@@ -66,7 +65,7 @@ namespace TechnicalAssessment.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [Route("/Email/{email:string}")]
+        [Route("/Email/{email}")]
         public async Task<IActionResult> CustomerByEmail([FromRoute] string email)
         {
             if (!email.Equals(typeof(MailAddress)))
@@ -96,7 +95,7 @@ namespace TechnicalAssessment.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [Route("/{customerId:int}/{email:string}")]
+        [Route("/{customerId}/{email}")]
         public IActionResult CustomerByIdAndEmail([FromRoute]int customerId, [FromRoute] string email)
         {
             if (!customerId.Equals(typeof(int)) || !email.Equals(typeof(MailAddress)))
@@ -115,12 +114,12 @@ namespace TechnicalAssessment.Controllers
         }
 
         /// <summary>
-        /// POST: Customer
+        /// PUT: Customer
         /// </summary>
         /// <param name="customer"></param>
         /// <response code="201">Returns the newly created Customer</response>
         /// <response code="400">If the Customer is null or invalid</response>            
-        [HttpPost]
+        [HttpPut]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ValidateAntiForgeryToken]
@@ -132,17 +131,6 @@ namespace TechnicalAssessment.Controllers
                 databaseContext.Add(customer);
                 await databaseContext.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
-            }
-            return View(customer);
-        }
-
-        // GET: Customers/UpdateCustomer/{customerId}
-        public async Task<IActionResult> UpdateCustomer(int customerId)
-        {
-            var customer = await databaseContext.Customers.SingleOrDefaultAsync(m => m.CustomerId == customerId);
-            if (customer == null)
-            {
-                return NotFound();
             }
             return View(customer);
         }
