@@ -1,38 +1,46 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Xml.Serialization;
 
 namespace TechnicalAssessment.Models
 {
+    [Serializable]
+    [XmlRoot("Transactions")]
     public class Transaction
     {
         [Key]
         [MinLength(10)]
         [MaxLength(10)]
+        [XmlElement("Transaction Id")]
         [CsvHelper.Configuration.Attributes.Index(0)]
         public string TransactionId { get; set; }
 
         [Required(ErrorMessage = "Amount is required")]
         [Display(Name = "Customer Name")]
+        [XmlElement("Amount")]
         [CsvHelper.Configuration.Attributes.Index(1)]
         public double Amount { get; set; }
 
         [Required(ErrorMessage = "Currency Code is required")]
         [DataType(DataType.Currency)]
+        [XmlElement("Currency Code")]
         [CsvHelper.Configuration.Attributes.Index(2)]
         public string CurrencyCode { get; set; }
 
         [DataType(DataType.DateTime)]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MM/yyyy}{1:HH/mm}")]
         [Required(ErrorMessage = "Transaction Date is required.")]
+        [XmlElement("Transaction Date")]
         [CsvHelper.Configuration.Attributes.Index(3)]
         public string TransactionDate { get; set; }
 
         [Required(ErrorMessage = "Transaction Status is required.")]
+        [XmlElement("Status")]
         [CsvHelper.Configuration.Attributes.Index(4)]
         public TransactionStatus Status { get; set; }
 
-        [Required(ErrorMessage = "Transaction Status is required.")]
         [ForeignKey("CustomerId")]
-        [CsvHelper.Configuration.Attributes.Index(5)]
         public int CustomerId { get; set; }
     }
 

@@ -9,7 +9,7 @@ using TechnicalAssessment.Models.ViewModels;
 
 namespace TechnicalAssessment.Data
 {
-    public class DataGenerator
+    public static class DataGenerator
     {
         static List<Country> GetCountryCodes()
         {
@@ -49,6 +49,7 @@ namespace TechnicalAssessment.Data
                     CurrencyId = i,
                     CurrencyCode = currencyCodes[i]
                 };
+                currencies.Add(currency);
             }
             return currencies;
         }
@@ -74,12 +75,12 @@ namespace TechnicalAssessment.Data
 
                 var transactions = new Transaction[]
                 {
-                testTransaction
+                    testTransaction
                 };
 
                 var testCustomer = new Customer
                 {
-                    CustomerId = 00001,
+                    CustomerId = 0,
                     CustomerName = "Phillip Sylvain",
                     Email = "psylvain324@gmail.com",
                     MobileNumber = "16032862905",

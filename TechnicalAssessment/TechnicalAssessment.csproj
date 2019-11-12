@@ -22,11 +22,13 @@
     <Folder Include="Migrations\" />
     <Folder Include="Services\" />
     <Folder Include="Views\Customer\" />
+    <Folder Include="Services\Interfaces\" />
   </ItemGroup>
   <ItemGroup>
     <Content Remove="Views\Home\Upload.cshtml" />
     <Content Remove="Views\Transactions\Transactions.cshtml" />
     <Content Remove="Views\Home\Transactions.cshtml" />
+    <Content Remove="Views\Home\DbFileUpload.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="Views\Pages\Transactions.cs" />
@@ -35,5 +37,8 @@
     <Compile Remove="Views\Home\Transactions.cshtml.cs" />
     <Compile Remove="Models\ErrorViewModel.cs" />
     <Compile Remove="Models\ErrorModel.cs" />
+    <Compile Remove="Services\CsvUpload.cs" />
+    <Compile Remove="Services\XmlUpload.cs" />
+    <Compile Remove="Views\Home\Transactions.cs" />
   </ItemGroup>
 </Project>

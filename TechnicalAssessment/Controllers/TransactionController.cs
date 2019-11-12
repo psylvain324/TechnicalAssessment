@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TechnicalAssessment.Data;
 using TechnicalAssessment.Models;
+using TechnicalAssessment.Models.ViewModels;
 
 namespace TechnicalAssessment.Controllers
 {
@@ -71,6 +72,11 @@ namespace TechnicalAssessment.Controllers
         [Route("/ByCurrencyCode/{currencyCode}")]
         public async Task<IActionResult> TransactionByCurrencyCode(string currencyCode)
         {
+            bool isValid = ValidCurrencyCode(currencyCode);
+            if(isValid == false)
+            {
+                return BadRequest();
+            }
             var transaction = await databaseContext.Transactions
                 .SingleOrDefaultAsync(m => m.CurrencyCode == currencyCode);
             if (transaction == null)
@@ -196,6 +202,23 @@ namespace TechnicalAssessment.Controllers
         private bool TransactionExists(string transactionId)
         {
             return databaseContext.Transactions.Any(e => e.TransactionId == transactionId);
+        }
+
+        public bool ValidCurrencyCode(string currencyCode)
+        {
+            bool isvalid = false;
+            var currencyCodes = databaseContext.Currencies;
+            foreach (CurrencyViewModel currencyViewModel in currencyCodes)
+            {
+                foreach (Currency currency in currencyViewModel.CurrencyCodes)
+                {
+                    if (currency.Equals(currencyCode))
+                    {
+                        isvalid = true;
+                    }
+                }
+            }
+            return isvalid;
         }
     }
 }

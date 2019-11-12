@@ -4,39 +4,22 @@ using System.IO;
 using System.Xml;
 using TechnicalAssessment.Data;
 using TechnicalAssessment.Models;
+using TechnicalAssessment.Services.Interfaces;
 
 namespace TechnicalAssessment.Services
 {
-    public class CustomerService
+    public class CustomerService : IServiceUpload
     {
-        private const string success = "File uploaded successfully";
+        private DatabaseContext databaseContext;
 
-        public string UploadTransaction(string path)
+        public CustomerService(DatabaseContext databaseContext)
         {
-            string extensionType = Path.GetExtension(path);
-            try
-            {
-                if (extensionType == "csv")
-                {
-                    UploadCustomerCsv(path);
-                }
-                else if (extensionType == "xml")
-                {
-                    ParseCustomerXml(path);
-                }
-            }
-            catch (Exception e)
-            {
-                return e.Message;
-            }
-
-            return success;
+            this.databaseContext = databaseContext;
         }
 
-        public void UploadCustomerCsv(string path)
+        public void UploadCsv(string filePath)
         {
-            using var streamReader = System.IO.File.OpenText(path);
-            var dbContext = new DatabaseContext(new Microsoft.EntityFrameworkCore.DbContextOptions<DatabaseContext>());
+            using var streamReader = File.OpenText(filePath);
             while (!streamReader.EndOfStream)
             {
                 var line = streamReader.ReadLine();
@@ -59,33 +42,37 @@ namespace TechnicalAssessment.Services
                     MobileNumber = data[3],
                     Transactions = transactions
                 };
-                dbContext.Transactions.Add(transaction);
-                dbContext.Customers.Add(customer);
+                databaseContext.Transactions.Add(transaction);
+                databaseContext.Customers.Add(customer);
             }
 
-            dbContext.SaveChanges();
+            databaseContext.SaveChanges();
         }
 
-        public void ParseCustomerXml(string filePath)
+        public void UploadXml(string filePath)
         {
             XmlDocument doc = new XmlDocument();
             doc.Load(filePath);
 
             XmlNodeList nodes = doc.DocumentElement.SelectNodes("/Customers/Customer");
-            List<Transaction> transactions = new List<Transaction>();
             foreach (XmlNode node in nodes)
             {
-                Transaction transaction = new Transaction
+                var transactions = node.SelectNodes("/Transactions");
+                Customer customer = new Customer
                 {
-                    TransactionId = node.Attributes["Transaction Id"].Value,
-                    CurrencyCode = node.SelectSingleNode("Currency Code").InnerText,
-                    TransactionDate = node.SelectSingleNode("transactiondate").InnerText,
-                    Amount = double.Parse(node.SelectSingleNode("Amount").InnerText),
-                    Status = (TransactionStatus)Enum.Parse(typeof(TransactionStatus), node.SelectSingleNode("status").InnerText)
+                    CustomerId = int.Parse(node.Attributes["Customer Id"].Value),
+                    CustomerName = node.SelectSingleNode("Customer Name").InnerText,
+                    Email = node.SelectSingleNode("Email").InnerText,
+                    MobileNumber = node.SelectSingleNode("Mobile Number").InnerText,
+                    Transactions = (ICollection<Transaction>)transactions
                 };
-
-                transactions.Add(transaction);
+                foreach(Transaction transaction in transactions)
+                {
+                    databaseContext.Transactions.Add(transaction);
+                }
+                databaseContext.Customers.Add(customer);
             }
+
         }
     }
 }

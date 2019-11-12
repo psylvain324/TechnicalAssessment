@@ -1,41 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Xml;
+using TechnicalAssessment.Data;
 using TechnicalAssessment.Models;
+using TechnicalAssessment.Services.Interfaces;
 
-namespace TechnicalAssessment.Data
+namespace TechnicalAssessment.Services
 {
-    public class TransactionService
+    public class TransactionService : IServiceUpload
     {
-        private const string success = "File uploaded successfully";
+        private DatabaseContext databaseContext;
 
-        public string UploadTransaction(string path)
+        public TransactionService(DatabaseContext databaseContext)
         {
-            string extensionType = Path.GetExtension(path);
-            try
-            {
-                if (extensionType == "csv")
-                {
-                    UploadTransactionCsv(path);
-                }
-                else if (extensionType == "xml")
-                {
-                    ParseTransactionXml(path);
-                }
-            }
-            catch (Exception e)
-            {
-                return e.Message;
-            }
-
-            return success;
+            this.databaseContext = databaseContext;
         }
 
-        public void UploadTransactionCsv(string path)
+        public void UploadCsv(string path)
         {
             using var streamReader = System.IO.File.OpenText(path);
-            var dbContext = new DatabaseContext(new Microsoft.EntityFrameworkCore.DbContextOptions<DatabaseContext>());
             while (!streamReader.EndOfStream)
             {
                 var line = streamReader.ReadLine();
@@ -48,13 +31,13 @@ namespace TechnicalAssessment.Data
                     TransactionDate = data[3],
                     Status = (TransactionStatus)Enum.Parse(typeof(TransactionStatus), data[4])
                 };
-                dbContext.Transactions.Add(transaction);
+                databaseContext.Transactions.Add(transaction);
             }
 
-            dbContext.SaveChanges();
+            databaseContext.SaveChanges();
         }
 
-        public void ParseTransactionXml(string filePath)
+        public void UploadXml(string filePath)
         {
             XmlDocument doc = new XmlDocument();
             doc.Load(filePath);
