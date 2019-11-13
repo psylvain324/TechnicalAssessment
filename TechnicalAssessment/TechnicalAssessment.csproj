@@ -50,6 +50,7 @@
     <Compile Remove="Views\Customers\Index.cshtml.cs" />
     <Compile Remove="Views\Home\Index.cshtml.cs" />
     <Compile Remove="Views\Transactions\Index.cshtml.cs" />
+    <Compile Remove="Views\Transactions\IndexSelect.cshtml.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Remove=".xml" />
