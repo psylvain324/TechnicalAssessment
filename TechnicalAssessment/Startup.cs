@@ -55,6 +55,10 @@ namespace TechnicalAssessment
             {
                 app.UseDeveloperExceptionPage();
             }
+            else
+            {
+                app.UseExceptionHandler("/Home/Error");
+            }
 
             app.UseSwagger();
             app.UseSwaggerUI(c =>

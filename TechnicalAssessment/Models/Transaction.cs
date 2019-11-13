@@ -26,7 +26,6 @@ namespace TechnicalAssessment.Models
         public double Amount { get; set; }
 
         [Required(ErrorMessage = "Currency Code is required")]
-        [DataType(DataType.Currency)]
         [XmlElement("Currency Code")]
         [CsvHelper.Configuration.Attributes.Index(2)]
         public string CurrencyCode { get; set; }
@@ -44,6 +43,7 @@ namespace TechnicalAssessment.Models
         public TransactionStatus Status { get; set; }
 
         [ForeignKey("CustomerId")]
+        [JsonIgnore]
         public int CustomerId { get; set; }
 
         public Customer Customer { get; set; }
