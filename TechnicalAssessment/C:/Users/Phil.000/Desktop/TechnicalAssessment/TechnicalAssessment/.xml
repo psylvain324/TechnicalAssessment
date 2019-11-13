@@ -1,0 +1,119 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>TechnicalAssessment</name>
+    </assembly>
+    <members>
+        <member name="M:TechnicalAssessment.Controllers.CustomersController.Customers">
+            <summary>
+            Get: All Customers
+            </summary>     
+        </member>
+        <member name="M:TechnicalAssessment.Controllers.CustomersController.CustomerById(System.Int32)">
+            <summary>
+            GET: Customer by CustomerId
+            </summary>
+            <param name="customerId"></param>
+            <response code="200">If a valid request was made</response>
+            <response code="404">If the transaction did not return a result</response>      
+        </member>
+        <member name="M:TechnicalAssessment.Controllers.CustomersController.CustomerByEmail(System.String)">
+            <summary>
+            GET: Customer by Email
+            </summary>
+            <param name="email"></param>
+            <response code="200">If a valid request was made</response>
+            <response code="400">If the Customer is null</response>
+            <response code="404">If the Customer was not found</response>   
+        </member>
+        <member name="M:TechnicalAssessment.Controllers.CustomersController.CustomerByIdAndEmail(System.Int32,System.String)">
+            <summary>
+            GET: Customer by CustomerId and Email
+            </summary>
+            <param name="customerId"></param>
+            <param name="email"></param>
+            <response code="200">If a valid request was made</response>
+            <response code="400">If the CustomerID or Email is null or invalid</response>
+            <response code="404">If the Customer was not found</response>   
+        </member>
+        <member name="M:TechnicalAssessment.Controllers.CustomersController.CreateCustomer(TechnicalAssessment.Models.Customer)">
+            <summary>
+            PUT: Customer
+            </summary>
+            <param name="customer"></param>
+            <response code="201">Returns the newly created Customer</response>
+            <response code="400">If the Customer is null or invalid</response>            
+        </member>
+        <member name="M:TechnicalAssessment.Controllers.CustomersController.UpdateCustomerAsync(System.Int32,TechnicalAssessment.Models.Customer)">
+            <summary>
+            PATCH: Customer
+            </summary>
+            <param name="customer"></param>
+            <response code="201">Returns the newly updated Customer</response>
+            <response code="400">If the Customer is null or invalid</response>            
+        </member>
+        <member name="M:TechnicalAssessment.Controllers.TransactionsController.Transactions">
+            <summary>
+            Get: All Transactions
+            </summary>     
+        </member>
+        <member name="M:TechnicalAssessment.Controllers.TransactionsController.TransactionById(System.String)">
+            <summary>
+            GET: Transaction by TransactionId
+            </summary>
+            <param name="transactionId"></param>
+            <response code="200">If a valid request was made</response>
+            <response code="404">If the Transaction was not found</response>     
+        </member>
+        <member name="M:TechnicalAssessment.Controllers.TransactionsController.TransactionByCurrencyCode(System.String)">
+            <summary>
+            GET: Transaction by Currency Code
+            </summary>
+            <param name="currencyCode"></param>
+            <response code="200">If a valid request was made</response>
+            <response code="404">If the transaction did not return a result</response>        
+        </member>
+        <member name="M:TechnicalAssessment.Controllers.TransactionsController.TransactionByStatus(TechnicalAssessment.Models.TransactionStatus)">
+            <summary>
+            GET: Transaction by Status
+            </summary>
+            <param name="transactionStatus"></param>
+            <response code="201">Returns the newly created transaction</response>
+            <response code="400">If the Transaction Request is null or invalid</response>
+            <response code="404">If the transaction did not return a result</response>    
+        </member>
+        <member name="M:TechnicalAssessment.Controllers.TransactionsController.CreateTransaction(TechnicalAssessment.Models.Transaction)">
+            <summary>
+            POST: Transaction Create
+            </summary>
+            <param name="transaction"></param>
+            <response code="201">Returns the newly created Transaction</response>
+            <response code="400">If the Transaction is null or invalid</response>            
+        </member>
+        <member name="M:TechnicalAssessment.Controllers.TransactionsController.UpdateTransactionAsync(System.String,TechnicalAssessment.Models.Transaction)">
+            <summary>
+            PATCH: Update Transaction
+            </summary>
+            <param name="transaction"></param>
+            <param name="transactionId"></param>
+            <response code="201">Returns the newly updated Transaction</response>
+            <response code="400">If the Transaction is null or invalid</response>    
+        </member>
+        <member name="T:TechnicalAssessment.Properties.Resources">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:TechnicalAssessment.Properties.Resources.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:TechnicalAssessment.Properties.Resources.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+    </members>
+</doc>

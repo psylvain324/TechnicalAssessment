@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 namespace TechnicalAssessment.Controllers
 {
     [Produces("application/json")]
-    [Route("Customers")]
+    [Route("api/Customers")]
     [ApiController]
     public class CustomersController : Controller
     {
@@ -31,7 +31,6 @@ namespace TechnicalAssessment.Controllers
         /// </summary>     
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [Route("Customers")]
         public async Task<IActionResult> Customers()
         {
             return View(await databaseContext.Customers.ToListAsync());

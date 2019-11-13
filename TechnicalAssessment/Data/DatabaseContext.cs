@@ -8,12 +8,25 @@ namespace TechnicalAssessment.Data
     {
         public DatabaseContext(DbContextOptions<DatabaseContext> options)
           : base(options)
-        {
+        {                
         }
 
         public DbSet<Customer> Customers { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
         public DbSet<CurrencyViewModel> Currencies { get; set; }
         public DbSet<UploadFile> Files { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<Customer>(c =>
+            {
+                c.HasMany(t => t.Transactions)
+                    .WithOne()
+                    .HasForeignKey(fk => fk.CustomerId)
+                    .IsRequired();
+            });
+        }
     }
 }

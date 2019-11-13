@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Xml.Serialization;
+using System.Text.Json.Serialization;
 
 namespace TechnicalAssessment.Models
 {
@@ -10,8 +11,10 @@ namespace TechnicalAssessment.Models
     public class Transaction
     {
         [Key]
-        [MinLength(10)]
-        [MaxLength(10)]
+        public int id { get; set; }
+
+        [MaxLength(50)]
+        [Required(ErrorMessage = "Amount is required")]
         [XmlElement("Transaction Id")]
         [CsvHelper.Configuration.Attributes.Index(0)]
         public string TransactionId { get; set; }
@@ -42,6 +45,8 @@ namespace TechnicalAssessment.Models
 
         [ForeignKey("CustomerId")]
         public int CustomerId { get; set; }
+
+        public Customer Customer { get; set; }
     }
 
     public enum TransactionStatus

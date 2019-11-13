@@ -44,9 +44,9 @@ namespace TechnicalAssessment.Data
                     var region = new RegionInfo(culture.Name);
                     currencyCodes.Add(region.ISOCurrencySymbol);
                 }
-                catch(Exception)
+                catch (Exception)
                 {
-                    continue;
+                    throw new Exception();
                 }
             }
             for (int i = 0; i < currencyCodes.Count; i++)
@@ -61,49 +61,46 @@ namespace TechnicalAssessment.Data
             return currencies;
         }
 
-        public static void Initialize(IServiceProvider serviceProvider)
+        public static void Initialize(DatabaseContext databaseContext)
         {
-            using (var context = new DatabaseContext(
-                serviceProvider.GetRequiredService<DbContextOptions<DatabaseContext>>()))
+            databaseContext.Database.EnsureCreated();
+            if (databaseContext.Transactions.Any())
             {
-                context.Database.EnsureCreated();
-                if (context.Transactions.Any())
-                {
-                    return;
-                }
-                var testTransaction = new Transaction
-                {
-                    TransactionId = "Inv00001",
-                    CurrencyCode = "TBH",
-                    Amount = 100000.00,
-                    Status = TransactionStatus.Approved,
-                    TransactionDate = DateTime.Now.ToString()
-                };
-
-                var transactions = new Transaction[]
-                {
-                    testTransaction
-                };
-
-                var testCustomer = new Customer
-                {
-                    CustomerId = 0,
-                    CustomerName = "Phillip Sylvain",
-                    Email = "psylvain324@gmail.com",
-                    MobileNumber = "16032862905",
-                    Transactions = transactions
-                };
-
-                var currencies = new CurrencyViewModel
-                {
-                    Countries = GetCountryCodes(),
-                    CurrencyCodes = GetCurrencyCodes()
-                };
-
-                context.Transactions.Add(testTransaction);
-                context.Customers.Add(testCustomer);
-                context.SaveChanges();
+                return;
             }
+            var testTransaction = new Transaction
+            {
+                TransactionId = "Inv00001",
+                CurrencyCode = "TBH",
+                Amount = 100000.00,
+                Status = TransactionStatus.Approved,
+                TransactionDate = DateTime.Now.ToString(),
+                CustomerId = 0
+            };
+
+            var transactions = new Transaction[]
+            {
+                    testTransaction
+            };
+
+            var testCustomer = new Customer
+            {
+                CustomerId = 0,
+                CustomerName = "Phillip Sylvain",
+                Email = "psylvain324@gmail.com",
+                MobileNumber = "16032862905",
+                Transactions = transactions
+            };
+
+            var currencies = new CurrencyViewModel
+            {
+                Countries = GetCountryCodes(),
+                CurrencyCodes = GetCurrencyCodes()
+            };
+
+            databaseContext.Transactions.Add(testTransaction);
+            databaseContext.Customers.Add(testCustomer);
+            databaseContext.SaveChanges();
         }
     }
 }

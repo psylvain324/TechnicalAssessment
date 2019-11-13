@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 using System.Xml.Serialization;
 using CsvHelper.Configuration.Attributes;
 
@@ -11,7 +12,6 @@ namespace TechnicalAssessment.Models
     public class Customer
     {
         [Key]
-        [MinLength(10)]
         [MaxLength(10)]
         [Index(0)]
         [XmlElement("Customer Id")]
@@ -38,6 +38,7 @@ namespace TechnicalAssessment.Models
 
         [Index(4)]
         [XmlArray("Transactions")]
+        [JsonIgnore]
         public ICollection<Transaction> Transactions { get; set; }
     }
 }

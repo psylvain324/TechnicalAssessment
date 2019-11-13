@@ -47,6 +47,9 @@
     <Compile Remove="Services\CsvUpload.cs" />
     <Compile Remove="Services\XmlUpload.cs" />
     <Compile Remove="Views\Home\Transactions.cs" />
+    <Compile Remove="Views\Customers\Index.cshtml.cs" />
+    <Compile Remove="Views\Home\Index.cshtml.cs" />
+    <Compile Remove="Views\Transactions\Index.cshtml.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Remove=".xml" />

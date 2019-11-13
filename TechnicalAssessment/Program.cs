@@ -15,7 +15,6 @@ namespace TechnicalAssessment
             {
                 var services = scope.ServiceProvider;
                 var context = services.GetRequiredService<DatabaseContext>();
-                DataGenerator.Initialize(services);
             }
 
             host.Run();

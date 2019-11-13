@@ -19,7 +19,7 @@
                         <input name="file" type="file" onchange="submitForm('form');" />
                     </div>
                     <div class="col-xs-12" style="padding: 10px;">
-                        <button onclick="submitForm('form')">Upload Data</button>
+                        <input type="button" value="Create" onclick="location.href='@Url.Action("Create", "file")'">
                     </div>
                 </div>
             </div>

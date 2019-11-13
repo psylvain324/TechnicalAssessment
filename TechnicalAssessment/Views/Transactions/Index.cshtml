@@ -1,21 +1,19 @@
-﻿@page 
-@model List<Transaction>
+﻿@model List<Transaction>
 @{
     Layout = "_Layout";
 }
  
 <h2>Transactions</h2>
 
-<form asp-page="./Index" method="get">
-    <div class="form-actions no-color">
-        <p>
-            Find by name:
-            <input id="search" type="text" name="SearchString" value="00001" />
-            <input type="submit" value="Search" class="btn btn-default" /> |
-        </p>
-    </div>
+<form asp-controller="Transactions" asp-action="Search" method="post">
+<p>Select Search Parameter</p>
+    <input type="radio" name="type" value="TransactionId">Transaction Identificator
+    <input type="radio" name="type" value="CurrencyCode">Currency Code
+    <input type="radio" name="type" value="Status">Status
+    <iframe name="search" style="height:100px;width:200px;"></iframe>
+    <input type="submit" value="Search" class="btn btn-default" /> |
 </form>
-@if (Model.Count == 0)
+@if (Model.ToList().Count == 0)
 {
     <p>
         Currently no records in the Database.
@@ -23,6 +21,7 @@
 }
 else
 {
+<form asp-controller="Transactions" asp-action="Transactions" method="get">
 <table class="table" onload="LoadData();">
     <tr>
         <th>Transaction ID</th>
@@ -49,10 +48,16 @@ else
             <td>
                 @Html.DisplayFor(modelItem => item.Status)
             </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.TransactionId">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.TransactionId">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.TransactionId">Delete</a>
+            </td>
         </tr>
     }
 </table>
+</form>
 }
 <script language="javascript">
-        var searchString = document.getElementById("search");
+
 </script>

@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -8,7 +9,7 @@ using TechnicalAssessment.Services;
 namespace TechnicalAssessment.Controllers
 {
     [Produces("application/json")]
-    [Route("Uploads")]
+    [Route("api/Uploads")]
     [ApiController]
     public class UploadController : Controller
     {
@@ -23,12 +24,28 @@ namespace TechnicalAssessment.Controllers
 
         [Route("/Csv")]
         [HttpPost]
-        public ActionResult UploadCsv(string filePath)
+        public ActionResult Upload(string filePath)
         {
-            //TODO
+            string extensionType = Path.GetExtension(filePath);
+            try
+            {
+                if (extensionType == "csv")
+                {
+
+                }
+                else if (extensionType == "xml")
+                {
+
+                }
+            }
+            catch (Exception)
+            {
+                throw new Exception();
+            }
+
             return View();
         }
-
+        
         [Route("/Xml")]
         [HttpPost]
         public ActionResult UploadXml(string filePath)
@@ -36,5 +53,6 @@ namespace TechnicalAssessment.Controllers
             //TODO
             return View();
         }
+    
     }
 }

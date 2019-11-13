@@ -11,7 +11,7 @@ using TechnicalAssessment.Models.ViewModels;
 namespace TechnicalAssessment.Controllers
 {
     [Produces("application/json")]
-    [Route("/Transactions")]
+    [Route("api/Transactions")]
     [ApiController]
     public class TransactionsController : Controller
     {

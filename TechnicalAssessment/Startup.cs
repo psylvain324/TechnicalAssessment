@@ -48,29 +48,8 @@ namespace TechnicalAssessment
             services.AddDbContext<DatabaseContext>(options => options.UseInMemoryDatabase(databaseName: "TechnicalAssessmentDb"));
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, DatabaseContext databaseContext)
         {
-            app.UseExceptionHandler(config =>
-            {
-                config.Run(async context =>
-                {
-                    context.Response.StatusCode = 500;
-                    context.Response.ContentType = "application/json";
-
-                    var error = context.Features.Get<IExceptionHandlerFeature>();
-                    if (error != null)
-                    {
-                        var ex = error.Error;
-
-                        await context.Response.WriteAsync(new ErrorViewModel()
-                        {
-                            StatusCode = 500,
-                            ErrorMessage = ex.Message
-                        }.ToString());
-                    }
-                });
-            });
-
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -82,24 +61,23 @@ namespace TechnicalAssessment
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "2C2P Take Home API V1");
             });
 
-            app.UseRouting();
-            app.UseAuthorization();
-            app.UseEndpoints(endpoints =>
+            app.Use(async (context, next) =>
             {
-                endpoints.MapControllers();
+                await next();
+                if (context.Response.StatusCode == 404 &&
+                    !Path.HasExtension(context.Request.Path.Value) &&
+                    !context.Request.Path.Value.StartsWith("/api/"))
+                {
+                    context.Request.Path = "/index.html";
+                    await next();
+                }
             });
 
-            app.UseRouting();
-            app.UseMvc(routes =>
-            {
-                routes.MapRoute("default", "{controller=Home}/{action=Index}");
-                routes.MapRoute("Transactions", "{controller=Transactions}/{action=Transactions}");
-                routes.MapRoute("Customers", "{controller=Customers}/{action=Customers}");
-            });
-        }
-        public static void Initialize(IServiceProvider serviceProvider)
-        {
-            DataGenerator.Initialize(serviceProvider);
+            app.UseMvcWithDefaultRoute();
+            app.UseDefaultFiles();
+            app.UseStaticFiles();
+            app.UseMvc();
+            DataGenerator.Initialize(databaseContext);
         }
     }
 }
