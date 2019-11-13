@@ -27,11 +27,11 @@ namespace TechnicalAssessment
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-            services.AddRazorPages();
 
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("V1", new OpenApiInfo { Title = "2C2P Take Home API", Version = "V1" });
+                /*
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 try
@@ -39,6 +39,7 @@ namespace TechnicalAssessment
                     c.IncludeXmlComments(xmlPath);
                 }
                 catch (Exception) { }
+                */
             });
 
             // For use of external database
