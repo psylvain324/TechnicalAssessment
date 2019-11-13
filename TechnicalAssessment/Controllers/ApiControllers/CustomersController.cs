@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 namespace TechnicalAssessment.Controllers
 {
     [Produces("application/json")]
-    [Route("api/Customers")]
+    [Route("Transactions")]
     [ApiController]
     public class CustomersController : Controller
     {
@@ -20,10 +20,6 @@ namespace TechnicalAssessment.Controllers
         public CustomersController(DatabaseContext databaseContext)
         {
             this.databaseContext = databaseContext;
-        }
-        public IActionResult Index()
-        {
-            return View("Customers");
         }
 
         /// <summary>
