@@ -1,58 +1,47 @@
 ﻿using System;
 using System.IO;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Mvc;
-using TechnicalAssessment.Data;
 using TechnicalAssessment.Services;
 
 namespace TechnicalAssessment.Controllers
 {
-    [Produces("application/json")]
-    [Route("api/Uploads")]
-    [ApiController]
     public class UploadController : Controller
     {
         private TransactionService transactionService;
         private CustomerService customerService;
+        private readonly ILogger<UploadController> logger;
 
-        public UploadController(TransactionService transactionService, CustomerService customerService)
+        public UploadController(TransactionService transactionService, CustomerService customerService, ILogger<UploadController> logger)
         {
             this.transactionService = transactionService;
             this.customerService = customerService;
+            this.logger = logger;
         }
 
-        [Route("/Csv")]
         [HttpPost]
-        public ActionResult Upload(string filePath)
+        public ActionResult Transaction(string filePath)
         {
-            string extensionType = Path.GetExtension(filePath);
-            try
+            if (Path.GetExtension(filePath) == "csv")
             {
-                if (extensionType == "csv")
-                {
-
-                }
-                else if (extensionType == "xml")
-                {
-
-                }
+                transactionService.UploadCsv(filePath);
             }
-            catch (Exception)
+            else if (Path.GetExtension(filePath) == "xml")
             {
-                throw new Exception();
+                transactionService.UploadXml(filePath);
+            }
+            else
+            {
+                throw new NotSupportedException();
             }
 
-            return View();
+            return RedirectPermanent("/Transaction/Details");
         }
-        
-        [Route("/Xml")]
+
         [HttpPost]
-        public ActionResult UploadXml(string filePath)
+        public ActionResult Customer(string filePath)
         {
-            //TODO
             return View();
         }
-    
     }
 }

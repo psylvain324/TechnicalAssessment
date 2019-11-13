@@ -10,8 +10,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace TechnicalAssessment.Controllers
 {
+    //TODO - Fix These to return data for Web Api purposes
     [Produces("application/json")]
-    [Route("Transactions")]
+    [Route("Api/Customers")]
     [ApiController]
     public class CustomersController : Controller
     {
@@ -27,6 +28,7 @@ namespace TechnicalAssessment.Controllers
         /// </summary>     
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [Route("/Get/All")]
         public async Task<IActionResult> Customers()
         {
             return View(await databaseContext.Customers.ToListAsync());
@@ -41,7 +43,7 @@ namespace TechnicalAssessment.Controllers
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [Route("/{customerId}")]
+        [Route("/Get/{customerId}")]
         public async Task<IActionResult> CustomerById([FromRoute] int customerId)
         {
             var customer = await databaseContext.Customers
@@ -95,7 +97,7 @@ namespace TechnicalAssessment.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [Route("/{customerId}/{email}")]
+        [Route("/Get/{customerId}/{email}")]
         public IActionResult CustomerByIdAndEmail([FromRoute]int customerId, [FromRoute] string email)
         {
             if (!customerId.Equals(typeof(int)) || !email.Equals(typeof(MailAddress)))

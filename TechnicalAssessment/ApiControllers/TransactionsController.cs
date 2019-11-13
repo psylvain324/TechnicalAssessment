@@ -10,8 +10,9 @@ using TechnicalAssessment.Models.ViewModels;
 
 namespace TechnicalAssessment.Controllers
 {
+    //TODO - Fix These to return data for Web Api purposes
     [Produces("application/json")]
-    [Route("Transactions")]
+    [Route("Api/Transactions")]
     [ApiController]
     public class TransactionsController : Controller
     {
@@ -27,6 +28,7 @@ namespace TechnicalAssessment.Controllers
         /// </summary>     
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [Route("/Get/All}")]
         public async Task<IActionResult> Transactions()
         {
             return View(await databaseContext.Transactions.ToListAsync());
@@ -41,7 +43,7 @@ namespace TechnicalAssessment.Controllers
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [Route("/{transactionId}")]
+        [Route("/Get/{transactionId}")]
         public async Task<IActionResult> TransactionById([FromRoute]string transactionId)
         {
             if (transactionId == null)

@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace TechnicalAssessment.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("Api/[controller]")]
     public class ValuesController : Controller
     {
         // GET api/values

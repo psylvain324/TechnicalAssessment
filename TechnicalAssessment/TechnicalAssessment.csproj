@@ -23,12 +23,15 @@
     <Folder Include="Services\" />
     <Folder Include="Views\Customers\" />
     <Folder Include="Services\Interfaces\" />
+    <Folder Include="ApiControllers\" />
   </ItemGroup>
   <ItemGroup>
     <None Remove=".xml" />
   </ItemGroup>
   <ItemGroup>
     <Content Remove="Views\Transactions\IndexSelect.cshtml" />
+    <Content Remove="Views\Shared\_Layout.cshtml" />
+    <Content Remove="Views\Transactions\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include=".xml" />
