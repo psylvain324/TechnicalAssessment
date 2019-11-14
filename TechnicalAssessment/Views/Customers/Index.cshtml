@@ -1,12 +1,57 @@
-﻿@{
+﻿@model IEnumerable<Customer>
+@{
     Layout = "_Layout";
     ViewData["Title"] = "Customers";
 }
 
-    <div>
-        <h1>Technical Assessment</h1>
-        <a asp-action="Create">Create New</a>
-        <form asp-controller="Customers" asp-action="Customers" method="get">
-            
-        </form>
-    </div>
+<h1>Technical Assessment</h1>
+<form asp-controller="Customer" asp-action="Search" method="post">
+<p>Select Search Parameter</p>
+    <input type="radio" name="type" value="CustomerId">Customer Id
+    <input type="radio" name="type" value="Email">Currency Code
+    <iframe name="search" style="height:100px;width:200px;"></iframe>
+    <input type="submit" value="Search" class="btn btn-default" /> |
+</form>
+@if (Model.ToList().Count == 0)
+{
+    <p>
+        Currently no records in the Database.
+    </p>
+}
+else
+{
+<form asp-controller="Customers" asp-action="Index" method="get">
+<table>
+    <tr>
+        <th>Customer ID</th>
+        <th>Customer Name</th>
+        <th>Email</th>
+        <th>Mobile Number</th>
+    </tr>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.CustomerId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CustomerName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Email)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MobileNumber)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.CustomerId">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.CustomerId">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.CustomerId">Delete</a>
+            </td>
+        </tr>
+    }
+</table>
+</form>
+}
+<script language="javascript">
+</script>

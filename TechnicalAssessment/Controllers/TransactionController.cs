@@ -53,12 +53,12 @@ namespace TechnicalAssessment.Controllers
             {
                 case "TransactionId":
                     transactions = from t in databaseContext.Transactions
-                                   where t.CurrencyCode == search
+                                   where t.TransactionId == search
                                    select t;
                     break;
                 case "CurrencyCode":
                     transactions = from t in databaseContext.Transactions
-                                   where t.TransactionId == search
+                                   where t.CurrencyCode == search
                                    select t;
                     break;
                 default:
