@@ -46,7 +46,7 @@ namespace TechnicalAssessment.Controllers
         }
 
         [Route("{search}")]
-        public async Task<IActionResult> Details(string search, string field)
+        public IActionResult Details(string search, string field)
         {
             var transactions = from t in databaseContext.Transactions select t;
             switch (field)
@@ -58,8 +58,8 @@ namespace TechnicalAssessment.Controllers
                     break;
                 case "CurrencyCode":
                     transactions = from t in databaseContext.Transactions
-                                       where t.TransactionId == search
-                                       select t;
+                                   where t.TransactionId == search
+                                   select t;
                     break;
                 default:
                     return NotFound();

@@ -16,6 +16,9 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="3.0.0" />
   </ItemGroup>
   <ItemGroup>
+    <Content Remove="Views\Transactions\IndexSelect.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
     <Folder Include="Data\" />
     <Folder Include="Views\Transactions\" />
     <Folder Include="Models\ViewModels\" />
@@ -24,22 +27,7 @@
     <Folder Include="Views\Customers\" />
     <Folder Include="Services\Interfaces\" />
     <Folder Include="ApiControllers\" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Remove=".xml" />
-    <None Remove="Test.xml" />
-    <None Remove="Test.csv" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Remove="Views\Transactions\IndexSelect.cshtml" />
-    <Content Remove="Views\Shared\_Layout.cshtml" />
-    <Content Remove="Views\Transactions\Index.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include=".xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Remove="Views\New Folder\EmptyClass.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Properties\Resources.Designer.cs">
