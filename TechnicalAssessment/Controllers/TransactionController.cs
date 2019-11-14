@@ -18,16 +18,13 @@ namespace TechnicalAssessment.Controllers
             this.databaseContext = databaseContext;
         }
 
-        public IActionResult Index()
-        {
-            return View();
-        }
-  
-        public async Task<IActionResult> Details()
+        //GET: Transactions
+        public async Task<IActionResult> Index()
         {
             return View(await databaseContext.Transactions.ToListAsync());
         }
 
+        //GET: Transactions/Details/{id}
         [Route("{id}")]
         public async Task<IActionResult> Details(string id)
         {
@@ -45,7 +42,24 @@ namespace TechnicalAssessment.Controllers
             return View(transaction);
         }
 
-        [Route("{search}")]
+        // GET: Transactions/Edit/{id}
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var transactions = await databaseContext.Transactions.SingleOrDefaultAsync(m => m.id == id);
+            if (transactions == null)
+            {
+                return NotFound();
+            }
+            return View(transactions);
+        }
+
+        //GET: Transactions/Details/{search}/{field}
+        [Route("{search}/{field}")]
         public IActionResult Details(string search, string field)
         {
             var transactions = from t in databaseContext.Transactions select t;

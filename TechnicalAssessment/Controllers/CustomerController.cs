@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using TechnicalAssessment.Data;
@@ -19,16 +20,13 @@ namespace TechnicalAssessment.Controllers
             this.databaseContext = databaseContext;
         }
 
-        public IActionResult Index()
-        {
-            return View();
-        }
-
-        public async Task<IActionResult> Details()
+        //GET: Customers
+        public async Task<IActionResult> Index()
         {
             return View(await databaseContext.Customers.ToListAsync());
         }
 
+        //GET: Customer/Details/{id}
         [Route("{id}")]
         public async Task<IActionResult> Details(string id)
         {
@@ -46,6 +44,23 @@ namespace TechnicalAssessment.Controllers
             return View(customer);
         }
 
+        // GET: Customers/Edit/{id}
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var customers = await databaseContext.Customers.SingleOrDefaultAsync(m => m.CustomerId == id);
+            if (customers == null)
+            {
+                return NotFound();
+            }
+            return View(customers);
+        }
+
+        //GET Customers/Details/{search}/{field}
         [Route("{search}")]
         public IActionResult Details(string search, string field)
         {
