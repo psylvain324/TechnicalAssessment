@@ -12,6 +12,8 @@ namespace TechnicalAssessment.Migrations
                 name: "Transaction",
                 columns: table => new
                 {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     TransactionId = table.Column<int>(type: "int", nullable: false),
                     Amount = table.Column<double>(type: "float", nullable: false),
                     CurrencyCode = table.Column<string>(type: "nvarchar(3)", nullable: false),
@@ -21,7 +23,7 @@ namespace TechnicalAssessment.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Transaction", x => x.TransactionId);
+                    table.PrimaryKey("PK_Transaction", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Transaction_Customer_CustomerId",
                         column: x => x.CustomerId,

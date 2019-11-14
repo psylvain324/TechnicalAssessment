@@ -36,13 +36,13 @@ namespace TechnicalAssessment.Controllers
                 return NotFound();
             }
 
-            var blog = await databaseContext.Customers.FirstOrDefaultAsync();
-            if (blog == null)
+            var customer = await databaseContext.Customers.FirstOrDefaultAsync();
+            if (customer == null)
             {
                 return NotFound();
             }
 
-            return View(blog);
+            return View(customer);
         }
     }
 }

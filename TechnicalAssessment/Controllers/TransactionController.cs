@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -35,13 +36,36 @@ namespace TechnicalAssessment.Controllers
                 return NotFound();
             }
 
-            var blog = await databaseContext.Transactions.FirstOrDefaultAsync();
-            if (blog == null)
+            var transaction = await databaseContext.Transactions.FirstOrDefaultAsync();
+            if (transaction == null)
             {
                 return NotFound();
             }
 
-            return View(blog);
+            return View(transaction);
+        }
+
+        [Route("{search}")]
+        public Task<IActionResult> Details(string search, string field)
+        {
+            var transactions = from t in databaseContext.Transactions select t;
+            switch (field)
+            {
+                case "TransactionId":
+                    transactions = from t in databaseContext.Transactions
+                                   where t.CurrencyCode == search
+                                   select t;
+                    break;
+                case "CurrencyCode":
+                    transactions = from t in databaseContext.Transactions
+                                       where t.TransactionId == search
+                                       select t;
+                    break;
+                default:
+                    return NotFound();
+            }
+
+            return View(transactions);
         }
     }
 }

@@ -27,6 +27,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Remove=".xml" />
+    <None Remove="Test.xml" />
+    <None Remove="Test.csv" />
   </ItemGroup>
   <ItemGroup>
     <Content Remove="Views\Transactions\IndexSelect.cshtml" />
@@ -45,6 +47,10 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Test.xml" />
+    <EmbeddedResource Include="Test.csv" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Update="Properties\Resources.resx">

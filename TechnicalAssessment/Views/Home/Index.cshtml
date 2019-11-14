@@ -5,7 +5,7 @@
 
 <div>
     <h1>Technical Assessment</h1>
-    <form asp-controller="Home" asp-action="Index" method="post">
+    <form asp-controller="Home" asp-action="Transaction" method="post">
         <fieldset>
             <legend style="padding-top: 10px; padding-bottom: 10px;">Upload CSV or XML data</legend>
             <div style="padding-top: 10px; padding-bottom: 10px;">
@@ -30,7 +30,7 @@
 <script>
 function submitForm(input) {
   var input = document.getElementById(input);
-  var url = '@Url.Action("Transactions", "TransactionsController")';
+  var url = '@Url.Action("Index", "Transactions")';
   var file = input.file;
   var formData = new FormData();
   formData.append("file", file);

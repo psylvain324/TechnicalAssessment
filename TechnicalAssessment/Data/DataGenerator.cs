@@ -53,7 +53,7 @@ namespace TechnicalAssessment.Data
             databaseContext.SaveChanges();
         }
 
-        static List<Country> GetCountryCodes()
+        public static List<Country> GetCountryCodes()
         {
             List<Country> countries = new List<Country>();
             List<string> countryCodes = CultureInfo
@@ -74,7 +74,7 @@ namespace TechnicalAssessment.Data
             return countries;
         }
 
-        static List<Currency> GetCurrencyCodes()
+        public static List<Currency> GetCurrencyCodes()
         {
             List<Currency> currencies = new List<Currency>();
             List<string> currencyCodes = new List<string>();

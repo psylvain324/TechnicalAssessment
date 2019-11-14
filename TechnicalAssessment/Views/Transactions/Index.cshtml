@@ -1,11 +1,11 @@
-﻿@model List<Transaction>
+﻿@model IEnumerable<Transaction>
 @{
     Layout = "_Layout";
 }
  
 <h2>Transactions</h2>
 
-<form asp-controller="Transactions" asp-action="Search" method="post">
+<form asp-controller="Transaction" asp-action="Search" method="post">
 <p>Select Search Parameter</p>
     <input type="radio" name="type" value="TransactionId">Transaction Identificator
     <input type="radio" name="type" value="CurrencyCode">Currency Code
