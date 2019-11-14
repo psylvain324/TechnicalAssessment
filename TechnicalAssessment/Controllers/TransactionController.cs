@@ -46,7 +46,7 @@ namespace TechnicalAssessment.Controllers
         }
 
         [Route("{search}")]
-        public Task<IActionResult> Details(string search, string field)
+        public async Task<IActionResult> Details(string search, string field)
         {
             var transactions = from t in databaseContext.Transactions select t;
             switch (field)
