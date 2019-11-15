@@ -3,6 +3,8 @@ using System.IO;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Mvc;
 using TechnicalAssessment.Services;
+using Microsoft.AspNetCore.Http;
+using System.Threading.Tasks;
 
 namespace TechnicalAssessment.Controllers
 {
@@ -20,8 +22,14 @@ namespace TechnicalAssessment.Controllers
         }
 
         [HttpPost]
-        public ActionResult Transaction(string filePath)
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult> Transaction(IFormFile file)
         {
+            if (file.Length == 0 || file.Length > 1000000)
+            {
+                return BadRequest();
+            }
+            var filePath = Path.GetTempFileName();
             if (Path.GetExtension(filePath) == "csv")
             {
                 transactionService.UploadCsv(filePath);
@@ -32,10 +40,10 @@ namespace TechnicalAssessment.Controllers
             }
             else
             {
-                throw new NotSupportedException();
+                return BadRequest();
             }
 
-            return RedirectPermanent("/Transaction/Details");
+            return RedirectPermanent("/Transaction/Index");
         }
 
         [HttpPost]

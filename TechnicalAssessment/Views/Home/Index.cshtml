@@ -4,10 +4,10 @@
 }
 
 <div>
-    <h1>Technical Assessment</h1>
-    <form asp-controller="Home" asp-action="Transaction" method="post">
+    <h1>Technical Assessment - Upload Page</h1>
+    <form asp-controller="Upload" asp-action="Transaction" method="post">
         <fieldset>
-            <legend style="padding-top: 10px; padding-bottom: 10px;">Upload CSV or XML data</legend>
+            <legend style="padding-top: 10px; padding-bottom: 10px;">Upload CSV or XML Transaction data</legend>
             <div style="padding-top: 10px; padding-bottom: 10px;">
                 <div>
                     <label>Upload CSV data</label>
@@ -16,36 +16,26 @@
             <div class="buttons">
                 <div class="upload-button">
                     <div class="col-xs-12" style="padding: 10px;">
-                        <input name="file" type="file" onchange="submitForm('form');" />
+                        <input name="file" type="file" onchange="checkfile(this);" />
                     </div>
                     <div class="col-xs-12" style="padding: 10px;">
-                        <input type="button" value="Create" onclick="location.href='@Url.Action("Create", "file")'">
+                        <input type="button" value="Create" />
                     </div>
                 </div>
             </div>
         </fieldset>
     </form>
 </div>
-
-<script>
-function submitForm(input) {
-  var input = document.getElementById(input);
-  var url = '@Url.Action("Index", "Transactions")';
-  var file = input.file;
-  var formData = new FormData();
-  formData.append("file", file);
-
-  $.ajax(
-    {
-      url: url,
-      data: formData,
-      processData: false,
-      contentType: false,
-      type: "POST",
-      success: function (data) {
-        alert("Files Uploaded!");
-      }
+<script type="text/javascript" language="javascript">
+function checkfile(sender) {
+    var validExts = new Array(".xml", ".csv");
+    var fileExt = sender.value;
+    fileExt = fileExt.substring(fileExt.lastIndexOf('.'));
+    if (validExts.indexOf(fileExt) < 0) {
+      alert("Invalid file selected, valid files are of " +
+               validExts.toString() + " types.");
+      return false;
     }
-  );
+    else return true;
 }
 </script>

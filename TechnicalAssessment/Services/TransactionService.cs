@@ -50,13 +50,16 @@ namespace TechnicalAssessment.Services
                 {
                     TransactionId = node.Attributes["Transaction Id"].Value,
                     CurrencyCode = node.SelectSingleNode("Currency Code").InnerText,
-                    TransactionDate = node.SelectSingleNode("transactiondate").InnerText,
+                    TransactionDate = node.SelectSingleNode("Transaction Date").InnerText,
                     Amount = double.Parse(node.SelectSingleNode("Amount").InnerText),
                     Status = (TransactionStatus)Enum.Parse(typeof(TransactionStatus), node.SelectSingleNode("status").InnerText)
                 };
 
                 transactions.Add(transaction);
+                databaseContext.Transactions.Add(transaction);
             }
+
+            databaseContext.SaveChanges();
         }
     }
 }

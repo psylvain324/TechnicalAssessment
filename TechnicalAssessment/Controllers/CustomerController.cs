@@ -9,6 +9,7 @@ using TechnicalAssessment.Data;
 
 namespace TechnicalAssessment.Controllers
 {
+    [Route("Customers")]
     public class CustomerController : Controller
     {
         private readonly ILogger<TransactionController> logger;

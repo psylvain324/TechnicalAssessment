@@ -1,10 +1,33 @@
-﻿@model IEnumerable<Transaction>
+﻿@model IEnumerable<TechnicalAssessment.Models.ViewModels.TransactionViewModel>
 @{
     Layout = "_Layout";
     ViewData["Title"] = "Transactions";
 }
  
 <h2>Transactions</h2>
+
+<form asp-controller="Upload" asp-action="Transaction" method="post">
+    <fieldset>
+        <legend style="padding-top: 10px; padding-bottom: 10px;">Upload CSV or XML Transaction data</legend>
+        <div style="padding-top: 10px; padding-bottom: 10px;">
+            <div>
+                <label>Upload Data</label>
+            </div>
+        </div>
+        <div class="buttons">
+            <div class="upload-button">
+                <div class="col-xs-12" style="padding-top: 10px; padding-bottom: 10px;">
+                    <input name="file" type="file" />
+                </div>
+                <div class="col-xs-12" style="padding-top: 10px; padding-bottom: 10px;">
+                    <input type="button" value="Create" />
+                </div>
+            </div>
+        </div>
+        <p id="error1" style="display:none; color:#FF0000;"> Invalid File Format! Image Format Must Be XML or CSV!</p>
+        <p id="error2" style="display:none; color:#FF0000;">Maximum File Size Limit is 1MB.</p>
+    </fieldset>
+</form>
 
 <form asp-controller="Transaction" asp-action="Search" method="post">
 <p>Select Search Parameter</p>

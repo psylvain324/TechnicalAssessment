@@ -14,7 +14,6 @@ namespace TechnicalAssessment.Data
         public DbSet<Customer> Customers { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
         public DbSet<CurrencyViewModel> Currencies { get; set; }
-        public DbSet<UploadFile> Files { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

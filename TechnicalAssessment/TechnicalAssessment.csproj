@@ -14,6 +14,7 @@
     <PackageReference Include="EntityFramework" Version="6.3.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="3.0.0" />
+    <PackageReference Include="NUnit" Version="3.12.0" />
   </ItemGroup>
   <ItemGroup>
     <Content Remove="Views\Transactions\IndexSelect.cshtml" />
@@ -30,6 +31,11 @@
     <Content Include=".xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Remove="Models\PostModels\CustomerPostModel.cs" />
+    <Compile Remove="Models\PostModels\TransactionPostModel.cs" />
+    <Compile Remove="Models\UploadFile.cs" />
+  </ItemGroup>
+  <ItemGroup>
     <Compile Update="Properties\Resources.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -37,13 +43,13 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Test.xml" />
-    <EmbeddedResource Include="Test.csv" />
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Update="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="Views\Transactions\.DS_Store" />
+    <None Remove=".xml" />
   </ItemGroup>
 </Project>
