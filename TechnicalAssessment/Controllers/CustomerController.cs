@@ -1,7 +1,6 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using TechnicalAssessment.Data;
@@ -9,7 +8,7 @@ using TechnicalAssessment.Data;
 
 namespace TechnicalAssessment.Controllers
 {
-    [Route("Customers")]
+    [Route("Customer")]
     public class CustomerController : Controller
     {
         private readonly ILogger<TransactionController> logger;
@@ -21,7 +20,7 @@ namespace TechnicalAssessment.Controllers
             this.databaseContext = databaseContext;
         }
 
-        //GET: Customers
+        //GET: Customer
         public async Task<IActionResult> Index()
         {
             return View(await databaseContext.Customers.ToListAsync());
@@ -45,7 +44,7 @@ namespace TechnicalAssessment.Controllers
             return View(customer);
         }
 
-        // GET: Customers/Edit/{id}
+        // GET: Customer/Edit/{id}
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -61,9 +60,9 @@ namespace TechnicalAssessment.Controllers
             return View(customers);
         }
 
-        //GET Customers/Details/{search}/{field}
+        //GET Customer/Search/{search}/{field}
         [Route("{search}")]
-        public IActionResult Details(string search, string field)
+        public IActionResult Search(string search, string field)
         {
             var customers = from c in databaseContext.Customers select c;
             switch (field)

@@ -1,17 +1,17 @@
-﻿@model IEnumerable<Customer>
+﻿@model IEnumerable<TechnicalAssessment.Models.ViewModels.CustomerViewModel>
 @{
     Layout = "_Layout";
     ViewData["Title"] = "Customers";
 }
 
 <h1>Technical Assessment</h1>
-<!--<form asp-controller="Customer" asp-action="Search" method="post">
+<form asp-controller="Customer" asp-action="Search" method="post">
 <p>Select Search Parameter</p>
     <input type="radio" name="type" value="CustomerId">Customer Id
     <input type="radio" name="type" value="Email">Currency Code
     <iframe name="search" style="height:100px;width:200px;"></iframe>
     <input type="submit" value="Search" class="btn btn-default" /> |
-</form>-->
+</form>
 @if (Model.ToList().Count == 0)
 {
     <p>

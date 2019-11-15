@@ -7,7 +7,7 @@ using TechnicalAssessment.Data;
 
 namespace TechnicalAssessment.Controllers
 {
-    [Route("Transactions")]
+    [Route("Transaction")]
     public class TransactionController : Controller
     {
         private readonly ILogger<TransactionController> logger;
@@ -19,13 +19,13 @@ namespace TechnicalAssessment.Controllers
             this.databaseContext = databaseContext;
         }
 
-        //GET: Transactions
+        //GET: Transaction
         public async Task<IActionResult> Index()
         {
             return View(await databaseContext.Transactions.ToListAsync());
         }
 
-        //GET: Transactions/Details/{id}
+        //GET: Transaction/Details/{id}
         [Route("{id}")]
         public async Task<IActionResult> Details(string id)
         {
@@ -43,7 +43,7 @@ namespace TechnicalAssessment.Controllers
             return View(transaction);
         }
 
-        // GET: Transactions/Edit/{id}
+        // GET: Transaction/Edit/{id}
         [Route("{id}")]
         public async Task<IActionResult> Edit(int? id)
         {
@@ -60,9 +60,9 @@ namespace TechnicalAssessment.Controllers
             return View(transactions);
         }
 
-        //GET: Transactions/Details/{search}/{field}
+        //GET: Transaction/Search/{search}/{field}
         [Route("{search}/{field}")]
-        public IActionResult Details(string search, string field)
+        public IActionResult Search(string search, string field)
         {
             var transactions = from t in databaseContext.Transactions select t;
             switch (field)

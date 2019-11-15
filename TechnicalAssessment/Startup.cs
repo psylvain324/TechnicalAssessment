@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -60,9 +61,22 @@ namespace TechnicalAssessment
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "2C2P Take Home API V1");
             });
 
-            app.UseMvcWithDefaultRoute();
-            app.UseMvc();
+            app.UseStaticFiles();
+            app.UseMvc(routes =>
+            {
+                routes.MapRoute(
+                    name: "default",
+                    template: "{controller=Home}/{action=Index}/{id?}");
+
+                routes.MapRoute(
+                    name: "Transaction",
+                    template: "{controller=Transaction}/{action=Index}/{id?}",
+                    defaults: new { controller = "Transaction", action = "Index" }
+            );
+
+            });
             DataGenerator.Initialize(databaseContext);
         }
+
     }
 }
