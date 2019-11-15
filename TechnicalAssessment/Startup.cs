@@ -68,11 +68,13 @@ namespace TechnicalAssessment
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
 
-                routes.MapRoute(
+                /*routes.MapRoute(
                     name: "Transaction",
-                    template: "{controller=Transaction}/{action=Index}/{id?}",
-                    defaults: new { controller = "Transaction", action = "Index" }
-            );
+                    template: "{controller=Transaction}/{action=Index}/{id?}");
+
+                routes.MapRoute(
+                    name: "Customer",
+                    template: "{controller=Customer}/{action=Index}/{id?}");*/
 
             });
             DataGenerator.Initialize(databaseContext);

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace TechnicalAssessment.Controllers
 {
+    [Route("Upload")]
     public class UploadController : Controller
     {
         private readonly TransactionService transactionService;
@@ -21,6 +22,7 @@ namespace TechnicalAssessment.Controllers
         }
 
         [HttpPost]
+        [Route("/Transaction/{file}")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public ActionResult Transaction(IFormFile file)
         {

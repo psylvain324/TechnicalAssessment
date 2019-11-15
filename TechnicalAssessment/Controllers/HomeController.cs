@@ -19,16 +19,6 @@ namespace TechnicalAssessment.Controllers
             return View();
         }
 
-        public IActionResult Transactions()
-        {
-            return View(new TransactionViewModel());
-        }
-
-        public IActionResult Customers()
-        {
-            return View(new CustomerViewModel());
-        }
-
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
