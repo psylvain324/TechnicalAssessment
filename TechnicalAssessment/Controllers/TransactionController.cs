@@ -11,7 +11,7 @@ namespace TechnicalAssessment.Controllers
     public class TransactionController : Controller
     {
         private readonly ILogger<TransactionController> logger;
-        private DatabaseContext databaseContext;
+        private readonly DatabaseContext databaseContext;
 
         public TransactionController(ILogger<TransactionController> logger, DatabaseContext databaseContext)
         {
@@ -44,6 +44,7 @@ namespace TechnicalAssessment.Controllers
         }
 
         // GET: Transactions/Edit/{id}
+        [Route("{id}")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -51,7 +52,7 @@ namespace TechnicalAssessment.Controllers
                 return NotFound();
             }
 
-            var transactions = await databaseContext.Transactions.SingleOrDefaultAsync(m => m.id == id);
+            var transactions = await databaseContext.Transactions.SingleOrDefaultAsync(m => m.Id == id);
             if (transactions == null)
             {
                 return NotFound();

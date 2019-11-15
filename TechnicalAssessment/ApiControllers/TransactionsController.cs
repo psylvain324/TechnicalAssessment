@@ -16,7 +16,7 @@ namespace TechnicalAssessment.Controllers
     [ApiController]
     public class TransactionsController : Controller
     {
-        private DatabaseContext databaseContext;
+        private readonly DatabaseContext databaseContext;
 
         public TransactionsController(DatabaseContext databaseContext)
         {

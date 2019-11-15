@@ -50,6 +50,7 @@ namespace TechnicalAssessment.Data
 
             databaseContext.Transactions.Add(testTransaction);
             databaseContext.Customers.Add(testCustomer);
+            //databaseContext.Currencies.Add(currencies);
             databaseContext.SaveChanges();
         }
 
@@ -83,7 +84,7 @@ namespace TechnicalAssessment.Data
             {
                 try
                 {
-                    if (IsValidRegion(culture.TwoLetterISOLanguageName, out bool isValid))
+                    if (IsValidRegion(culture.ThreeLetterISOLanguageName, out bool isValid))
                     {
                         var region = new RegionInfo(culture.ThreeLetterISOLanguageName);
                         currencyCodes.Add(region.ISOCurrencySymbol);

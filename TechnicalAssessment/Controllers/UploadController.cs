@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Mvc;
 using TechnicalAssessment.Services;
@@ -10,8 +9,8 @@ namespace TechnicalAssessment.Controllers
 {
     public class UploadController : Controller
     {
-        private TransactionService transactionService;
-        private CustomerService customerService;
+        private readonly TransactionService transactionService;
+        private readonly CustomerService customerService;
         private readonly ILogger<UploadController> logger;
 
         public UploadController(TransactionService transactionService, CustomerService customerService, ILogger<UploadController> logger)
@@ -23,7 +22,7 @@ namespace TechnicalAssessment.Controllers
 
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult> Transaction(IFormFile file)
+        public ActionResult Transaction(IFormFile file)
         {
             if (file.Length == 0 || file.Length > 1000000)
             {
@@ -47,7 +46,7 @@ namespace TechnicalAssessment.Controllers
         }
 
         [HttpPost]
-        public ActionResult Customer(string filePath)
+        public ActionResult Customer(IFormFile file)
         {
             return View();
         }

@@ -1,12 +1,12 @@
-﻿using System.Net.Mail;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Linq;
+using System.Net.Mail;
+using System.Threading.Tasks;
 using TechnicalAssessment.Data;
 using TechnicalAssessment.Models;
-using System;
-using Microsoft.EntityFrameworkCore;
 
 namespace TechnicalAssessment.Controllers
 {
@@ -16,7 +16,7 @@ namespace TechnicalAssessment.Controllers
     [ApiController]
     public class CustomersController : Controller
     {
-        private DatabaseContext databaseContext;
+        private readonly DatabaseContext databaseContext;
 
         public CustomersController(DatabaseContext databaseContext)
         {

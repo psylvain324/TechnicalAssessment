@@ -13,7 +13,7 @@ namespace TechnicalAssessment.Controllers
     public class CustomerController : Controller
     {
         private readonly ILogger<TransactionController> logger;
-        private DatabaseContext databaseContext;
+        private readonly DatabaseContext databaseContext;
 
         public CustomerController(ILogger<TransactionController> logger, DatabaseContext databaseContext)
         {

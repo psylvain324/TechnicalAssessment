@@ -11,7 +11,7 @@ namespace TechnicalAssessment.Models
     public class Transaction
     {
         [Key]
-        public int id { get; set; }
+        public int Id { get; set; }
 
         [MaxLength(50)]
         [Required(ErrorMessage = "Amount is required")]
