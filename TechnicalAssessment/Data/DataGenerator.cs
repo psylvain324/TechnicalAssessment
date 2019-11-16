@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using TechnicalAssessment.Models;
 using TechnicalAssessment.Models.ViewModels;
 
@@ -55,19 +56,20 @@ namespace TechnicalAssessment.Data
         public static List<CurrencyViewModel> GetCurrencyViewModels()
         {
             List<CurrencyViewModel> currencyViewModels = new List<CurrencyViewModel>();
+
             var currencyDictionary = CultureInfo
-                .GetCultures(CultureTypes.AllCultures)
-                .Where(c => !c.IsNeutralCulture)
+                .GetCultures(CultureTypes.SpecificCultures)
                 .Where(ri => ri != null)
-                .ToDictionary(ri => ri.ThreeLetterISOLanguageName,
-                             (ri => ri.NumberFormat.CurrencySymbol));
+                .Distinct()
+                .ToDictionary(ri => ri.EnglishName,
+                                (ri => ri.NumberFormat.CurrencySymbol));
             foreach (KeyValuePair<string, string> entry in currencyDictionary)
             {
                 int index = 0;
                 Country country = new Country
                 {
                     CountryId = index,
-                    CountryCode = entry.Value
+                    CountryCode = entry.Key
                 };
                 Currency currency = new Currency
                 {

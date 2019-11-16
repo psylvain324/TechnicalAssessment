@@ -5,7 +5,7 @@
 
 <div>
     <h1>Technical Assessment - Upload Page</h1>
-    <form enctype="multipart/form-data">
+    <form enctype="multipart/form-data" asp-controller="Upload" asp-action="Transaction">
         <fieldset>
             <legend style="padding-top: 10px; padding-bottom: 10px;">Upload CSV or XML Transaction data</legend>
             <div style="padding-top: 10px; padding-bottom: 10px;">
@@ -16,10 +16,10 @@
             <div>
                 <div>
                     <div class="col-xs-12" style="padding: 10px;">
-                        <input name="files" type="file" onchange="checkfile(this)" />
+                        <input id="input" name="file" type="file" onchange="checkfile(this)" />
                     </div>
                     <div class="col-xs-12" style="padding: 10px;">
-                        <input type="button" value="Upload" multiple onclick="uploadFiles('files');" />
+                        <input type="button" value="Upload" onclick="uploadFiles('file');" />
                     </div>
                 </div>
             </div>
@@ -39,14 +39,10 @@ function checkfile(sender) {
     }
     else return true;
 }
-function uploadFiles(inputId) {
-    var input = document.getElementById(inputId);
-    var files = input.files;
+function uploadFiles(input) {
+    var file = document.getElementById(input);
     var formData = new FormData();
-
-    for (var i = 0; i != files.length; i++) {
-        formData.append("files", files[i]);
-    }
+    formData.append("files", file);
 
     var uploadUrl = '@Url.Action("Transaction", "Upload")';
     var redirectUrl = '@Url.Action("Index", "Transaction")';

@@ -28,10 +28,10 @@ else
                 @Html.DisplayFor(modelItem => item.CurrencyId)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Country)
+                @Html.DisplayFor(modelItem => item.Country.CountryCode)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Currency)
+                @Html.DisplayFor(modelItem => item.Currency.CurrencyCode)
             </td>
             <td>
                 <a asp-action="Details" asp-route-id="@item.Currency">Details</a> |
