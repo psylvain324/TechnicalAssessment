@@ -31,7 +31,6 @@ namespace TechnicalAssessment.Models
         public string CurrencyCode { get; set; }
 
         [DataType(DataType.DateTime)]
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MM/yyyy}{1:HH/mm}")]
         [Required(ErrorMessage = "Transaction Date is required.")]
         [XmlElement("Transaction Date")]
         [CsvHelper.Configuration.Attributes.Index(3)]
