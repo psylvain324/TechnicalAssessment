@@ -14,6 +14,7 @@
     <EmbeddedResource Remove="ApiControllers\**" />
     <EntityDeploy Remove="ApiControllers\**" />
     <None Remove="ApiControllers\**" />
+    <Compile Remove="Controllers\UploadController.cs" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,9 +1,12 @@
-﻿using System.Linq;
+﻿using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using TechnicalAssessment.Data;
+using TechnicalAssessment.Services.Interfaces;
 
 namespace TechnicalAssessment.Controllers
 {
@@ -11,22 +14,24 @@ namespace TechnicalAssessment.Controllers
     {
         private readonly ILogger<TransactionController> logger;
         private readonly DatabaseContext databaseContext;
+        private readonly IServiceUpload transactionService;
 
-        public TransactionController(ILogger<TransactionController> logger, DatabaseContext databaseContext)
+        public TransactionController(ILogger<TransactionController> logger, DatabaseContext databaseContext, IServiceUpload transactionService)
         {
             this.logger = logger;
             this.databaseContext = databaseContext;
+            this.transactionService = transactionService;
         }
 
         //GET: Transaction
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> TransactionIndex()
         {
             return View(await databaseContext.Transactions.ToListAsync().ConfigureAwait(false));
         }
 
-        //GET: Transaction/Details/{id}
-        [Route("/Details/{id}")]
-        public async Task<IActionResult> Details(string id)
+        //GET: Transaction/TransactionDetails/{id}
+        [Route("/TransactionDetails/{id}")]
+        public async Task<IActionResult> TransactionDetails(string id)
         {
             if (id == null)
             {
@@ -42,9 +47,9 @@ namespace TechnicalAssessment.Controllers
             return View(transaction);
         }
 
-        // GET: Transaction/Edit/{id}
-        [Route("/Edit/{id}")]
-        public async Task<IActionResult> Edit(int? id)
+        // GET: Transaction/TransactionEdit/{id}
+        [Route("/TransactionEdit/{id}")]
+        public async Task<IActionResult> TransactionEdit(int? id)
         {
             if (id == null)
             {
@@ -59,9 +64,9 @@ namespace TechnicalAssessment.Controllers
             return View(transactions);
         }
 
-        //GET: Transaction/Search/{search}/{field}
-        [Route("/Search/{search}/{field}")]
-        public IActionResult Search(string search, string field)
+        //GET: Transaction/TransactionSearch/{search}/{field}
+        [Route("/TransactionSearch/{search}/{field}")]
+        public IActionResult TransactionSearch(string search, string field)
         {
             var transactions = from t in databaseContext.Transactions select t;
             switch (field)
@@ -81,6 +86,32 @@ namespace TechnicalAssessment.Controllers
             }
 
             return View(transactions);
+        }
+
+        [HttpPost]
+        [Route("/UploadTransaction/{file}")]
+        public ActionResult UploadTransaction(IFormFile file)
+        {
+            if (file == null || file.Length > 1000000)
+            {
+                logger.LogInformation("Request was either Null or File Size was too large. File was: " + file.Length + " Bytes.");
+                return BadRequest();
+            }
+            var filePath = Path.GetTempFileName();
+            if (Path.GetExtension(filePath) == "csv")
+            {
+                transactionService.UploadCsv(filePath);
+            }
+            else if (Path.GetExtension(filePath) == "xml")
+            {
+                transactionService.UploadXml(filePath);
+            }
+            else
+            {
+                return BadRequest();
+            }
+
+            return RedirectToAction("TransactionIndex", "Transaction");
         }
     }
 }

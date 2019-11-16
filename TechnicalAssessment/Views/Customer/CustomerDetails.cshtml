@@ -1,0 +1,29 @@
+﻿@model Customer
+
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Customer";
+}
+
+<h2>Details</h2>
+
+<h4>Customer</h4>
+<hr />
+<table class="table">
+    <tr class="dl-horizontal">
+        <td>
+            @Html.DisplayNameFor(model => model.CustomerId)
+        </td>
+        <td>
+            @Html.DisplayFor(model => model.CustomerName)
+        </td>
+        <td>
+            @Html.DisplayFor(model => model.Email)
+        </td>
+        <td>
+            @Html.DisplayNameFor(model => model.MobileNumber)
+        </td>
+    </tr>
+    <a asp-controller="Customer" asp-action="CustomerEdit" asp-route-id="@Model.CustomerId">Edit</a> |
+    <a asp-controller="Customer" asp-action="CustomerIndex">Back to List</a>
+</table>

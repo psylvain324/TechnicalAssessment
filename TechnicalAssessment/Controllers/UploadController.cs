@@ -3,7 +3,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Mvc;
 using TechnicalAssessment.Services;
 using Microsoft.AspNetCore.Http;
-using System.Threading.Tasks;
 
 namespace TechnicalAssessment.Controllers
 {
@@ -22,9 +21,8 @@ namespace TechnicalAssessment.Controllers
         }
 
         [HttpPost]
-        [Route("/Transaction/{file}")]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public ActionResult Transaction(IFormFile file)
+        [Route("/UploadTransaction/{file}")]
+        public ActionResult UploadTransaction(IFormFile file)
         {
             if (file == null || file.Length > 1000000)
             {
@@ -49,7 +47,7 @@ namespace TechnicalAssessment.Controllers
         }
 
         [HttpPost]
-        public ActionResult Customer(IFormFile file)
+        public ActionResult UploadCustomer(IFormFile file)
         {
             return View();
         }

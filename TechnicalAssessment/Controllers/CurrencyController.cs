@@ -17,7 +17,7 @@ namespace TechnicalAssessment.Controllers
             this.databaseContext = databaseContext;
         }
         // GET: Currency
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> CurrencyIndex()
         {
             return View(await databaseContext.Currencies.ToListAsync().ConfigureAwait(false));
         }
