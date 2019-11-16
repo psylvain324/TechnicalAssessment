@@ -21,7 +21,7 @@ namespace TechnicalAssessment.Controllers
         //GET: Transaction
         public async Task<IActionResult> Index()
         {
-            return View(await databaseContext.Transactions.ToListAsync());
+            return View(await databaseContext.Transactions.ToListAsync().ConfigureAwait(false));
         }
 
         //GET: Transaction/Details/{id}
@@ -33,7 +33,7 @@ namespace TechnicalAssessment.Controllers
                 return NotFound();
             }
 
-            var transaction = await databaseContext.Transactions.FirstOrDefaultAsync();
+            var transaction = await databaseContext.Transactions.FirstOrDefaultAsync().ConfigureAwait(false);
             if (transaction == null)
             {
                 return NotFound();
@@ -51,7 +51,7 @@ namespace TechnicalAssessment.Controllers
                 return NotFound();
             }
 
-            var transactions = await databaseContext.Transactions.SingleOrDefaultAsync(m => m.Id == id);
+            var transactions = await databaseContext.Transactions.SingleOrDefaultAsync(m => m.Id == id).ConfigureAwait(false);
             if (transactions == null)
             {
                 return NotFound();

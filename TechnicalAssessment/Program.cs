@@ -1,12 +1,11 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System.IO;
 using TechnicalAssessment.Data;
 
 namespace TechnicalAssessment
 {
-    public class Program
+    public static class Program
     {
         public static void Main(string[] args)
         {

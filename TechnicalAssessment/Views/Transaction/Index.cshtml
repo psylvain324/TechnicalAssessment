@@ -8,10 +8,18 @@
 
 <form asp-controller="Transaction" asp-action="Search" method="post">
 <p>Select Search Parameter</p>
-    <input type="radio" name="type" value="TransactionId">Transaction Identificator
-    <input type="radio" name="type" value="CurrencyCode">Currency Code
-    <input type="radio" name="type" value="Status">Status
-    <iframe name="search" style="height:100px;width:200px;"></iframe>
+    <div class="form-group">
+        <input type="radio" name="type" value="TransactionId">Transaction Identificator
+        <input type="radio" name="type" value="CurrencyCode">Currency Code
+        <input type="radio" name="type" value="Status">Status
+    </div>
+    <div style="">
+        <span class="label">Search Text:</span>
+    </div>
+    <div>
+        <input type="text" class="rc" placeholder="Search">
+    </div>
+
     <input type="submit" value="Search" class="btn btn-default" /> |
 </form>
 @if (Model.ToList().Count == 0)
@@ -56,7 +64,11 @@ else
         </tr>
     }
 </table>
+    <div>
+        <input asp-action="" asp-controller="" type="button" value="Export" /> 
+    </div>
 </form>
 }
 <script language="javascript">
+
 </script>

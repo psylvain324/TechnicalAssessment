@@ -16,10 +16,10 @@
             <div>
                 <div>
                     <div class="col-xs-12" style="padding: 10px;">
-                        <input name="file" type="file" onchange="checkfile(this)" />
+                        <input name="files" type="file" onchange="checkfile(this)" />
                     </div>
                     <div class="col-xs-12" style="padding: 10px;">
-                        <input type="button" value="Create" />
+                        <input type="button" value="Upload" multiple onclick="uploadFiles('files');" />
                     </div>
                 </div>
             </div>
@@ -32,10 +32,37 @@ function checkfile(sender) {
     var fileExt = sender.value;
     fileExt = fileExt.substring(fileExt.lastIndexOf('.'));
     if (validExts.indexOf(fileExt) < 0) {
-      alert("Invalid file selected, valid files are of " +
-               validExts.toString() + " types.");
+        alert("Invalid file selected, valid files are of " +
+            validExts.toString() + " types.");
+        input.replaceWith(input.val('').clone(true));
       return false;
     }
     else return true;
+}
+function uploadFiles(inputId) {
+    var input = document.getElementById(inputId);
+    var files = input.files;
+    var formData = new FormData();
+
+    for (var i = 0; i != files.length; i++) {
+        formData.append("files", files[i]);
+    }
+
+    var uploadUrl = '@Url.Action("Transaction", "Upload")';
+    var redirectUrl = '@Url.Action("Index", "Transaction")';
+
+    $.ajax({
+        url: _url,
+        type: 'POST',
+        data: formData,
+        processData: false, 
+        contentType: false,
+        error: function () {
+            alert("There was a problem processing the files");
+        },
+        success: function () {
+            respnse.redirectUrl(redirectUrl);
+        }
+    });
 }
 </script>

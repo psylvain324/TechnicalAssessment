@@ -18,13 +18,14 @@ namespace TechnicalAssessment.Data
             {
                 return;
             }
+
             var testTransaction = new Transaction
             {
                 TransactionId = "Inv00001",
                 CurrencyCode = "TBH",
                 Amount = 100000.00,
                 Status = TransactionStatus.Approved,
-                TransactionDate = DateTime.Now.ToString(),
+                TransactionDate = DateTime.Now.ToString(CultureInfo.CurrentCulture),
                 CustomerId = 0
             };
 
@@ -41,27 +42,60 @@ namespace TechnicalAssessment.Data
                 MobileNumber = "16032862905",
                 Transactions = transactions
             };
-
-            var currencies = new CurrencyViewModel
+            var currencies = GetCurrencyViewModels();
+            foreach(CurrencyViewModel currencyViewModel in currencies)
             {
-                Countries = GetCountryCodes(),
-                CurrencyCodes = GetCurrencyCodes()
-            };
-
+                databaseContext.Add(currencyViewModel);
+            }
             databaseContext.Transactions.Add(testTransaction);
             databaseContext.Customers.Add(testCustomer);
-            //databaseContext.Currencies.Add(currencies);
             databaseContext.SaveChanges();
+        }
+
+        public static List<CurrencyViewModel> GetCurrencyViewModels()
+        {
+            List<CurrencyViewModel> currencyViewModels = new List<CurrencyViewModel>();
+            var currencyDictionary = CultureInfo
+                .GetCultures(CultureTypes.AllCultures)
+                .Where(c => !c.IsNeutralCulture)
+                .Where(ri => ri != null)
+                .ToDictionary(ri => ri.ThreeLetterISOLanguageName,
+                             (ri => ri.NumberFormat.CurrencySymbol));
+            foreach (KeyValuePair<string, string> entry in currencyDictionary)
+            {
+                int index = 0;
+                Country country = new Country
+                {
+                    CountryId = index,
+                    CountryCode = entry.Value
+                };
+                Currency currency = new Currency
+                {
+                    CurrencyId = index,
+                    CurrencyCode = entry.Value
+                };
+                currencyViewModels.Add(new CurrencyViewModel
+                {
+                    CurrencyId = index,
+                    Country = country,
+                    Currency = currency
+                });
+
+                index++;
+            }
+            return currencyViewModels;
         }
 
         public static List<Country> GetCountryCodes()
         {
             List<Country> countries = new List<Country>();
+            List<Currency> currencies = new List<Currency>();
+
             List<string> countryCodes = CultureInfo
                 .GetCultures(CultureTypes.AllCultures)
                 .Where(c => !c.IsNeutralCulture)
                 .Where(ri => ri != null)
-                .Select(ri => ri.DisplayName)
+                .Select(ri => ri.ThreeLetterISOLanguageName)
                 .ToList();
             for (int i = 0; i < countryCodes.Count; i++)
             {
@@ -71,6 +105,7 @@ namespace TechnicalAssessment.Data
                     CountryCode = countryCodes[i]
                 };
                 countries.Add(country);
+
             }
             return countries;
         }
@@ -78,23 +113,12 @@ namespace TechnicalAssessment.Data
         public static List<Currency> GetCurrencyCodes()
         {
             List<Currency> currencies = new List<Currency>();
-            List<string> currencyCodes = new List<string>();
-            var cultures = CultureInfo.GetCultures(CultureTypes.AllCultures);
-            foreach (var culture in cultures)
-            {
-                try
-                {
-                    if (IsValidRegion(culture.ThreeLetterISOLanguageName, out bool isValid))
-                    {
-                        var region = new RegionInfo(culture.ThreeLetterISOLanguageName);
-                        currencyCodes.Add(region.ISOCurrencySymbol);
-                    }
-                }
-                catch (Exception)
-                {
-                    throw new Exception();
-                }
-            }
+            List<string> currencyCodes = CultureInfo
+                .GetCultures(CultureTypes.AllCultures)
+                .Where(c => !c.IsNeutralCulture)
+                .Where(ri => ri != null)
+                .Select(ri => ri.NumberFormat.CurrencySymbol)
+                .ToList();
             for (int i = 0; i < currencyCodes.Count; i++)
             {
                 Currency currency = new Currency
@@ -102,10 +126,13 @@ namespace TechnicalAssessment.Data
                     CurrencyId = i,
                     CurrencyCode = currencyCodes[i]
                 };
+
                 currencies.Add(currency);
             }
+
             return currencies;
         }
+
         public static bool IsValidRegion(string isoCountryCode, out bool isValid)
         {
             return isValid = CultureInfo.GetCultures(CultureTypes.AllCultures)

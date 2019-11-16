@@ -4,12 +4,20 @@
     ViewData["Title"] = "Customers";
 }
 
-<h1>Technical Assessment</h1>
+<h1>Customers</h1>
 <form asp-controller="Customer" asp-action="Search" method="post">
 <p>Select Search Parameter</p>
-    <input type="radio" name="type" value="CustomerId">Customer Id
-    <input type="radio" name="type" value="Email">Currency Code
-    <iframe name="search" style="height:100px;width:200px;"></iframe>
+    <div class="form-group">
+        <input type="radio" name="type" value="CustomerId">Customer Identificator
+        <input type="radio" name="type" value="Email">Email
+    </div>
+    <div>
+        <span class="label">Search Text:</span>
+    </div>
+    <div>
+        <input type="text" placeholder="Search">
+    </div>
+
     <input type="submit" value="Search" class="btn btn-default" /> |
 </form>
 @if (Model.ToList().Count == 0)
@@ -50,6 +58,9 @@ else
         </tr>
     }
 </table>
+        <div>
+        <input asp-action="" asp-controller="" type="button" value="Export" /> 
+    </div>
 </form>
 }
 <script language="javascript">

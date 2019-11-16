@@ -26,8 +26,9 @@ namespace TechnicalAssessment.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public ActionResult Transaction(IFormFile file)
         {
-            if (file.Length == 0 || file.Length > 1000000)
+            if (file == null || file.Length > 1000000)
             {
+                logger.LogInformation("Request was either Null or File Size was too large. File was: " + file.Length + " Bytes.");
                 return BadRequest();
             }
             var filePath = Path.GetTempFileName();
@@ -44,7 +45,7 @@ namespace TechnicalAssessment.Controllers
                 return BadRequest();
             }
 
-            return RedirectPermanent("/Transaction/Index");
+            return RedirectToAction("Index", "Transaction");
         }
 
         [HttpPost]

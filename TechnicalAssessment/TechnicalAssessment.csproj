@@ -40,6 +40,7 @@
     <Folder Include="Views\Customer\" />
     <Folder Include="Services\Interfaces\" />
     <Content Include=".xml" />
+    <Folder Include="Views\Currency\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="Models\PostModels\CustomerPostModel.cs" />
