@@ -3,6 +3,9 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Xml.Serialization;
 using System.Text.Json.Serialization;
+using CsvHelper.Configuration;
+using TinyCsvParser.Mapping;
+using TinyCsvParser.TypeConverter;
 
 namespace TechnicalAssessment.Models
 {
@@ -18,29 +21,23 @@ namespace TechnicalAssessment.Models
         [MaxLength(50)]
         [Required(ErrorMessage = "Amount is required")]
         [XmlElement("Transaction Id")]
-        [CsvHelper.Configuration.Attributes.Index(0)]
         public string TransactionId { get; set; }
 
         [Required(ErrorMessage = "Amount is required")]
-        [Display(Name = "Customer Name")]
         [XmlElement("Amount")]
-        [CsvHelper.Configuration.Attributes.Index(1)]
         public double Amount { get; set; }
 
         [Required(ErrorMessage = "Currency Code is required")]
         [XmlElement("Currency Code")]
-        [CsvHelper.Configuration.Attributes.Index(2)]
         public string CurrencyCode { get; set; }
 
         [DataType(DataType.DateTime)]
         [Required(ErrorMessage = "Transaction Date is required.")]
         [XmlElement("Transaction Date")]
-        [CsvHelper.Configuration.Attributes.Index(3)]
         public string TransactionDate { get; set; }
 
         [Required(ErrorMessage = "Transaction Status is required.")]
         [XmlElement("Status")]
-        [CsvHelper.Configuration.Attributes.Index(4)]
         public TransactionStatus Status { get; set; }
 
         [ForeignKey("CustomerId")]
@@ -50,10 +47,35 @@ namespace TechnicalAssessment.Models
         public Customer Customer { get; set; }
     }
 
+    public sealed class TransactionMap : ClassMap<Transaction>
+    {
+        public TransactionMap()
+        {
+            Map(m => m.TransactionId).Index(0);
+            Map(m => m.Amount).Index(1);
+            Map(m => m.CurrencyCode).Index(2);
+            Map(m => m.TransactionDate).Index(3);
+            Map(m => m.Status).Index(4);
+        }
+    }
+
+    class CsvTransactionMapping : CsvMapping<Transaction>
+    {
+        public CsvTransactionMapping() : base()
+        {
+            MapProperty(0, x => x.TransactionId);
+            MapProperty(1, x => x.Amount);
+            MapProperty(2, x => x.CurrencyCode);
+            MapProperty(3, x => x.TransactionDate);
+            MapProperty(4, x => x.Status, new EnumConverter<TransactionStatus>());
+        }
+    }
+
     public enum TransactionStatus
     {
         Approved = 0,
         Failed = 1,
-        Finished = 2
+        Rejected = 2,
+        Finished = 3
     }
 }

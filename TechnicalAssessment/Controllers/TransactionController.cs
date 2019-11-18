@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -138,26 +139,29 @@ namespace TechnicalAssessment.Controllers
         }
 
         [HttpPost]
-        [Route("/UploadTransaction/{file}")]
-        public ActionResult UploadTransaction(IFormFile file)
+        [HttpPost, ActionName("Upload")]
+        public ActionResult UploadTransaction(List<IFormFile> files)
         {
-            if (file == null || file.Length > 1000000)
+            foreach (IFormFile file in files)
             {
-                logger.LogInformation("Request was either Null or File Size was too large. File was: " + file.Length + " Bytes.");
-                return BadRequest();
-            }
-            var filePath = Path.GetTempFileName();
-            if (Path.GetExtension(filePath) == "csv")
-            {
-                transactionService.UploadCsv(filePath);
-            }
-            else if (Path.GetExtension(filePath) == "xml")
-            {
-                transactionService.UploadXml(filePath);
-            }
-            else
-            {
-                return BadRequest();
+                if (file == null || file.Length > 1000000)
+                {
+                    logger.LogInformation("Request was either Null or File Size was too large. File was: " + file.Length + " Bytes.");
+                    return BadRequest();
+                }
+                var filePath = file.FileName;
+                if (Path.GetExtension(filePath) == ".csv")
+                {
+                    transactionService.UploadCsv(file);
+                }
+                else if (Path.GetExtension(filePath) == ".xml")
+                {
+                    transactionService.UploadXml(file);
+                }
+                else
+                {
+                    return BadRequest();
+                }
             }
 
             return RedirectToAction("TransactionIndex", "Transaction");

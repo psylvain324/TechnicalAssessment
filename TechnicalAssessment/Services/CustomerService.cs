@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Xml;
+using CsvHelper;
+using Microsoft.AspNetCore.Http;
 using TechnicalAssessment.Data;
 using TechnicalAssessment.Models;
 using TechnicalAssessment.Services.Interfaces;
@@ -17,62 +20,52 @@ namespace TechnicalAssessment.Services
             this.databaseContext = databaseContext;
         }
 
-        public void UploadCsv(string filePath)
+        public void UploadCsv(IFormFile file)
         {
-            using var streamReader = File.OpenText(filePath);
-            while (!streamReader.EndOfStream)
+            IFormatProvider provider = CultureInfo.CreateSpecificCulture(CultureInfo.CurrentCulture.ThreeLetterISOLanguageName);
+            using (var reader = new StreamReader(file.OpenReadStream()))
+            using (var csv = new CsvReader(reader))
             {
-                var line = streamReader.ReadLine();
-                var data = line.Split(new[] { ',' });
-                var transaction = new Transaction()
+                var customers = new List<Customer>();
+                csv.Read();
+                csv.ReadHeader();
+                while (csv.Read())
                 {
-                    TransactionId = data[0],
-                    Amount = double.Parse(data[1]),
-                    CurrencyCode = data[2],
-                    TransactionDate = data[3],
-                    Status = (TransactionStatus)Enum.Parse(typeof(TransactionStatus), data[4])
-                };
-                List<Transaction> transactions = new List<Transaction>();
-                transactions.Add(transaction);
-                var customer = new Customer()
-                {
-                    CustomerId = int.Parse(data[0]),
-                    CustomerName = data[1],
-                    Email = data[2],
-                    MobileNumber = data[3],
-                    Transactions = transactions
-                };
-                databaseContext.Transactions.Add(transaction);
-                databaseContext.Customers.Add(customer);
+                    var customer = new Customer
+                    {
+                        CustomerId = csv.GetField<int>("CustomerId"),
+                        CustomerName = csv.GetField<string>("CustomerName"),
+                        Email = csv.GetField<string>("Email"),
+                        MobileNumber = csv.GetField<string>("MobileNumber")
+                    };
+
+                    databaseContext.Customers.Add(customer);
+                }
             }
 
             databaseContext.SaveChanges();
         }
 
-        public void UploadXml(string filePath)
+        public void UploadXml(IFormFile file)
         {
             XmlDocument doc = new XmlDocument();
-            doc.Load(filePath);
-
+            doc.Load(file.OpenReadStream());
             XmlNodeList nodes = doc.DocumentElement.SelectNodes("/Customers/Customer");
+
             foreach (XmlNode node in nodes)
             {
-                var transactions = node.SelectNodes("/Transactions");
                 Customer customer = new Customer
                 {
-                    CustomerId = int.Parse(node.Attributes["Customer Id"].Value),
-                    CustomerName = node.SelectSingleNode("Customer Name").InnerText,
+                    CustomerId = int.Parse(node.Attributes["id"].Value),
+                    CustomerName = node.SelectSingleNode("CustomerName").InnerText,
                     Email = node.SelectSingleNode("Email").InnerText,
-                    MobileNumber = node.SelectSingleNode("Mobile Number").InnerText,
-                    Transactions = (ICollection<Transaction>)transactions
+                    MobileNumber = node.SelectSingleNode("MobileNumber").InnerText
                 };
-                foreach(Transaction transaction in transactions)
-                {
-                    databaseContext.Transactions.Add(transaction);
-                }
+
                 databaseContext.Customers.Add(customer);
             }
 
+            databaseContext.SaveChanges();
         }
     }
 }

@@ -148,14 +148,13 @@ namespace TechnicalAssessment.Controllers
                 logger.LogInformation("Request was either Null or File Size was too large. File was: " + file.Length + " Bytes.");
                 return BadRequest();
             }
-            var filePath = Path.GetTempFileName();
-            if (Path.GetExtension(filePath) == "csv")
+            if (Path.GetExtension(file.Name) == ".csv")
             {
-                customerService.UploadCsv(filePath);
+                customerService.UploadCsv(file);
             }
-            else if (Path.GetExtension(filePath) == "xml")
+            else if (Path.GetExtension(file.Name) == ".xml")
             {
-                customerService.UploadXml(filePath);
+                customerService.UploadXml(file);
             }
             else
             {

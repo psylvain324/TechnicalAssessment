@@ -2,9 +2,6 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using TechnicalAssessment.Models;
 using TechnicalAssessment.Models.ViewModels;
 

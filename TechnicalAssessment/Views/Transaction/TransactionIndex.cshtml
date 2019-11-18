@@ -16,22 +16,19 @@
                 <h5>Upload CSV or XML Transaction data</h5>
             </div>
         </div>
-        <div>
-        @using (Html.BeginForm("TransactionIndex", "Transaction", FormMethod.Post, new { enctype = "multipart/form-data" }))
-        {
-            <div>
-                <div class="col-xs-12" style="padding-top: 10px;">
-                    <input id="input" name="file" type="file" onchange="checkfile(this)" />
-                </div>
-                <br />
-                <div class="col-xs-12" style="padding-top: 5px;">
-                    <button type="submit" id="btnsubmit" onclick="SubmitButtonOnclick()">Upload Data</button>
-                </div>
-            </div>
-        }
-        </div>
     </fieldset>
 </div>
+<form action="Upload" method="post" enctype="multipart/form-data" >
+    <div>
+        <div class="col-xs-12" style="padding-top: 10px;">
+            <input type="file" name="files" onchange="checkfile(this)" />
+        </div>
+        <br />
+        <div class="col-xs-12" style="padding-top: 5px;">
+            <input type="submit" value="Upload">
+        </div>
+    </div>
+</form>
 <hr />
 <form asp-controller="Transaction" asp-action="TransactionSearch" method="post">
     <h5>Select Search Parameter</h5>
@@ -106,6 +103,7 @@ else
     </div>
 </form>
 }
+
 <script type="text/javascript" language="javascript">
 function checkfile(sender) {
     var validExts = new Array(".xml", ".csv");
@@ -118,24 +116,5 @@ function checkfile(sender) {
       return false;
     }
     else return true;
-}
-function SubmitButtonOnclick() {
-    var file = document.getElementById("file").files[0];
-    var formData = new FormData();
-    formData.append('file', file);
-
-    $.ajax({
-        url: _url,
-        type: '@Url.Action("UploadTransaction", "Upload")',
-        data: formData,
-        processData: false, 
-        contentType: false,
-        error: function () {
-            alert("There was a problem processing the files");
-        },
-        success: function () {
-            respnse.redirectUrl(redirectUrl);
-        }
-    });
 }
 </script>
