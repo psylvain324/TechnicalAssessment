@@ -1,17 +1,24 @@
 ﻿@model Customer
-
 @{
-    ViewData["Title"] = "Create";
     Layout = "_Layout";
+    ViewData["Title"] = "Edit";
 }
 
-<h2>Create</h2>
+<h2>Edit</h2>
 
-<form asp-controller="Customer" asp-action="CustomerCreate" method="post">
+<form asp-controller="Customer" asp-action="CustomerEdit">
     <div class="form-horizontal">
         <h4>Transaction</h4>
         <hr />
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input type="hidden" asp-for="CustomerId" />
+        <div class="form-group">
+            <label asp-for="CustomerId" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="CustomerId" class="form-control" />
+                <span asp-validation-for="CustomerId" class="text-danger"></span>
+            </div>
+        </div>
         <div class="form-group">
             <label asp-for="CustomerName" class="col-md-2 control-label"></label>
             <div class="col-md-10">
@@ -35,7 +42,7 @@
         </div>
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Create" class="btn btn-default" />
+                <input type="submit" value="Save" class="btn btn-default" />
             </div>
         </div>
     </div>

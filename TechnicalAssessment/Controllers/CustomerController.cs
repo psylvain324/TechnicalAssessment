@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using TechnicalAssessment.Data;
+using TechnicalAssessment.Models;
 using TechnicalAssessment.Services.Interfaces;
 
 namespace TechnicalAssessment.Controllers
@@ -48,7 +49,54 @@ namespace TechnicalAssessment.Controllers
             return View(customer);
         }
 
-        // GET: Customer/Edit/{id}
+        //GET: Customer/CustomerDelete/{id}
+        public async Task<IActionResult> CustomerDelete(int? id)
+        {
+            if (id == null)
+            {
+                return BadRequest();
+            }
+
+            var customer = await databaseContext.Customers.SingleOrDefaultAsync(m => m.CustomerId == id).ConfigureAwait(false);
+            if (customer == null)
+            {
+                return NotFound();
+            }
+
+            return View(customer);
+        }
+
+        //POST: Customer/CustomerDelete/{id}
+        [HttpPost, ActionName("CustomerDelete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CustomerDeleteConfirmed(int id)
+        {
+            var customer = await databaseContext.Customers.SingleOrDefaultAsync(m => m.CustomerId == id).ConfigureAwait(false);
+            databaseContext.Customers.Remove(customer);
+            await databaseContext.SaveChangesAsync().ConfigureAwait(false);
+            return RedirectToAction("CustomerIndex");
+        }
+
+        public IActionResult CustomerCreate()
+        {
+            return View();
+        }
+
+        //POST: Customer/CustomerCreate
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CustomerCreate(Customer customer)
+        {
+            if (ModelState.IsValid)
+            {
+                databaseContext.Customers.Add(customer);
+                await databaseContext.SaveChangesAsync().ConfigureAwait(false);
+                return RedirectToAction("CustomerIndex");
+            }
+            return View(customer);
+        }
+
+        //GET: Customer/Edit/{id}
         [Route("CustomerEdit/{id}")]
         public async Task<IActionResult> CustomerEdit(int? id)
         {
@@ -90,6 +138,7 @@ namespace TechnicalAssessment.Controllers
             return View(customers);
         }
 
+        //POST: Transaction/UploadCustomer/{file}
         [HttpPost]
         [Route("/UploadCustomer/{file}")]
         public ActionResult UploadTransaction(IFormFile file)

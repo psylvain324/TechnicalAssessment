@@ -22,6 +22,7 @@ namespace TechnicalAssessment.Data
 
             var testTransaction = new Transaction
             {
+                Id = 0,
                 TransactionId = "Inv00001",
                 CurrencyCode = "TBH",
                 Amount = 100000.00,

@@ -11,6 +11,8 @@ namespace TechnicalAssessment.Models
     public class Transaction
     {
         [Key]
+        [MaxLength(10)]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
         [MaxLength(50)]
@@ -43,7 +45,7 @@ namespace TechnicalAssessment.Models
 
         [ForeignKey("CustomerId")]
         [JsonIgnore]
-        public int CustomerId { get; set; }
+        public int? CustomerId { get; set; }
 
         public Customer Customer { get; set; }
     }

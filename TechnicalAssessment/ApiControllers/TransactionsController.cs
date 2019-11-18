@@ -8,9 +8,8 @@ using TechnicalAssessment.Data;
 using TechnicalAssessment.Models;
 using TechnicalAssessment.Models.ViewModels;
 
-namespace TechnicalAssessment.Controllers
+namespace TechnicalAssessment.ApiControllers
 {
-    //TODO - Fix These to return data for Web Api purposes
     [Produces("application/json")]
     [Route("Api/Transactions")]
     [ApiController]
@@ -28,10 +27,10 @@ namespace TechnicalAssessment.Controllers
         /// </summary>     
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [Route("/Get/All}")]
+        [Route("/Get/All")]
         public async Task<IActionResult> Transactions()
         {
-            return View(await databaseContext.Transactions.ToListAsync());
+            return View(await databaseContext.Transactions.ToListAsync().ConfigureAwait(false));
         }
 
         /// <summary>
@@ -52,7 +51,7 @@ namespace TechnicalAssessment.Controllers
             }
 
             var transaction = await databaseContext.Transactions
-                .SingleOrDefaultAsync(m => m.TransactionId == transactionId);
+                .SingleOrDefaultAsync(m => m.TransactionId == transactionId).ConfigureAwait(false);
             if (transaction == null)
             {
                 return NotFound();
@@ -79,7 +78,7 @@ namespace TechnicalAssessment.Controllers
                 return BadRequest();
             }
             var transaction = await databaseContext.Transactions
-                .SingleOrDefaultAsync(m => m.CurrencyCode == currencyCode);
+                .SingleOrDefaultAsync(m => m.CurrencyCode == currencyCode).ConfigureAwait(false);
             if (transaction == null)
             {
                 return NotFound();
@@ -108,7 +107,7 @@ namespace TechnicalAssessment.Controllers
             }
 
             var transaction = await databaseContext.Transactions
-                .SingleOrDefaultAsync(m => m.Status == transactionStatus);
+                .SingleOrDefaultAsync(m => m.Status == transactionStatus).ConfigureAwait(false);
             if (transaction == null)
             {
                 return NotFound();
@@ -133,7 +132,7 @@ namespace TechnicalAssessment.Controllers
             if (ModelState.IsValid)
             {
                 databaseContext.Add(transaction);
-                await databaseContext.SaveChangesAsync();
+                await databaseContext.SaveChangesAsync().ConfigureAwait(false);
                 return RedirectToAction(nameof(Index));
             }
             return View(transaction);
@@ -163,7 +162,7 @@ namespace TechnicalAssessment.Controllers
                 try
                 {
                     databaseContext.Update(transaction);
-                    await databaseContext.SaveChangesAsync();
+                    await databaseContext.SaveChangesAsync().ConfigureAwait(false);
                 }
                 catch (DbUpdateConcurrencyException)
                 {

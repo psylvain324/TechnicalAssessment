@@ -1,14 +1,11 @@
 ﻿@model Customer
-
 @{
-    Layout = "_Layout";
-    ViewData["Title"] = "Customer";
+    ViewData["Title"] = "Delete";
 }
 
-<h2>Details</h2>
-
-<h4>Customer</h4>
+<h2>Delete Customer</h2>
 <hr />
+<h4>Confirm Deletion of Customer Record.</h4>
 <table class="table">
     <tr>
         <th>Customer ID</th>
@@ -30,7 +27,12 @@
             @Html.DisplayNameFor(model => model.MobileNumber)
         </td>
     </tr>
-    <a asp-controller="Customer" asp-action="CustomerEdit" asp-route-id="@Model.CustomerId">Edit</a> |
-    <a asp-controller="Customer" asp-action="CustomerDelete" asp-route-id="@Model.CustomerId">Edit</a> |
-    <a asp-controller="Customer" asp-action="CustomerIndex">Back to List</a>
 </table>
+<div>
+    <form asp-controller="Customer" asp-action="CustomerDelete">
+        <div class="form-actions no-color">
+            <input type="submit" value="Delete" asp-controller="Customer" asp-action="CustomerDelete" asp-for="CustomerId" asp-route-id="@Model.CustomerId" />
+            <a asp-controller="Customer" asp-action="CustomerIndex">Back to List</a>
+        </div>
+    </form>
+</div>

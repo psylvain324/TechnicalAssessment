@@ -1,14 +1,11 @@
 ﻿@model Transaction
-
 @{
-    Layout = "_Layout";
-    ViewData["Title"] = "Transaction";
+    ViewData["Title"] = "Delete";
 }
 
-<h2>Details</h2>
-
-<h4>Transaction</h4>
+<h2>Delete Transaction</h2>
 <hr />
+<h4>Confirm Deletion of Transaction Record.</h4>
 <table class="table">
     <tr>
         <th>Transaction ID</th>
@@ -34,9 +31,12 @@
             @Html.DisplayFor(model => model.Status)
         </td>
     </tr>
-    <div>
-        <a asp-controller="Transaction" asp-action="TransactionEdit" asp-route-id="@Model.Id">Edit</a> |
-        <a asp-controller="Transaction" asp-action="TransactionDelete" asp-route-id="@Model.Id">Delete</a> |
-        <a asp-controller="Transaction" asp-action="TransactionIndex">Back to List</a>
-    </div>
 </table>
+<div> 
+    <form asp-controller="Transaction" asp-action="TransactionDelete" ty>
+        <div class="form-actions no-color">
+            <input type="submit" value="Delete" asp-controller="Transaction" asp-action="TransactionDelete" asp-route-id="@Model.Id" /> |
+            <a asp-controller="Transaction" asp-action="TransactionIndex">Back to List</a>
+        </div>
+    </form>
+</div>

@@ -8,6 +8,9 @@
     <fieldset>
         <legend style="padding-top: 10px; padding-bottom: 10px;">Transactions</legend>
         <hr />
+        <p>
+            <a asp-controller="Transaction" asp-action="TransactionCreate">Create New Transaction</a>
+        </p>
         <div style="padding-top: 10px; padding-bottom: 10px;">
             <div>
                 <h5>Upload CSV or XML Transaction data</h5>
@@ -91,8 +94,9 @@ else
                 @Html.DisplayFor(modelItem => item.Status)
             </td>
             <td>
-                <a asp-controller="Transaction" asp-action="TransactionEdit" asp-route-id="@item.TransactionId">Edit</a> |
-                <a asp-controller="Transaction" asp-action="TransactionDetails" asp-route-id="@item.TransactionId">Details</a>
+                <a asp-controller="Transaction" asp-action="TransactionEdit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-controller="Transaction" asp-action="TransactionDetails" asp-route-id="@item.TransactionId">Details</a> |
+                <a asp-controller="Transaction" asp-action="TransactionDelete" asp-route-id="@item.Id">Delete</a>
             </td>
         </tr>
     }
@@ -110,7 +114,7 @@ function checkfile(sender) {
     if (validExts.indexOf(fileExt) < 0) {
         alert("Invalid file selected, valid files are of " +
             validExts.toString() + " types.");
-        input.replaceWith(input.val('').clone(true));
+        sender.replaceWith(input.val('').clone(true));
       return false;
     }
     else return true;

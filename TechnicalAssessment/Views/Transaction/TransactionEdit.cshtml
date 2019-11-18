@@ -1,22 +1,36 @@
 ﻿@model Transaction
-
 @{
-    ViewData["Title"] = "Create";
     Layout = "_Layout";
+    ViewData["Title"] = "Edit";
 }
 
-<h2>Create</h2>
+<h2>Edit</h2>
 
-<form asp-controller="Transaction" asp-action="TransactionCreate">
+<form asp-controller="Transaction" asp-action="TransactionEdit">
     <div class="form-horizontal">
         <h4>Transaction</h4>
         <hr />
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input type="hidden" asp-for="Id" />
+        <div class="form-group">
+            <label asp-for="Id" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Id" class="form-control" />
+                <span asp-validation-for="Id" class="text-danger"></span>
+            </div>
+        </div>
         <div class="form-group">
             <label asp-for="TransactionId" class="col-md-2 control-label"></label>
             <div class="col-md-10">
                 <input asp-for="TransactionId" class="form-control" />
                 <span asp-validation-for="TransactionId" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="TransactionDate" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input type="datetime" asp-for="TransactionDate" class="form-control" />
+                <span asp-validation-for="TransactionDate" class="text-danger"></span>
             </div>
         </div>
         <div class="form-group">
@@ -34,13 +48,6 @@
             </div>
         </div>
         <div class="form-group">
-            <label asp-for="TransactionDate" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input type="datetime" asp-for="TransactionDate" class="form-control" />
-                <span asp-validation-for="TransactionDate" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="form-group">
             <label asp-for="Status" class="col-md-2 control-label"></label>
             <div class="col-md-10">
                 <select asp-for="Status">
@@ -53,14 +60,14 @@
         </div>
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Create" />
+                <input type="submit" value="Save" />
             </div>
         </div>
     </div>
 </form>
 
 <div>
-    <a asp-action="TransactionIndex" asp-controller="Transaction">Back to List</a>
+    <a asp-controller="Transaction" asp-action="TransactionIndex">Back to List</a>
 </div>
 
 @section Scripts {

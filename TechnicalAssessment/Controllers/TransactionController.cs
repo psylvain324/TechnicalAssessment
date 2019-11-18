@@ -3,9 +3,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using TechnicalAssessment.Data;
+using TechnicalAssessment.Models;
 using TechnicalAssessment.Services.Interfaces;
 
 namespace TechnicalAssessment.Controllers
@@ -44,6 +46,53 @@ namespace TechnicalAssessment.Controllers
                 return NotFound();
             }
 
+            return View(transaction);
+        }
+
+        //GET: Transaction/TransactionDelete/{id}
+        public async Task<IActionResult> TransactionDelete(int? id)
+        {
+            if (id == null)
+            {
+                return BadRequest();
+            }
+
+            var transaction = await databaseContext.Transactions.SingleOrDefaultAsync(m => m.Id == id).ConfigureAwait(false);
+            if (transaction == null)
+            {
+                return NotFound();
+            }
+
+            return View(transaction);
+        }
+
+        //POST: Transaction/TransactionDelete/{id}
+        [HttpPost, ActionName("TransactionDelete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> TransactionConfirmDelete(int id)
+        {
+            var transaction = await databaseContext.Transactions.SingleOrDefaultAsync(m => m.Id == id).ConfigureAwait(false);
+            databaseContext.Transactions.Remove(transaction);
+            await databaseContext.SaveChangesAsync().ConfigureAwait(false);
+            return RedirectToAction("TransactionIndex");
+        }
+
+        public IActionResult TransactionCreate()
+        {
+            return View();
+        }
+
+        // POST: Transaction/TransactionCreate/{transaction}
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> TransactionCreate([Bind("Id,TransactionId,TransactionDate,Amount,CurrencyCode,Status")] Transaction transaction)
+        {
+            if (ModelState.IsValid)
+            {
+                databaseContext.Transactions.Add(transaction);
+                await databaseContext.SaveChangesAsync().ConfigureAwait(false);
+                return RedirectToAction("TransactionIndex");
+            }
             return View(transaction);
         }
 

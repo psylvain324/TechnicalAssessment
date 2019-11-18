@@ -7,6 +7,10 @@
 <div>
     <fieldset>
         <legend style="padding-top: 10px; padding-bottom: 10px;">Customers</legend>
+        <hr />
+        <p>
+            <a asp-controller="Customer" asp-action="CustomerCreate">Create New Customer</a>
+        </p>
         <div style="padding-top: 10px; padding-bottom: 10px;">
             <div>
                 <h5>Upload CSV or XML Customer data</h5>
@@ -81,7 +85,8 @@ else
             </td>
             <td>
                 <a asp-controller="Customer" asp-action="CustomerEdit" asp-route-id="@item.CustomerId">Edit</a> |
-                <a asp-controller="Customer" asp-action="CustomerDetails" asp-route-id="@item.CustomerId">Details</a>
+                <a asp-controller="Customer" asp-action="CustomerDetails" asp-route-id="@item.CustomerId">Details</a> |
+                <a asp-controller="Customer" asp-action="CustomerDelete" asp-route-id="@item.CustomerId">Delete</a>
             </td>
         </tr>
     }
@@ -99,7 +104,7 @@ function checkfile(sender) {
     if (validExts.indexOf(fileExt) < 0) {
         alert("Invalid file selected, valid files are of " +
             validExts.toString() + " types.");
-        input.replaceWith(input.val('').clone(true));
+        sender.replaceWith(input.val('').clone(true));
       return false;
     }
     else return true;

@@ -1,4 +1,7 @@
+using System;
 using System.IO;
+using System.Reflection;
+using log4net;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Routing;
@@ -16,6 +19,8 @@ namespace TechnicalAssessment
 {
     public class Startup
     {
+        private static readonly ILog logger = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -23,22 +28,23 @@ namespace TechnicalAssessment
 
         public IConfiguration Configuration { get; }
 
-        public void ConfigureServices(IServiceCollection services)
+        public static void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
 
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("V1", new OpenApiInfo { Title = "2C2P Take Home API", Version = "V1" });
-                /*
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 try
                 {
                     c.IncludeXmlComments(xmlPath);
                 }
-                catch (Exception) { }
-                */
+                catch (Exception e)
+                {
+                    logger.Error(e.InnerException);
+                }
             });
 
             // For use of external database
@@ -51,7 +57,7 @@ namespace TechnicalAssessment
             services.AddScoped<IServiceUpload, TransactionService>();
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, DatabaseContext databaseContext)
+        public static void Configure(IApplicationBuilder app, IWebHostEnvironment env, DatabaseContext databaseContext)
         {
             if (env.IsDevelopment())
             {

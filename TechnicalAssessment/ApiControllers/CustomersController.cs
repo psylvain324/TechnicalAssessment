@@ -8,9 +8,8 @@ using System.Threading.Tasks;
 using TechnicalAssessment.Data;
 using TechnicalAssessment.Models;
 
-namespace TechnicalAssessment.Controllers
+namespace TechnicalAssessment.ApiControllers
 {
-    //TODO - Fix These to return data for Web Api purposes
     [Produces("application/json")]
     [Route("Api/Customers")]
     [ApiController]
@@ -31,7 +30,7 @@ namespace TechnicalAssessment.Controllers
         [Route("/Get/All")]
         public async Task<IActionResult> Customers()
         {
-            return View(await databaseContext.Customers.ToListAsync());
+            return View(await databaseContext.Customers.ToListAsync().ConfigureAwait(false));
         }
 
         /// <summary>
@@ -47,7 +46,7 @@ namespace TechnicalAssessment.Controllers
         public async Task<IActionResult> CustomerById([FromRoute] int customerId)
         {
             var customer = await databaseContext.Customers
-                .SingleOrDefaultAsync(m => m.CustomerId == customerId);
+                .SingleOrDefaultAsync(m => m.CustomerId == customerId).ConfigureAwait(false);
             if (customer == null)
             {
                 return NotFound();
@@ -76,7 +75,7 @@ namespace TechnicalAssessment.Controllers
             }
 
             var customer = await databaseContext.Customers
-                .SingleOrDefaultAsync(m => m.Email == email);
+                .SingleOrDefaultAsync(m => m.Email == email).ConfigureAwait(false);
             if (customer == null)
             {
                 return NotFound();
@@ -131,7 +130,7 @@ namespace TechnicalAssessment.Controllers
             if (ModelState.IsValid)
             {
                 databaseContext.Add(customer);
-                await databaseContext.SaveChangesAsync();
+                await databaseContext.SaveChangesAsync().ConfigureAwait(false);
                 return RedirectToAction(nameof(Index));
             }
             return View(customer);
@@ -160,7 +159,7 @@ namespace TechnicalAssessment.Controllers
                 try
                 {
                     databaseContext.Update(customer);
-                    await databaseContext.SaveChangesAsync();
+                    await databaseContext.SaveChangesAsync().ConfigureAwait(false);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
