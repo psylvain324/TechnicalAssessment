@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -8,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using TechnicalAssessment.Data;
 using TechnicalAssessment.Models;
+using TechnicalAssessment.Models.ViewModels;
 using TechnicalAssessment.Services.Interfaces;
 
 namespace TechnicalAssessment.Controllers
@@ -26,9 +28,29 @@ namespace TechnicalAssessment.Controllers
         }
 
         //GET: Transaction
-        public async Task<IActionResult> TransactionIndex()
+        public async Task<IActionResult> TransactionIndex(string sortOrder, int? pageNumber)
         {
-            return View(await databaseContext.Transactions.ToListAsync().ConfigureAwait(false));
+            ViewData["CurrencyCodeSortParm"] = string.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            ViewData["TransactionDateSortParm"] = sortOrder == "Date" ? "date_desc" : "Date";
+
+            var transactions = from t in databaseContext.Transactions select t;
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    transactions = transactions.OrderByDescending(s => s.CurrencyCode);
+                    break;
+                case "Date":
+                    transactions = transactions.OrderBy(s => s.TransactionDate);
+                    break;
+                case "date_desc":
+                    transactions = transactions.OrderByDescending(s => s.TransactionDate);
+                    break;
+                default:
+                    transactions = transactions.OrderBy(s => s.CurrencyCode);
+                    break;
+            }
+            int pageSize = 3; /*(transactions.ToList().Count / 10 + 1);*/
+            return View(await PaginatedList<Transaction>.CreateAsync(transactions.AsNoTracking(), pageNumber ?? 1, pageSize));
         }
 
         //GET: Transaction/TransactionDetails/{id}

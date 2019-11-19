@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -16,6 +17,7 @@ namespace TechnicalAssessment.Controllers
             this.logger = logger;
             this.databaseContext = databaseContext;
         }
+
         // GET: Currency
         public async Task<IActionResult> CurrencyIndex()
         {

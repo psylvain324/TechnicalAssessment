@@ -27,10 +27,65 @@ namespace TechnicalAssessment.Data
                 TransactionDate = DateTime.Now.ToString(CultureInfo.CurrentCulture),
                 CustomerId = 0
             };
+            var testTransaction2 = new Transaction
+            {
+                Id = 1,
+                TransactionId = "Inv00009",
+                CurrencyCode = "USD",
+                Amount = 500.00,
+                Status = TransactionStatus.Finished,
+                TransactionDate = DateTime.Now.ToString(CultureInfo.CurrentCulture),
+                CustomerId = 0
+            };
+            var testTransaction3 = new Transaction
+            {
+                Id = 2,
+                TransactionId = "Inv00002",
+                CurrencyCode = "SGD",
+                Amount = 750.00,
+                Status = TransactionStatus.Rejected,
+                TransactionDate = DateTime.Now.ToString(CultureInfo.CurrentCulture),
+                CustomerId = 0
+            };
+            var testTransaction4 = new Transaction
+            {
+                Id = 3,
+                TransactionId = "Inv00003",
+                CurrencyCode = "PHP",
+                Amount = 5000.00,
+                Status = TransactionStatus.Finished,
+                TransactionDate = DateTime.Now.ToString(CultureInfo.CurrentCulture),
+                CustomerId = 0
+            };
+            var testTransaction5 = new Transaction
+            {
+                Id = 4,
+                TransactionId = "Inv00004",
+                CurrencyCode = "VND",
+                Amount = 550000.00,
+                Status = TransactionStatus.Failed,
+                TransactionDate = DateTime.Now.ToString(CultureInfo.CurrentCulture),
+                CustomerId = 0
+            };
+            var testTransaction6 = new Transaction
+            {
+                Id = 5,
+                TransactionId = "Inv00005",
+                CurrencyCode = "IDR",
+                Amount = 650000.00,
+                Status = TransactionStatus.Approved,
+                TransactionDate = DateTime.Now.ToString(CultureInfo.CurrentCulture),
+                CustomerId = 0
+            };
 
             var transactions = new Transaction[]
             {
-                    testTransaction
+                    testTransaction,
+                    testTransaction2,
+                    testTransaction3,
+                    testTransaction4,
+                    testTransaction5,
+                    testTransaction6
             };
 
             var testCustomer = new Customer
@@ -46,7 +101,11 @@ namespace TechnicalAssessment.Data
             {
                 databaseContext.Add(currencyViewModel);
             }
-            databaseContext.Transactions.Add(testTransaction);
+            foreach(Transaction transaction in transactions)
+            {
+                databaseContext.Transactions.Add(transaction);
+            }
+
             databaseContext.Customers.Add(testCustomer);
             databaseContext.SaveChanges();
         }
@@ -60,7 +119,7 @@ namespace TechnicalAssessment.Data
                 .Where(ri => ri != null)
                 .Distinct()
                 .ToDictionary(ri => ri.EnglishName,
-                                (ri => ri.NumberFormat.CurrencySymbol));
+                             (ri => ri.NumberFormat.CurrencySymbol));
             foreach (KeyValuePair<string, string> entry in currencyDictionary)
             {
                 int index = 0;
