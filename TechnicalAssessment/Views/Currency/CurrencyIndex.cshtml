@@ -1,4 +1,4 @@
-﻿@model IEnumerable<TechnicalAssessment.Models.ViewModels.CurrencyViewModel>
+﻿@model List<TechnicalAssessment.Models.ViewModels.CurrencyViewModel>
 @{
     Layout = "_Layout";
     ViewData["Title"] = "Currencies";
@@ -18,7 +18,7 @@ else
 <table class="table">
     <tr>
         <th>Currency ID</th>
-        <th>Country</th>
+        <th>Country Code</th>
         <th>Currency Code</th>
     </tr>
     @foreach (var item in Model)
@@ -28,10 +28,10 @@ else
                 @Html.DisplayFor(modelItem => item.CurrencyId)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Country.CountryCode)
+                @Html.DisplayFor(modelItem => item.CountryCode)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Currency.CurrencyCode)
+                @Html.DisplayFor(modelItem => item.CurrencyCode)
             </td>
             <td>
                 <a asp-action="Details" asp-route-id="@item.Currency">Details</a> |

@@ -29,7 +29,7 @@ namespace TechnicalAssessment.Data
             };
             var testTransaction2 = new Transaction
             {
-                Id = 1,
+                Id = 2,
                 TransactionId = "Inv00009",
                 CurrencyCode = "USD",
                 Amount = 500.00,
@@ -39,7 +39,7 @@ namespace TechnicalAssessment.Data
             };
             var testTransaction3 = new Transaction
             {
-                Id = 2,
+                Id = 3,
                 TransactionId = "Inv00002",
                 CurrencyCode = "SGD",
                 Amount = 750.00,
@@ -49,7 +49,7 @@ namespace TechnicalAssessment.Data
             };
             var testTransaction4 = new Transaction
             {
-                Id = 3,
+                Id = 4,
                 TransactionId = "Inv00003",
                 CurrencyCode = "PHP",
                 Amount = 5000.00,
@@ -59,7 +59,7 @@ namespace TechnicalAssessment.Data
             };
             var testTransaction5 = new Transaction
             {
-                Id = 4,
+                Id = 5,
                 TransactionId = "Inv00004",
                 CurrencyCode = "VND",
                 Amount = 550000.00,
@@ -69,7 +69,7 @@ namespace TechnicalAssessment.Data
             };
             var testTransaction6 = new Transaction
             {
-                Id = 5,
+                Id = 6,
                 TransactionId = "Inv00005",
                 CurrencyCode = "IDR",
                 Amount = 650000.00,
@@ -105,7 +105,6 @@ namespace TechnicalAssessment.Data
             {
                 databaseContext.Transactions.Add(transaction);
             }
-
             databaseContext.Customers.Add(testCustomer);
             databaseContext.SaveChanges();
         }
@@ -114,33 +113,35 @@ namespace TechnicalAssessment.Data
         {
             List<CurrencyViewModel> currencyViewModels = new List<CurrencyViewModel>();
 
-            var currencyDictionary = CultureInfo
+            var cultures = CultureInfo
                 .GetCultures(CultureTypes.SpecificCultures)
                 .Where(ri => ri != null)
-                .Distinct()
-                .ToDictionary(ri => ri.EnglishName,
-                             (ri => ri.NumberFormat.CurrencySymbol));
-            foreach (KeyValuePair<string, string> entry in currencyDictionary)
-            {
-                int index = 0;
-                Country country = new Country
-                {
-                    CountryId = index,
-                    CountryCode = entry.Key
-                };
-                Currency currency = new Currency
-                {
-                    CurrencyId = index,
-                    CurrencyCode = entry.Value
-                };
-                currencyViewModels.Add(new CurrencyViewModel
-                {
-                    CurrencyId = index,
-                    Country = country,
-                    Currency = currency
-                });
+                .Select(ri => ri).ToList();
 
-                index++;
+            var distinctCultures = cultures.GroupBy(x => x.LCID).Select(y => y.First()).ToList();
+
+            for (int i = 1; i < distinctCultures.Count; i++)
+            {
+                if (!distinctCultures[i].Equals(CultureInfo.InvariantCulture))
+                {
+                    var regionCulture = new RegionInfo(distinctCultures[i].LCID);
+                    Country country = new Country
+                    {
+                        CountryId = i,
+                        CountryCode = regionCulture.EnglishName
+                    };
+                    Currency currency = new Currency
+                    {
+                        CurrencyId = i,
+                        CurrencyCode = regionCulture.ISOCurrencySymbol
+                    };
+                    currencyViewModels.Add(new CurrencyViewModel
+                    {
+                        CurrencyId = i,
+                        CountryCode = regionCulture.EnglishName,
+                        CurrencyCode = regionCulture.ISOCurrencySymbol
+                    });
+                }
             }
             return currencyViewModels;
         }

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TechnicalAssessment.Models.ViewModels
 {
@@ -6,6 +7,10 @@ namespace TechnicalAssessment.Models.ViewModels
     {
         [Key]
         public int CurrencyId { get; set; }
+
+        public string CountryCode { get; set; }
+
+        public string CurrencyCode { get; set; }
 
         public Country Country { get; set; }
 
