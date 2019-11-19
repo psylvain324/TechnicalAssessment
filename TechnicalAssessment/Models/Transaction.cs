@@ -4,8 +4,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Xml.Serialization;
 using System.Text.Json.Serialization;
 using CsvHelper.Configuration;
-using TinyCsvParser.Mapping;
-using TinyCsvParser.TypeConverter;
 
 namespace TechnicalAssessment.Models
 {
@@ -56,18 +54,6 @@ namespace TechnicalAssessment.Models
             Map(m => m.CurrencyCode).Index(2);
             Map(m => m.TransactionDate).Index(3);
             Map(m => m.Status).Index(4);
-        }
-    }
-
-    class CsvTransactionMapping : CsvMapping<Transaction>
-    {
-        public CsvTransactionMapping() : base()
-        {
-            MapProperty(0, x => x.TransactionId);
-            MapProperty(1, x => x.Amount);
-            MapProperty(2, x => x.CurrencyCode);
-            MapProperty(3, x => x.TransactionDate);
-            MapProperty(4, x => x.Status, new EnumConverter<TransactionStatus>());
         }
     }
 

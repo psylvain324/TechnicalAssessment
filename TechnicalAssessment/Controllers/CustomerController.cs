@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -16,12 +17,14 @@ namespace TechnicalAssessment.Controllers
     {
         private readonly ILogger<TransactionController> logger;
         private readonly DatabaseContext databaseContext;
+        private readonly IFormatProvider formatProvider;
         private IServiceUpload customerService;
 
         public CustomerController(ILogger<TransactionController> logger, DatabaseContext databaseContext, IServiceUpload customerService)
         {
             this.logger = logger;
             this.databaseContext = databaseContext;
+            formatProvider = CultureInfo.CreateSpecificCulture(CultureInfo.CurrentCulture.ThreeLetterISOLanguageName);
             this.customerService = customerService;
         }
 
@@ -117,13 +120,12 @@ namespace TechnicalAssessment.Controllers
         [Route("CustomerSearch/{search}/{field}")]
         public IActionResult CustomerSearch(string search, string field)
         {
-            CultureInfo culture = new CultureInfo(CultureInfo.CurrentCulture.Name);
             var customers = from c in databaseContext.Customers select c;
             switch (field)
             {
                 case "CustomerID":
                     customers = from c in databaseContext.Customers
-                                   where c.CustomerId == int.Parse(search, culture.NumberFormat)
+                                   where c.CustomerId == int.Parse(search, formatProvider)
                                    select c;
                     break;
                 case "Email":
@@ -143,22 +145,25 @@ namespace TechnicalAssessment.Controllers
         [Route("/UploadCustomer/{file}")]
         public ActionResult UploadTransaction(IFormFile file)
         {
-            if (file == null || file.Length > 1000000)
+            if (file != null)
             {
-                logger.LogInformation("Request was either Null or File Size was too large. File was: " + file.Length + " Bytes.");
-                return BadRequest();
-            }
-            if (Path.GetExtension(file.Name) == ".csv")
-            {
-                customerService.UploadCsv(file);
-            }
-            else if (Path.GetExtension(file.Name) == ".xml")
-            {
-                customerService.UploadXml(file);
-            }
-            else
-            {
-                return BadRequest();
+                if (file.Length > 1000000)
+                {
+                    logger.LogInformation("Request was either Null or File Size was too large. File was: " + file.Length + " Bytes.");
+                    return BadRequest();
+                }
+                if (Path.GetExtension(file.Name) == ".csv")
+                {
+                    customerService.UploadCsv(file);
+                }
+                else if (Path.GetExtension(file.Name) == ".xml")
+                {
+                    customerService.UploadXml(file);
+                }
+                else
+                {
+                    return BadRequest();
+                }
             }
 
             return RedirectToAction("CustomerIndex", "Customer");

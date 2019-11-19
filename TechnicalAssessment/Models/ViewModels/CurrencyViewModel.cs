@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace TechnicalAssessment.Models.ViewModels
 {
@@ -12,11 +10,5 @@ namespace TechnicalAssessment.Models.ViewModels
         public Country Country { get; set; }
 
         public Currency Currency { get; set; }
-
-        [JsonIgnore]
-        public List<Country> Countries { get; set; }
-
-        [JsonIgnore]
-        public List<Currency> CurrencyCodes { get; set; }
     }
 }

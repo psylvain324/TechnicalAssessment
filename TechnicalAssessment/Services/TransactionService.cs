@@ -2,83 +2,95 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.Linq;
-using System.Text;
+using System.Reflection;
 using System.Xml;
 using CsvHelper;
-using CsvHelper.TypeConversion;
+using log4net;
 using Microsoft.AspNetCore.Http;
 using TechnicalAssessment.Data;
 using TechnicalAssessment.Models;
 using TechnicalAssessment.Services.Interfaces;
-using TinyCsvParser;
 
 namespace TechnicalAssessment.Services
 {
     public class TransactionService : IServiceUpload
     {
         private DatabaseContext databaseContext;
+        private readonly IFormatProvider formatProvider;
+        private readonly ILog logger;
+
 
         public TransactionService(DatabaseContext databaseContext)
         {
             this.databaseContext = databaseContext;
+            formatProvider = CultureInfo.CreateSpecificCulture(CultureInfo.CurrentCulture.ThreeLetterISOLanguageName);
+            logger = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         }
 
         public void UploadCsv(IFormFile file)
         {
-            IFormatProvider provider = CultureInfo.CreateSpecificCulture(CultureInfo.CurrentCulture.ThreeLetterISOLanguageName);
-            using (var reader = new StreamReader(file.OpenReadStream()))
-            using (var csv = new CsvReader(reader))
+            if (file != null)
             {
-                var transactions = new List<Transaction>();
-                csv.Read();
-                csv.ReadHeader();
-                while (csv.Read())
+                try
                 {
-                    var transaction = new Transaction
+                    using (var reader = new StreamReader(file.OpenReadStream()))
+                    using (var csv = new CsvReader(reader))
                     {
-                        TransactionId = csv.GetField<string>("TransactionId"),
-                        Amount = double.Parse(csv.GetField("Amount"), provider),
-                        CurrencyCode = csv.GetField<string>("CurrencyCode"),
-                        TransactionDate = csv.GetField<string>("TransactionDate"),
-                        Status = (TransactionStatus)Enum.Parse(typeof(TransactionStatus), csv.GetField("Status"))
-                    };
+                        var transactions = new List<Transaction>();
+                        csv.Read();
+                        csv.ReadHeader();
+                        while (csv.Read())
+                        {
+                            var transaction = new Transaction
+                            {
+                                TransactionId = csv.GetField<string>("TransactionId"),
+                                Amount = double.Parse(csv.GetField("Amount"), formatProvider),
+                                CurrencyCode = csv.GetField<string>("CurrencyCode"),
+                                TransactionDate = csv.GetField<string>("TransactionDate"),
+                                Status = (TransactionStatus)Enum.Parse(typeof(TransactionStatus), csv.GetField("Status"))
+                            };
 
-                    databaseContext.Transactions.Add(transaction);
+                            databaseContext.Transactions.Add(transaction);
+                        }
+                    }
+                }
+                catch(CsvHelperException e)
+                {
+                    logger.Error(e.InnerException);
                 }
             }
-            /* TinyCsvParser
-            CsvParserOptions csvParserOptions = new CsvParserOptions(true, ',');
-            var csvParser = new CsvParser<Transaction>(csvParserOptions, new CsvTransactionMapping());
-            var records = csvParser.ReadFromFile(file.FileName, Encoding.UTF8);
-            var transactions = records.Select(x => x.Result).ToList();
 
-            foreach (var transaction in transactions)
-            {
-                databaseContext.Transactions.Add(transaction);
-            }
-            */
             databaseContext.SaveChanges();
         }
 
         public void UploadXml(IFormFile file)
         {
             XmlDocument doc = new XmlDocument();
-            doc.Load(file.OpenReadStream());
-            XmlNodeList nodes = doc.DocumentElement.SelectNodes("/Transactions/Transaction");
-
-            foreach (XmlNode node in nodes)
+            if (file != null)
             {
-                Transaction transaction = new Transaction
+                try
                 {
-                    TransactionId = node.Attributes["id"].Value,
-                    TransactionDate = node.SelectSingleNode("TransactionDate").InnerText,
-                    CurrencyCode = node.SelectSingleNode("PaymentDetails/CurrencyCode").InnerText,
-                    Amount = double.Parse(node.SelectSingleNode("PaymentDetails/Amount").InnerText),
-                    Status = (TransactionStatus)Enum.Parse(typeof(TransactionStatus), node.SelectSingleNode("Status").InnerText)
-                };
+                    doc.Load(file.OpenReadStream());
+                    XmlNodeList nodes = doc.DocumentElement.SelectNodes("/Transactions/Transaction");
 
-                databaseContext.Transactions.Add(transaction);
+                    foreach (XmlNode node in nodes)
+                    {
+                        Transaction transaction = new Transaction
+                        {
+                            TransactionId = node.Attributes["id"].Value,
+                            TransactionDate = node.SelectSingleNode("TransactionDate").InnerText,
+                            CurrencyCode = node.SelectSingleNode("PaymentDetails/CurrencyCode").InnerText,
+                            Amount = double.Parse(node.SelectSingleNode("PaymentDetails/Amount").InnerText, formatProvider),
+                            Status = (TransactionStatus)Enum.Parse(typeof(TransactionStatus), node.SelectSingleNode("Status").InnerText)
+                        };
+
+                        databaseContext.Transactions.Add(transaction);
+                    }
+                }
+                catch(XmlException e)
+                {
+                    logger.Error(e.InnerException);
+                }
             }
 
             databaseContext.SaveChanges();

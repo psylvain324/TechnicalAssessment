@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Linq;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -28,9 +26,9 @@ namespace TechnicalAssessment.ApiControllers
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [Route("/Get/All")]
-        public async Task<IActionResult> Transactions()
+        public IActionResult Transactions()
         {
-            return View(await databaseContext.Transactions.ToListAsync().ConfigureAwait(false));
+            return Ok(databaseContext.Transactions.ToList());
         }
 
         /// <summary>
@@ -42,22 +40,21 @@ namespace TechnicalAssessment.ApiControllers
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [Route("/Get/{transactionId}")]
-        public async Task<IActionResult> TransactionById([FromRoute]string transactionId)
+        [Route("/GetById/{transactionId}")]
+        public IActionResult TransactionById([FromRoute]string transactionId)
         {
             if (transactionId == null)
             {
                 return BadRequest();
             }
 
-            var transaction = await databaseContext.Transactions
-                .SingleOrDefaultAsync(m => m.TransactionId == transactionId).ConfigureAwait(false);
+            var transaction = databaseContext.Transactions.Single(m => m.TransactionId == transactionId);
             if (transaction == null)
             {
                 return NotFound();
             }
 
-            return View(transaction);
+            return Ok(transaction);
         }
 
         /// <summary>
@@ -69,22 +66,21 @@ namespace TechnicalAssessment.ApiControllers
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [Route("/CurrencyCode/{currencyCode}")]
-        public async Task<IActionResult> TransactionByCurrencyCode([FromRoute]string currencyCode)
+        [Route("/GetByCurrencyCode/{currencyCode}")]
+        public IActionResult TransactionByCurrencyCode([FromRoute]string currencyCode)
         {
             bool isValid = ValidCurrencyCode(currencyCode);
             if(isValid == false)
             {
                 return BadRequest();
             }
-            var transaction = await databaseContext.Transactions
-                .SingleOrDefaultAsync(m => m.CurrencyCode == currencyCode).ConfigureAwait(false);
+            var transaction = databaseContext.Transactions.Single(m => m.CurrencyCode == currencyCode);
             if (transaction == null)
             {
                 return NotFound();
             }
 
-            return View(transaction);
+            return Ok(transaction);
         }
 
         /// <summary>
@@ -98,22 +94,21 @@ namespace TechnicalAssessment.ApiControllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [Route("/Status/{transactionStatus}")]
-        public async Task<IActionResult> TransactionByStatus([FromRoute]TransactionStatus transactionStatus)
+        [Route("/GetByStatus/{transactionStatus}")]
+        public IActionResult TransactionByStatus([FromRoute]TransactionStatus transactionStatus)
         {
             if (transactionStatus.ToString() == null)
             {
                 return BadRequest();
             }
 
-            var transaction = await databaseContext.Transactions
-                .SingleOrDefaultAsync(m => m.Status == transactionStatus).ConfigureAwait(false);
+            var transaction = databaseContext.Transactions.Single(m => m.Status == transactionStatus);
             if (transaction == null)
             {
                 return NotFound();
             }
 
-            return View(transaction);
+            return Ok(transaction);
         }
 
         /// <summary>
@@ -127,15 +122,15 @@ namespace TechnicalAssessment.ApiControllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ValidateAntiForgeryToken]
         [Route("/Create")]
-        public async Task<IActionResult> CreateTransaction([Bind("TransactionId,Amount,CurrencyCode,TransactionDate,Status")] Transaction transaction)
+        public IActionResult CreateTransaction([Bind("TransactionId,Amount,CurrencyCode,TransactionDate,Status")] Transaction transaction)
         {
             if (ModelState.IsValid)
             {
                 databaseContext.Add(transaction);
-                await databaseContext.SaveChangesAsync().ConfigureAwait(false);
-                return RedirectToAction(nameof(Index));
+                databaseContext.SaveChangesAsync();
+                return CreatedAtRoute("Api/Transactions/Create", transaction);
             }
-            return View(transaction);
+            return BadRequest(ModelState);
         }
 
         /// <summary>
@@ -150,7 +145,7 @@ namespace TechnicalAssessment.ApiControllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ValidateAntiForgeryToken]
         [Route("/Update/{transactionId}")]
-        public async Task<IActionResult> UpdateTransactionAsync([FromRoute]string transactionId, [Bind("TransactionId,Amount,CurrencyCode,TransactionDate,Status")] Transaction transaction)
+        public IActionResult UpdateTransaction([FromRoute]string transactionId, [Bind("TransactionId,Amount,CurrencyCode,TransactionDate,Status")] Transaction transaction)
         {
             if (transactionId != transaction.TransactionId)
             {
@@ -162,19 +157,19 @@ namespace TechnicalAssessment.ApiControllers
                 try
                 {
                     databaseContext.Update(transaction);
-                    await databaseContext.SaveChangesAsync().ConfigureAwait(false);
+                    databaseContext.SaveChanges();
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (DbUpdateConcurrencyException e)
                 {
                     if (!TransactionExists(transaction.TransactionId))
                     {
                         return NotFound();
                     }
-                    throw;
+                    return BadRequest(e.InnerException);
                 }
-                return RedirectToAction(nameof(Index));
+                return CreatedAtRoute("Api/Transactions/Update/{transactionId}", transaction);
             }
-            return View(transaction);
+            return BadRequest(ModelState);
         }
 
         private bool TransactionExists(string transactionId)
@@ -188,12 +183,9 @@ namespace TechnicalAssessment.ApiControllers
             var currencyCodes = databaseContext.Currencies;
             foreach (CurrencyViewModel currencyViewModel in currencyCodes)
             {
-                foreach (Currency currency in currencyViewModel.CurrencyCodes)
+                if (currencyViewModel.Equals(currencyCode))
                 {
-                    if (currency.Equals(currencyCode))
-                    {
-                        isvalid = true;
-                    }
+                    isvalid = true;
                 }
             }
             return isvalid;

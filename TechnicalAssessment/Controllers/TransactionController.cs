@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using TechnicalAssessment.Data;
@@ -142,26 +141,34 @@ namespace TechnicalAssessment.Controllers
         [HttpPost, ActionName("Upload")]
         public ActionResult UploadTransaction(List<IFormFile> files)
         {
-            foreach (IFormFile file in files)
+            if (files != null)
             {
-                if (file == null || file.Length > 1000000)
+                foreach (IFormFile file in files)
                 {
-                    logger.LogInformation("Request was either Null or File Size was too large. File was: " + file.Length + " Bytes.");
-                    return BadRequest();
+                    if (file.Length > 1000000)
+                    {
+                        logger.LogInformation("Request File Size was too large. File was: " + file.Length + " Bytes.");
+                        return BadRequest();
+                    }
+                    var filePath = file.FileName;
+                    if (Path.GetExtension(filePath) == ".csv")
+                    {
+                        transactionService.UploadCsv(file);
+                    }
+                    else if (Path.GetExtension(filePath) == ".xml")
+                    {
+                        transactionService.UploadXml(file);
+                    }
+                    else
+                    {
+                        logger.LogInformation(Path.GetExtension(filePath) + " is not a supported format.");
+                        return BadRequest();
+                    }
                 }
-                var filePath = file.FileName;
-                if (Path.GetExtension(filePath) == ".csv")
-                {
-                    transactionService.UploadCsv(file);
-                }
-                else if (Path.GetExtension(filePath) == ".xml")
-                {
-                    transactionService.UploadXml(file);
-                }
-                else
-                {
-                    return BadRequest();
-                }
+            }
+            else
+            {
+                return BadRequest();
             }
 
             return RedirectToAction("TransactionIndex", "Transaction");

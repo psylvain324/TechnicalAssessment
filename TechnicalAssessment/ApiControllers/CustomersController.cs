@@ -1,10 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Linq;
 using System.Net.Mail;
-using System.Threading.Tasks;
 using TechnicalAssessment.Data;
 using TechnicalAssessment.Models;
 
@@ -28,9 +26,9 @@ namespace TechnicalAssessment.ApiControllers
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [Route("/Get/All")]
-        public async Task<IActionResult> Customers()
+        public IActionResult Customers()
         {
-            return View(await databaseContext.Customers.ToListAsync().ConfigureAwait(false));
+            return Ok(databaseContext.Customers.ToList());
         }
 
         /// <summary>
@@ -42,17 +40,11 @@ namespace TechnicalAssessment.ApiControllers
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [Route("/Get/{customerId}")]
-        public async Task<IActionResult> CustomerById([FromRoute] int customerId)
+        [Route("/GetById/{customerId}")]
+        public IActionResult CustomerById([FromRoute] int customerId)
         {
-            var customer = await databaseContext.Customers
-                .SingleOrDefaultAsync(m => m.CustomerId == customerId).ConfigureAwait(false);
-            if (customer == null)
-            {
-                return NotFound();
-            }
-
-            return View(customer);
+            var customer = databaseContext.Customers.Single(m => m.CustomerId == customerId);
+            return Ok(customer);
         }
 
         /// <summary>
@@ -66,22 +58,21 @@ namespace TechnicalAssessment.ApiControllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [Route("/Email/{email}")]
-        public async Task<IActionResult> CustomerByEmail([FromRoute] string email)
+        [Route("/GetByEmail/{email}")]
+        public IActionResult CustomerByEmail([FromRoute] string email)
         {
-            if (!email.Equals(typeof(MailAddress)))
+            if (email == null || !email.Equals(typeof(MailAddress)))
             {
                 return BadRequest();
             }
 
-            var customer = await databaseContext.Customers
-                .SingleOrDefaultAsync(m => m.Email == email).ConfigureAwait(false);
+            var customer = databaseContext.Customers.Single(m => m.Email == email);
             if (customer == null)
             {
                 return NotFound();
             }
 
-            return View(customer);
+            return Ok(customer);
         }
 
         /// <summary>
@@ -96,10 +87,10 @@ namespace TechnicalAssessment.ApiControllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [Route("/Get/{customerId}/{email}")]
+        [Route("/GetByIdAndEmail/{customerId}/{email}")]
         public IActionResult CustomerByIdAndEmail([FromRoute]int customerId, [FromRoute] string email)
         {
-            if (!customerId.Equals(typeof(int)) || !email.Equals(typeof(MailAddress)))
+            if (!customerId.Equals(typeof(int)) || email == null || !email.Equals(typeof(MailAddress)))
             {
                 return BadRequest();
             }
@@ -111,7 +102,7 @@ namespace TechnicalAssessment.ApiControllers
                 return NotFound();
             }
 
-            return View(customer);
+            return Ok(customer);
         }
 
         /// <summary>
@@ -125,15 +116,15 @@ namespace TechnicalAssessment.ApiControllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ValidateAntiForgeryToken]
         [Route("/Create")]
-        public async Task<IActionResult> CreateCustomer([Bind("CustomerId,CustomerName,Email,MobilePhone")] Customer customer)
+        public IActionResult CreateCustomer([Bind("CustomerId,CustomerName,Email,MobilePhone")] Customer customer)
         {
             if (ModelState.IsValid)
             {
                 databaseContext.Add(customer);
-                await databaseContext.SaveChangesAsync().ConfigureAwait(false);
-                return RedirectToAction(nameof(Index));
+                databaseContext.SaveChanges();
+                return CreatedAtRoute("Api/Customers/Create", customer);
             }
-            return View(customer);
+            return BadRequest(ModelState);
         }
 
         /// <summary>
@@ -145,13 +136,14 @@ namespace TechnicalAssessment.ApiControllers
         [HttpPatch]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
         [ValidateAntiForgeryToken]
         [Route("/Update/{customerId}")]
-        public async Task<IActionResult> UpdateCustomerAsync([FromRoute]int customerId, [Bind("CustomerId,CustomerName,Email,MobilePhone")]  Customer customer)
+        public IActionResult UpdateCustomer([FromRoute]int customerId, [Bind("CustomerId,CustomerName,Email,MobilePhone")]  Customer customer)
         {
             if (customerId != customer.CustomerId)
             {
-                return NotFound();
+                return BadRequest();
             }
 
             if (ModelState.IsValid)
@@ -159,19 +151,18 @@ namespace TechnicalAssessment.ApiControllers
                 try
                 {
                     databaseContext.Update(customer);
-                    await databaseContext.SaveChangesAsync().ConfigureAwait(false);
+                    databaseContext.SaveChanges();
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (DbUpdateConcurrencyException e)
                 {
                     if (!CustomerExists(customer.CustomerId))
                     {
-                        return NotFound();
+                        return Conflict(e.InnerException);
                     }
-                    throw;
+                    return BadRequest();
                 }
-                return RedirectToAction(nameof(Index));
             }
-            return View(customer);
+            return CreatedAtRoute("Api/Customers/Update/{customerId}", customer);
         }
 
         private bool CustomerExists(int customerId)
