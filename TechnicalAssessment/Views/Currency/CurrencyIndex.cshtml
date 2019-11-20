@@ -4,7 +4,22 @@
     ViewData["Title"] = "Currencies";
 }
  
-<h2>Currencies By Country</h2>
+<h2>Currency And Country Codes</h2>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+
+<form asp-action="CurrencyIndex" method="get">
+    <div class="form-actions no-color">
+        <p>
+            Find by name:
+            <input type="text" name="SearchString" value="@ViewData["currentFilter"]" />
+            <input type="submit" value="Search" /> |
+            <a asp-action="CurrencyIndex">Back to Full List</a>
+        </p>
+    </div>
+</form>
 
 @if (Model.ToList().Count == 0)
 {
@@ -18,9 +33,13 @@ else
 <table class="table">
     <tr>
         <th>Currency ID</th>
-        <th>Country Code</th>
-        <th>Currency Code</th>
-    </tr>
+        <th>
+            <a asp-action="CurrencyIndex" asp-route-sortOrder="@ViewData["CountrySortParm"]">Country Code</a>
+        </th>
+        <th>
+            <a asp-action="CurrencyIndex" asp-route-sortOrder="@ViewData["CurrencySortParm"]">Currency Code</a>
+        </th>
+        </tr>
     @foreach (var item in Model)
     {
         <tr>
@@ -34,7 +53,7 @@ else
                 @Html.DisplayFor(modelItem => item.CurrencyCode)
             </td>
             <td>
-                <a asp-action="Details" asp-route-id="@item.Currency">Details</a> |
+                <a asp-action="Details" asp-route-id="@item.Currency">Details</a>
             </td>
         </tr>
     }

@@ -6,12 +6,12 @@
 
 <div>
     <fieldset>
-        <legend style="padding-top: 10px; padding-bottom: 10px;">Transactions</legend>
+        <legend style="padding-top: 5px; padding-bottom: 5px;">Transactions</legend>
         <hr />
         <p>
             <a asp-controller="Transaction" asp-action="TransactionCreate">Create New Transaction</a>
         </p>
-        <div style="padding-top: 10px; padding-bottom: 10px;">
+        <div style="padding-top: 5px; padding-bottom: 5px;">
             <div>
                 <h5>Upload CSV or XML Transaction data</h5>
             </div>
@@ -30,27 +30,14 @@
     </div>
 </form>
 <hr />
-<form asp-controller="Transaction" asp-action="TransactionSearch" method="post">
-    <h5>Select Search Parameter</h5>
-    <div> 
-        <label for="Transaction Id" class="radio">
-            <input type="radio" name="rdo" id="transactionId" class="hidden"/>
-            <span class="label"></span>Transaction Id
-        </label>
-  
-        <label for="Currency Code" class="radio">
-            <input type="radio" name="rdo" id="currencyCode" class="hidden"/>
-            <span class="label"></span>Currency Code
-        </label>
-  
-        <label for="Status" class="radio">
-            <input type="radio" name="rdo" id="status" class="hidden"/>
-            <span class="label"></span>Status
-        </label>
-    </div>
-    <div style="padding-top:5px;">
-        <input style="width:300px; padding-right:20px;" type="text" class="rc" placeholder="Search">
-        <input type="submit" value="Search" class="btn btn-default" />
+<form asp-action="CurrencyIndex" method="get">
+    <div class="form-actions no-color">
+        <p>
+            Find by name:
+            <input type="text" name="SearchString" value="@ViewData["currentFilter"]" />
+            <input type="submit" value="Search" /> |
+            <a asp-action="CurrencyIndex">Back to Full List</a>
+        </p>
     </div>
 </form>
 <br />

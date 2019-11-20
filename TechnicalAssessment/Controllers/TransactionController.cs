@@ -49,7 +49,7 @@ namespace TechnicalAssessment.Controllers
                     transactions = transactions.OrderBy(s => s.CurrencyCode);
                     break;
             }
-            int pageSize = 3; /*(transactions.ToList().Count / 10 + 1);*/
+            int pageSize = 5;
             return View(await PaginatedList<Transaction>.CreateAsync(transactions.AsNoTracking(), pageNumber ?? 1, pageSize));
         }
 
