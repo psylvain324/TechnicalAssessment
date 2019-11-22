@@ -6,7 +6,7 @@
 
 <div>
     <fieldset>
-        <legend style="padding-top: 5px; padding-bottom: 5px;">Transactions</legend>
+        <legend style="padding-bottom: 5px;">Transactions</legend>
         <hr />
         <p>
             <a asp-controller="Transaction" asp-action="TransactionCreate">Create New Transaction</a>
@@ -33,7 +33,10 @@
 <form asp-action="CurrencyIndex" method="get">
     <div class="form-actions no-color">
         <p>
-            Find by name:
+            Select Search Parameter:<br />
+            <input type="radio" name="SearchParam" value="TransactionId"> Transaction Identificator
+            <input type="radio" name="SearchParam" value="CurrencyName"> Currency Name
+            <input type="radio" name="SearchParam" value="Status"> Other 
             <input type="text" name="SearchString" value="@ViewData["currentFilter"]" />
             <input type="submit" value="Search" /> |
             <a asp-action="CurrencyIndex">Back to Full List</a>
@@ -72,7 +75,9 @@ else
                 @Html.DisplayFor(modelItem => item.Amount)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.CurrencyCode)
+                <a asp-controller="Currency" asp-action="CurrencyDetails" asp-route-name="@item.CurrencyCode">
+                    @Html.DisplayFor(modelItem => item.CurrencyCode)
+                </a>
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.TransactionDate)

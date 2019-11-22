@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -64,6 +63,24 @@ namespace TechnicalAssessment.Controllers
 
             int pageSize = 10;
             return View(await PaginatedList<CurrencyViewModel>.CreateAsync(currencies.AsNoTracking(), pageNumber ?? 1, pageSize));
+        }
+
+        //GET: Currency/CurrencyDetails/{name}
+        [Route("/CurrencyDetails/{name}")]
+        public IActionResult CurrencyDetails(string name)
+        {
+            var currencies = from c in databaseContext.Currencies select c;
+            if (!string.IsNullOrEmpty(name))
+            {
+                currencies = currencies.Where(s => s.CountryCode.Equals(name));
+            }
+
+            if (currencies == null)
+            {
+                return NotFound();
+            }
+
+            return View(currencies);
         }
     }
 }

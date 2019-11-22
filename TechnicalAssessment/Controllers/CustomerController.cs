@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using TechnicalAssessment.Data;
 using TechnicalAssessment.Models;
+using TechnicalAssessment.Models.ViewModels;
 using TechnicalAssessment.Services.Interfaces;
 
 namespace TechnicalAssessment.Controllers
@@ -28,10 +29,50 @@ namespace TechnicalAssessment.Controllers
             this.customerService = customerService;
         }
 
-        //GET: Customer
-        public async Task<IActionResult> CustomerIndex()
+        // GET: Customer
+        public async Task<IActionResult> CustomerIndex(string sortOrder, string currentFilter, string searchString, int? pageNumber)
         {
-            return View(await databaseContext.Customers.ToListAsync().ConfigureAwait(false));
+            ViewData["CurrentSort"] = sortOrder;
+            ViewData["NameSortParm"] = string.IsNullOrEmpty(sortOrder) ? "name_desc" : "Name";
+            ViewData["EmailSortParm"] = string.IsNullOrEmpty(sortOrder) ? "email_desc" : "Email";
+
+            if (searchString != null)
+            {
+                pageNumber = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewData["CurrentFilter"] = searchString;
+
+            var customers = from c in databaseContext.Customers select c;
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                customers = customers.Where(s => s.CustomerName.Contains(searchString) || s.Email.Contains(searchString) || s.CustomerId.Equals(int.Parse(searchString, formatProvider)));
+            }
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    customers = customers.OrderByDescending(s => s.CustomerName);
+                    break;
+                case "Name":
+                    customers = customers.OrderBy(s => s.CustomerName);
+                    break;
+                case "email_desc":
+                    customers = customers.OrderByDescending(s => s.Email);
+                    break;
+                case "Email":
+                    customers = customers.OrderByDescending(s => s.Email);
+                    break;
+                default:
+                    customers = customers.OrderBy(s => s.CustomerId);
+                    break;
+            }
+
+            int pageSize = 5;
+            return View(await PaginatedList<Customer>.CreateAsync(customers.AsNoTracking(), pageNumber ?? 1, pageSize));
         }
 
         //GET: Customer/Details/{id}
@@ -113,30 +154,6 @@ namespace TechnicalAssessment.Controllers
             {
                 return NotFound();
             }
-            return View(customers);
-        }
-
-        //GET Customer/CustomerSearch/{search}/{field}
-        [Route("CustomerSearch/{search}/{field}")]
-        public IActionResult CustomerSearch(string search, string field)
-        {
-            var customers = from c in databaseContext.Customers select c;
-            switch (field)
-            {
-                case "CustomerID":
-                    customers = from c in databaseContext.Customers
-                                   where c.CustomerId == int.Parse(search, formatProvider)
-                                   select c;
-                    break;
-                case "Email":
-                    customers = from c in databaseContext.Customers
-                                   where c.Email == search
-                                   select c;
-                    break;
-                default:
-                    return NotFound();
-            }
-
             return View(customers);
         }
 

@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Customer>
+﻿@model TechnicalAssessment.Models.ViewModels.PaginatedList<Customer>
 @{
     Layout = "_Layout";
     ViewData["Title"] = "Customers";
@@ -6,7 +6,7 @@
 
 <div>
     <fieldset>
-        <legend style="padding-top: 5px; padding-bottom: 5px;">Customers</legend>
+        <legend style="padding-bottom: 5px;">Customers</legend>
         <hr />
         <p>
             <a asp-controller="Customer" asp-action="CustomerCreate">Create New Customer</a>
@@ -64,8 +64,12 @@ else
 <table class="table">
     <tr>
         <th>Customer ID</th>
-        <th>Customer Name</th>
-        <th>Email</th>
+        <th>
+            <a asp-action="CustomerIndex" asp-route-sortOrder="@ViewData["CurrencySortParm"]">Customer Name</a>
+        </th>
+        <th>
+            <a asp-action="CustomerIndex" asp-route-sortOrder="@ViewData["TransactionDateSortParm"]">Email</a>
+        </th>
         <th>Mobile Number</th>
     </tr>
     @foreach (var item in Model)
@@ -91,10 +95,30 @@ else
         </tr>
     }
 </table>
+@{
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+}
+
+<a asp-action="CustomerIndex"
+   asp-route-sortOrder="@ViewData["CurrentSort"]"
+   asp-route-pageNumber="@(Model.PageIndex - 1)"
+   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+   class="btn btn-default @prevDisabled">
+    Previous
+</a>
+<a asp-action="CustomerIndex"
+   asp-route-sortOrder="@ViewData["CurrentSort"]"
+   asp-route-pageNumber="@(Model.PageIndex + 1)"
+   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+   class="btn btn-default @nextDisabled">
+    Next
+</a>
     <div class="col-md-offset-2 col-md-10">
         <input asp-action="" asp-controller="" type="button" value="Export" /> 
     </div>
 </form>
+}
 }
 <script type="text/javascript" language="javascript">
 function checkfile(sender) {
@@ -108,24 +132,5 @@ function checkfile(sender) {
       return false;
     }
     else return true;
-}
-function SubmitButtonOnclick() {
-    var file = document.getElementById("file").files[0];
-    var formData = new FormData();
-    formData.append('file', file);
-
-    $.ajax({
-        url: _url,
-        type: '@Url.Action("UploadCustomer", "Customer")',
-        data: formData,
-        processData: false, 
-        contentType: false,
-        error: function () {
-            alert("There was a problem processing the files");
-        },
-        success: function () {
-            respnse.redirectUrl(redirectUrl);
-        }
-    });
 }
 </script>

@@ -159,7 +159,6 @@ namespace TechnicalAssessment.Controllers
             return View(transactions);
         }
 
-        [HttpPost]
         [HttpPost, ActionName("Upload")]
         public ActionResult UploadTransaction(List<IFormFile> files)
         {
