@@ -30,14 +30,16 @@
     </div>
 </form>
 <hr />
-<form asp-action="CurrencyIndex" method="get">
+<form asp-action="TransactionSearch" asp-controller="Transaction" method="get">
     <div class="form-actions no-color">
         <p>
-            Select Search Parameter:<br />
+            Select Search Parameter:
+            <br /><br />
             <input type="radio" name="SearchParam" value="TransactionId"> Transaction Identificator
             <input type="radio" name="SearchParam" value="CurrencyName"> Currency Name
             <input type="radio" name="SearchParam" value="Status"> Other 
             <input type="text" name="SearchString" value="@ViewData["currentFilter"]" />
+            <br /><br />
             <input type="submit" value="Search" /> |
             <a asp-action="CurrencyIndex">Back to Full List</a>
         </p>

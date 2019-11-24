@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TechnicalAssessment.Models.ViewModels
 {
+    //TODO: Refactor this Model.
     public class CurrencyViewModel
     {
         [Key]
