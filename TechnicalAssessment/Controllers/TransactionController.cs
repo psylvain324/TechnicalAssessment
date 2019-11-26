@@ -161,6 +161,11 @@ namespace TechnicalAssessment.Controllers
                                    where t.CurrencyCode == search
                                    select t;
                     break;
+                case "Status":
+                    transactions = from t in databaseContext.Transactions
+                                   where t.Status.ToString() == search
+                                   select t;
+                    break;
                 default:
                     return NotFound();
             }

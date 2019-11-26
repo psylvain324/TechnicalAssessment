@@ -81,7 +81,7 @@ namespace TechnicalAssessment.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return BadRequest();
             }
 
             var customer = await databaseContext.Customers.FirstOrDefaultAsync().ConfigureAwait(false);
@@ -146,7 +146,7 @@ namespace TechnicalAssessment.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return BadRequest();
             }
 
             var customers = await databaseContext.Customers.SingleOrDefaultAsync(m => m.CustomerId == id).ConfigureAwait(false);

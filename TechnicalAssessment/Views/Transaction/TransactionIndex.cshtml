@@ -30,26 +30,22 @@
     </div>
 </form>
 <hr />
-<form asp-action="TransactionSearch" asp-controller="Transaction" method="get">
-    <div class="form-actions no-color">
-        <p>
-            <h6>Select Search Parameter:</h6>
-            <input type="radio" name="SearchParam" value="TransactionId"> Transaction Identificator
-            <input type="radio" name="SearchParam" value="CurrencyName"> Currency Name
-            <input type="radio" name="SearchParam" value="Status"> Status 
-        </p>
-    </div>
-    <br />
-    <div>
-        <p><input type="text" name="SearchString" value="@ViewData["currentFilter"]" /></p>
-    </div>
-    <div class="form-actions no-color">
-        <p>
-            <input type="submit" value="Search" /> |
-            <a asp-action="CurrencyIndex">Back to Full List</a>
-        </p>
-    </div>
-</form>
+<div class="form-actions no-color">
+    <h6>Select Search Field:</h6><br />
+    @using (Html.BeginForm("TransactionSearch", "Transaction"))
+    {
+        @Html.RadioButton("Search", "TransactionId") <span>TransactionId</span> 
+        @Html.RadioButton("Search", "CurrencyCode") <span>Currency Code</span> 
+        @Html.RadioButton("Search", "Status") <span>Status</span><br />
+        <input type="submit" value="Search" />
+    }
+</div>
+<div class="form-actions no-color">
+    <p>
+        <input type="submit" value="Search" /> |
+        <a asp-action="CurrencyIndex">Back to Full List</a>
+    </p>
+</div>
 <br />
 @if (Model.ToList().Count == 0)
 {
@@ -119,12 +115,14 @@ else
    class="btn btn-default @nextDisabled">
     Next
 </a>
-    <div class="col-md-offset-2 col-md-10">
-        <input type="radio" name="exportParam" value="Csv" style="padding-right:10px;"> CSV File
-        <input type="radio" name="exportParam" value="Xml"> XML File
-    </div>
-    <div class="col-md-offset-2 col-md-10">
-        <input asp-action="Export" asp-controller="Transaction" type="button" value="Export" /> 
+    <div>
+    <h6>Choose Export Format to Download</h6><br />
+    @using (Html.BeginForm("Export", "Transaction"))
+    {
+        @Html.RadioButton("fileType", "Csv") <span>Csv Format</span> 
+        @Html.RadioButton("fileType", "Xml") <span>Xml Format</span><br />
+        <input type="submit" value="Export" />
+    }
     </div>
 </form>
 }
