@@ -2,11 +2,13 @@ using System;
 using System.Globalization;
 using System.IO;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using Moq;
 using OpenQA.Selenium;
+using TechnicalAssessment.Controllers;
 using TechnicalAssessment.Data;
 using TechnicalAssessment.Models;
-using TechnicalAssessment.Services;
+using TechnicalAssessment.Services.Interfaces;
 using Xunit;
 
 namespace Test
@@ -15,13 +17,16 @@ namespace Test
     {
         private readonly IWebDriver webDriver;
         private readonly DatabaseContext databaseContext;
-        private readonly TransactionService transactionService;
+        private readonly IServiceUpload<Transaction> transactionServiceUpload;
+        private readonly ILogger<TransactionController> logger;
 
-        public TransactionUnitTests(IWebDriver webDriver, DatabaseContext databaseContext, TransactionService transactionService)
+        public TransactionUnitTests(IWebDriver webDriver, DatabaseContext databaseContext, 
+            IServiceUpload<Transaction> transactionServiceUpload, ILogger<TransactionController> logger)
         {
             this.webDriver = webDriver;
             this.databaseContext = databaseContext;
-            this.transactionService = transactionService;
+            this.transactionServiceUpload = transactionServiceUpload;
+            this.logger = logger;
         }
 
         private Transaction[] GetTestTransactions()
@@ -88,7 +93,7 @@ namespace Test
             fileMock.Setup(mock => mock.ContentDisposition).Returns(string.Format("inline; filename={0}", fileName));
             var file = fileMock.Object;
 
-            transactionService.UploadCsv(file);
+            transactionServiceUpload.UploadCsv(file);
         }
     }
 }

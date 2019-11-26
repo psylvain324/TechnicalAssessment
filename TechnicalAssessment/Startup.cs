@@ -31,49 +31,23 @@ namespace TechnicalAssessment
 
         public static void ConfigureServices(IServiceCollection services)
         {
+            var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+            var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
             services.AddControllers();
             services.AddMvc();
 
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "2C2P Technical Assessment", Version = "v1" });
+                //c.IncludeXmlComments(xmlPath);
             });
 
             services.AddMvc(option => option.EnableEndpointRouting = false).AddNewtonsoftJson();
             services.AddDbContext<DatabaseContext>(options => options.UseInMemoryDatabase(databaseName: "TechnicalAssessmentDb"));
-            services.AddScoped<IServiceUpload, CustomerService>();
-            services.AddScoped<IServiceUpload, TransactionService>();
+            services.AddScoped<IServiceUpload<Customer>, CustomerUploadService>();
+            services.AddScoped<IServiceUpload<Transaction>, TransactionUploadService>();
+            services.AddScoped<IServiceExport<Transaction>, TransactionExportService>();
 
-            services.AddMvc(options =>
-            {
-                options.OutputFormatters.Insert(0, new CsvOutputFormatter());
-            });
-
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo
-                {
-                    Version = "v1",
-                    Title = "2C2P API",
-                    Description = "Extended APIs for Technical Assessment",
-                    TermsOfService = new Uri("https://example.com/terms"),
-                    Contact = new OpenApiContact
-                    {
-                        Name = "Phillip Sylvain",
-                        Email = string.Empty,
-                        Url = new Uri("https://linkedin.com/psylvain"),
-                    },
-                    License = new OpenApiLicense
-                    {
-                        Name = "Use under LICX",
-                        Url = new Uri("https://example.com/license"),
-                    }
-                });
-
-                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-                c.IncludeXmlComments(xmlPath);
-            });
             //TODO: For use of external database - Configure Azure Database
             //services.AddDbContext<DatabaseContext>(options =>
             //options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
@@ -94,7 +68,7 @@ namespace TechnicalAssessment
             app.UseSwaggerUI(c =>
             {                
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "2C2P Take Home API V1");
-                c.RoutePrefix = string.Empty;
+                //c.RoutePrefix = string.Empty;
             });
 
             app.UseMvc();

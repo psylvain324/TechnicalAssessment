@@ -19,14 +19,14 @@ namespace TechnicalAssessment.Controllers
         private readonly ILogger<TransactionController> logger;
         private readonly DatabaseContext databaseContext;
         private readonly IFormatProvider formatProvider;
-        private IServiceUpload customerService;
+        private readonly IServiceUpload<Customer> customerServiceUpload;
 
-        public CustomerController(ILogger<TransactionController> logger, DatabaseContext databaseContext, IServiceUpload customerService)
+        public CustomerController(ILogger<TransactionController> logger, DatabaseContext databaseContext, IServiceUpload<Customer> customerServiceUpload)
         {
             this.logger = logger;
             this.databaseContext = databaseContext;
             formatProvider = CultureInfo.CreateSpecificCulture(CultureInfo.CurrentCulture.ThreeLetterISOLanguageName);
-            this.customerService = customerService;
+            this.customerServiceUpload = customerServiceUpload;
         }
 
         // GET: Customer
@@ -171,11 +171,11 @@ namespace TechnicalAssessment.Controllers
                 }
                 if (Path.GetExtension(file.Name) == ".csv")
                 {
-                    customerService.UploadCsv(file);
+                    customerServiceUpload.UploadCsv(file);
                 }
                 else if (Path.GetExtension(file.Name) == ".xml")
                 {
-                    customerService.UploadXml(file);
+                    customerServiceUpload.UploadXml(file);
                 }
                 else
                 {

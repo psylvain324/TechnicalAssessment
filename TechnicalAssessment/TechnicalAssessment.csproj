@@ -21,6 +21,7 @@
     <None Remove="ApiControllers\**" />
     <Compile Remove="Controllers\UploadController.cs" />
     <Compile Remove="ApiControllers\ValuesController.cs" />
+    <Compile Remove="Models\CsvOutputFormatter.cs" />
     <None Remove="Views\.DS_Store" />
     <Compile Remove="Models\ViewModels\CsvTransactionMapping.cs" />
     <Compile Remove="Resources.Designer.cs" />
@@ -51,7 +52,6 @@
     <Folder Include="Views\Transaction\" />
     <Folder Include="Models\ViewModels\" />
     <Folder Include="Migrations\" />
-    <Folder Include="Services\" />
     <Folder Include="Views\Customer\" />
     <Folder Include="Services\Interfaces\" />
     <Content Include="TechnicalAssessment.xml" />
