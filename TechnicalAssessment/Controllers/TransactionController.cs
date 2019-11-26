@@ -1,7 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Web;
+using System.Xml;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -9,6 +12,7 @@ using Microsoft.Extensions.Logging;
 using TechnicalAssessment.Data;
 using TechnicalAssessment.Models;
 using TechnicalAssessment.Models.ViewModels;
+using TechnicalAssessment.Services;
 using TechnicalAssessment.Services.Interfaces;
 
 namespace TechnicalAssessment.Controllers
@@ -17,9 +21,9 @@ namespace TechnicalAssessment.Controllers
     {
         private readonly ILogger<TransactionController> logger;
         private readonly DatabaseContext databaseContext;
-        private readonly IServiceUpload transactionService;
+        private readonly TransactionService transactionService;
 
-        public TransactionController(ILogger<TransactionController> logger, DatabaseContext databaseContext, IServiceUpload transactionService)
+        public TransactionController(ILogger<TransactionController> logger, DatabaseContext databaseContext, TransactionService transactionService)
         {
             this.logger = logger;
             this.databaseContext = databaseContext;
@@ -198,12 +202,50 @@ namespace TechnicalAssessment.Controllers
         }
 
         [HttpPost, ActionName("Export")]
-        public ActionResult ExportTransaction(List<Transaction> transactions)
+        public ActionResult ExportTransaction(List<Transaction> transactions, string fileType)
         {
-            string fileName = "foo.csv";
-            byte[] fileBytes = null;
+            string docName = "Transactions - " + DateTime.Now;
+            string fileContentType;
+            string docPath;
+            string fileContent;
 
-            return File(fileBytes, "text/csv", fileName);
+            if (fileType == "Csv")
+            {
+                try
+                {
+                    fileContentType = "text/csv";
+                    docPath = transactionService.CsvExport(transactions, docName);
+                    fileContent = transactionService.CsvExport(transactions, docName);
+                }
+                catch (Exception e)
+                {
+                    throw e;
+                }
+            }
+            else if (fileType == "Xml")
+            {
+                XmlDocument xmlDoc = new XmlDocument();
+                try
+                {
+                    fileContentType = "text/xml";
+                    docPath = transactionService.XmlExport(transactions, docName);
+                    xmlDoc.Load(docPath);
+                    XmlNodeList nodes = xmlDoc.DocumentElement.SelectNodes("/Transactions/Transaction");
+                    fileContent = transactionService.ParseTransactionXml(nodes).ToString();
+                }
+                catch (Exception e)
+                {
+                    throw e;
+                }
+
+            }
+            else
+            {
+                logger.LogInformation("There was a problem with the Request.");
+                return BadRequest();
+            }
+
+            return File(fileContent, fileContentType, docPath);
         }
     }
 }

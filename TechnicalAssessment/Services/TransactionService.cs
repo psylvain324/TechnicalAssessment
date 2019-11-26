@@ -2,11 +2,14 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.IO.Compression;
 using System.Reflection;
 using System.Text;
 using System.Xml;
+using System.Xml.Serialization;
 using CsvHelper;
 using log4net;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using TechnicalAssessment.Data;
 using TechnicalAssessment.Models;
@@ -17,12 +20,14 @@ namespace TechnicalAssessment.Services
     public class TransactionService : IServiceUpload, IServiceExport<Transaction>
     {
         private DatabaseContext databaseContext;
+        private readonly IWebHostEnvironment environment;
         private readonly IFormatProvider formatProvider;
         private readonly ILog logger;
 
-        public TransactionService(DatabaseContext databaseContext)
+        public TransactionService(DatabaseContext databaseContext, IWebHostEnvironment environment)
         {
             this.databaseContext = databaseContext;
+            this.environment = environment;
             formatProvider = CultureInfo.CreateSpecificCulture(CultureInfo.CurrentCulture.ThreeLetterISOLanguageName);
             logger = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         }
@@ -66,24 +71,15 @@ namespace TechnicalAssessment.Services
         public void UploadXml(IFormFile file)
         {
             XmlDocument doc = new XmlDocument();
-            if (file != null && file.ContentType.Contains("xml"))
+            if (file != null && file.ContentType.Equals("xml"))
             {
                 try
                 {
                     doc.Load(file.OpenReadStream());
                     XmlNodeList nodes = doc.DocumentElement.SelectNodes("/Transactions/Transaction");
-
-                    foreach (XmlNode node in nodes)
+                    var transactions = ParseTransactionXml(nodes);
+                    foreach (Transaction transaction in transactions)
                     {
-                        Transaction transaction = new Transaction
-                        {
-                            TransactionId = node.Attributes["id"].Value,
-                            TransactionDate = node.SelectSingleNode("TransactionDate").InnerText,
-                            CurrencyCode = node.SelectSingleNode("PaymentDetails/CurrencyCode").InnerText,
-                            Amount = double.Parse(node.SelectSingleNode("PaymentDetails/Amount").InnerText, formatProvider),
-                            Status = (TransactionStatus)Enum.Parse(typeof(TransactionStatus), node.SelectSingleNode("Status").InnerText)
-                        };
-
                         databaseContext.Transactions.Add(transaction);
                     }
                 }
@@ -96,7 +92,27 @@ namespace TechnicalAssessment.Services
             databaseContext.SaveChanges();
         }
 
-        public string CsvExport(List<Transaction> transactions, string csvFile, string csvPath)
+        public List<Transaction> ParseTransactionXml(XmlNodeList xmlNodes)
+        {
+            List<Transaction> transactions = new List<Transaction>();
+            foreach (XmlNode xmlNode in xmlNodes)
+            {
+                Transaction transaction = new Transaction
+                {
+                    TransactionId = xmlNode.Attributes["id"].Value,
+                    TransactionDate = xmlNode.SelectSingleNode("TransactionDate").InnerText,
+                    CurrencyCode = xmlNode.SelectSingleNode("PaymentDetails/CurrencyCode").InnerText,
+                    Amount = double.Parse(xmlNode.SelectSingleNode("PaymentDetails/Amount").InnerText, formatProvider),
+                    Status = (TransactionStatus)Enum.Parse(typeof(TransactionStatus), xmlNode.SelectSingleNode("Status").InnerText)
+                };
+
+                transactions.Add(transaction);
+            }
+
+            return transactions;
+        }
+
+        public string CsvExport(List<Transaction> transactions, string fileName)
         {
             var csv = new StringBuilder();
             if (transactions != null)
@@ -110,9 +126,59 @@ namespace TechnicalAssessment.Services
             return csv.ToString();
         }
 
-        public void XmlExport(List<Transaction> items)
+        public string XmlExport(List<Transaction> transactions, string fileName)
         {
-            throw new NotImplementedException();
+            string directoryPath = environment.WebRootPath + "\\FileDownloads\\";
+
+            if (Directory.Exists(directoryPath) == false)
+            {
+                Directory.CreateDirectory(directoryPath);
+            }
+            string filepath = directoryPath + fileName;
+            GZipStream gzipStream = null;
+            XmlWriter xmlWriter = null;
+
+            try
+            {
+                gzipStream = new GZipStream(new FileStream(filepath, FileMode.Create), CompressionMode.Compress);
+                XmlWriterSettings xwSettings = new XmlWriterSettings { Encoding = new UTF8Encoding(true) };
+                xmlWriter = XmlWriter.Create(gzipStream, xwSettings);
+                xmlWriter.WriteStartDocument();
+                xmlWriter.WriteStartElement("Transactions");
+
+                foreach (Transaction transaction in transactions)
+                {
+                    xmlWriter.WriteStartElement("Transaction");
+                    xmlWriter.WriteElementString("TransactionId", transaction.TransactionId);
+                    xmlWriter.WriteElementString("Amount", transaction.Amount.ToString());
+                    xmlWriter.WriteElementString("CurrencyCode", transaction.CurrencyCode);
+                    xmlWriter.WriteElementString("TransactionDate", transaction.TransactionDate);
+                    xmlWriter.WriteElementString("Status", transaction.Status.ToString());
+                    xmlWriter.WriteEndElement();
+                }
+
+                xmlWriter.WriteEndElement();
+                xmlWriter.WriteEndDocument();
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+            finally
+            {
+                if (xmlWriter != null)
+                { 
+                    xmlWriter.Flush();
+                    xmlWriter.Dispose();
+                }
+                if (gzipStream != null)
+                {
+                    gzipStream.Flush();
+                    gzipStream.Dispose();
+                }
+            }
+
+            return filepath;
         }
     }
 }
