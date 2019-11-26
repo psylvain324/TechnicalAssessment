@@ -1,4 +1,4 @@
-﻿@model List<TechnicalAssessment.Models.ViewModels.CurrencyViewModel>
+﻿@model List<Currency>
 @{
     Layout = "_Layout";
     ViewData["Title"] = "Currencies";
@@ -53,7 +53,7 @@ else
                 @Html.DisplayFor(modelItem => item.CurrencyCode)
             </td>
             <td>
-                <a asp-action="Details" asp-route-id="@item.Currency">Details</a>
+                <a asp-action="Details" asp-route-id="@item.CurrencyId">Details</a>
             </td>
         </tr>
     }

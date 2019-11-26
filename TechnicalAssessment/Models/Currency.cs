@@ -7,5 +7,6 @@ namespace TechnicalAssessment.Models
         [Key]
         public int CurrencyId { get; set; }
         public string CurrencyCode { get; set; }
+        public string CountryCode { get; set; }
     }
 }

@@ -181,12 +181,9 @@ namespace TechnicalAssessment.ApiControllers
         {
             bool isvalid = false;
             var currencyCodes = databaseContext.Currencies;
-            foreach (CurrencyViewModel currencyViewModel in currencyCodes)
+            foreach (Currency currency in currencyCodes)
             {
-                if (currencyViewModel.Equals(currencyCode))
-                {
-                    isvalid = true;
-                }
+                isvalid |= currency.Equals(currencyCode);
             }
             return isvalid;
         }

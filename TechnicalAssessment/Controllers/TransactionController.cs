@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -30,13 +29,16 @@ namespace TechnicalAssessment.Controllers
         //GET: Transaction
         public async Task<IActionResult> TransactionIndex(string sortOrder, int? pageNumber)
         {
-            ViewData["CurrencyCodeSortParm"] = string.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            ViewData["CurrencyCodeSortParm"] = sortOrder =="Code" ? "code_desc" : "Code";
             ViewData["TransactionDateSortParm"] = sortOrder == "Date" ? "date_desc" : "Date";
 
             var transactions = from t in databaseContext.Transactions select t;
             switch (sortOrder)
             {
-                case "name_desc":
+                case "Code":
+                    transactions = transactions.OrderBy(s => s.CurrencyCode);
+                    break;
+                case "code_desc":
                     transactions = transactions.OrderByDescending(s => s.CurrencyCode);
                     break;
                 case "Date":
@@ -193,6 +195,15 @@ namespace TechnicalAssessment.Controllers
             }
 
             return RedirectToAction("TransactionIndex", "Transaction");
+        }
+
+        [HttpPost, ActionName("Export")]
+        public ActionResult ExportTransaction(List<Transaction> transactions)
+        {
+            string fileName = "foo.csv";
+            byte[] fileBytes = null;
+
+            return File(fileBytes, "text/csv", fileName);
         }
     }
 }

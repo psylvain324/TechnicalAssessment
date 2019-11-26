@@ -8,6 +8,11 @@
     <RunAnalyzersDuringBuild>false</RunAnalyzersDuringBuild>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);1591</NoWarn>
+</PropertyGroup>
+
   <ItemGroup>
     <Compile Remove="ApiControllers\**" />
     <Content Remove="ApiControllers\**" />
@@ -20,6 +25,8 @@
     <Compile Remove="Models\ViewModels\CsvTransactionMapping.cs" />
     <Compile Remove="Resources.Designer.cs" />
     <EmbeddedResource Remove="Resources.resx" />
+    <Compile Remove="Models\Country.cs" />
+    <Compile Remove="Models\CurrencyViewModel.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -34,10 +41,10 @@
     <PackageReference Include="NUnit3TestAdapter" Version="3.15.1" />
     <PackageReference Include="Microsoft.IdentityModel.Logging" Version="5.6.0" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="5.6.0" />
-    <PackageReference Include="Microsoft.AspNet.Identity.Owin" Version="2.2.2" />
+    <PackageReference Include="Microsoft.AspNet.Identity.Owin" Version="2.2.3" />
     <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Identity.Core" Version="3.0.0" />
-    <PackageReference Include="Microsoft.AspNet.Identity.Core" Version="2.2.2" />
+    <PackageReference Include="Microsoft.AspNet.Identity.Core" Version="2.2.3" />
   </ItemGroup>
   <ItemGroup>
     <Content Remove="Views\Transaction\IndexSelect.cshtml" />
@@ -50,7 +57,7 @@
     <Folder Include="Services\" />
     <Folder Include="Views\Customer\" />
     <Folder Include="Services\Interfaces\" />
-    <Content Include=".xml" />
+    <Content Include="TechnicalAssessment.xml" />
     <Folder Include="Views\Currency\" />
     <Folder Include="ApiControllers\" />
   </ItemGroup>

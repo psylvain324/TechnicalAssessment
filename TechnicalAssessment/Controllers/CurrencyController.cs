@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using TechnicalAssessment.Data;
+using TechnicalAssessment.Models;
 using TechnicalAssessment.Models.ViewModels;
 
 namespace TechnicalAssessment.Controllers
@@ -62,17 +63,17 @@ namespace TechnicalAssessment.Controllers
             }
 
             int pageSize = 10;
-            return View(await PaginatedList<CurrencyViewModel>.CreateAsync(currencies.AsNoTracking(), pageNumber ?? 1, pageSize));
+            return View(await PaginatedList<Currency>.CreateAsync(currencies.AsNoTracking(), pageNumber ?? 1, pageSize));
         }
 
         //GET: Currency/CurrencyDetails/{name}
-        [Route("/CurrencyDetails/{name}")]
-        public IActionResult CurrencyDetails(string name)
+        [Route("/CurrencyDetailsByCurrencyCode/{code}")]
+        public IActionResult CurrencyDetailsByCurrencyCode(string code)
         {
             var currencies = from c in databaseContext.Currencies select c;
-            if (!string.IsNullOrEmpty(name))
+            if (!string.IsNullOrEmpty(code))
             {
-                currencies = currencies.Where(s => s.CountryCode.Equals(name));
+                currencies = currencies.Where(s => s.CountryCode.Equals(code));
             }
 
             if (currencies == null)
@@ -80,6 +81,79 @@ namespace TechnicalAssessment.Controllers
                 return NotFound();
             }
 
+            return View(currencies);
+        }
+
+        //GET: Currency/CurrencyDetails/{id}
+        [Route("/CurrencyDetails/{id}")]
+        public async Task<IActionResult> CurrencyDetails(int id)
+        {
+            var currencies = from c in databaseContext.Currencies select c;
+            var currency = await currencies.Where(s => s.CurrencyId.Equals(id)).FirstOrDefaultAsync().ConfigureAwait(false);
+            return View(currency);
+        }
+
+        //GET: Currency/CurrencyDelete/{id}
+        public async Task<IActionResult> CurrencyDelete(int? id)
+        {
+            if (id == null)
+            {
+                return BadRequest();
+            }
+
+            var currency = await databaseContext.Currencies.SingleOrDefaultAsync(m => m.CurrencyId == id).ConfigureAwait(false);
+            if (currency == null)
+            {
+                return NotFound();
+            }
+
+            return View(currency);
+        }
+
+        //POST: Currency/CurrencyDelete/{id}
+        [HttpPost, ActionName("CurrencyDelete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CurrencyConfirmDelete(int id)
+        {
+            var currency = await databaseContext.Currencies.SingleOrDefaultAsync(m => m.CurrencyId == id).ConfigureAwait(false);
+            databaseContext.Currencies.Remove(currency);
+            await databaseContext.SaveChangesAsync().ConfigureAwait(false);
+            return RedirectToAction("CurrencyIndex");
+        }
+
+        public IActionResult CurrencyCreate()
+        {
+            return View();
+        }
+
+        // POST: Currency/CurrencyCreate/{currency}
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CurrencyCreate([Bind("CurrencyId,CurrencyCode,CountryCode")] Currency currency)
+        {
+            if (ModelState.IsValid)
+            {
+                databaseContext.Currencies.Add(currency);
+                await databaseContext.SaveChangesAsync().ConfigureAwait(false);
+                return RedirectToAction("CurrencyIndex");
+            }
+            return View(currency);
+        }
+
+        // GET: Currency/CurrencyEdit/{id}
+        [Route("/CurrenctEdit/{id}")]
+        public async Task<IActionResult> CurrencyEdit(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var currencies = await databaseContext.Currencies.SingleOrDefaultAsync(m => m.CurrencyId == id).ConfigureAwait(false);
+            if (currencies == null)
+            {
+                return NotFound();
+            }
             return View(currencies);
         }
     }

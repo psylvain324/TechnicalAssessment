@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using TechnicalAssessment.Models;
-using TechnicalAssessment.Models.ViewModels;
 
 namespace TechnicalAssessment.Data
 {
@@ -97,9 +96,9 @@ namespace TechnicalAssessment.Data
                 Transactions = transactions
             };
             var currencies = GetCurrencyViewModels();
-            foreach(CurrencyViewModel currencyViewModel in currencies)
+            foreach(Currency currency in currencies)
             {
-                databaseContext.Add(currencyViewModel);
+                databaseContext.Add(currency);
             }
             foreach(Transaction transaction in transactions)
             {
@@ -109,9 +108,9 @@ namespace TechnicalAssessment.Data
             databaseContext.SaveChanges();
         }
 
-        public static List<CurrencyViewModel> GetCurrencyViewModels()
+        public static List<Currency> GetCurrencyViewModels()
         {
-            List<CurrencyViewModel> currencyViewModels = new List<CurrencyViewModel>();
+            List<Currency> currencies = new List<Currency>();
 
             var cultures = CultureInfo
                 .GetCultures(CultureTypes.SpecificCultures)
@@ -125,30 +124,21 @@ namespace TechnicalAssessment.Data
                 if (!distinctCultures[i].Equals(CultureInfo.InvariantCulture))
                 {
                     var regionCulture = new RegionInfo(distinctCultures[i].LCID);
-                    Country country = new Country
-                    {
-                        CountryId = i,
-                        CountryCode = regionCulture.EnglishName
-                    };
                     Currency currency = new Currency
                     {
                         CurrencyId = i,
-                        CurrencyCode = regionCulture.ISOCurrencySymbol
+                        CurrencyCode = regionCulture.ISOCurrencySymbol,
+                        CountryCode = regionCulture.EnglishName
                     };
-                    currencyViewModels.Add(new CurrencyViewModel
-                    {
-                        CurrencyId = i,
-                        CountryCode = regionCulture.EnglishName,
-                        CurrencyCode = regionCulture.ISOCurrencySymbol
-                    });
+                    currencies.Add(currency);
                 }
             }
-            return currencyViewModels;
+            return currencies;
         }
 
-        public static List<Country> GetCountryCodes()
+        public static List<string> GetCountryCodes()
         {
-            List<Country> countries = new List<Country>();
+            List<string> countries = new List<string>();
             List<Currency> currencies = new List<Currency>();
 
             List<string> countryCodes = CultureInfo
@@ -159,12 +149,7 @@ namespace TechnicalAssessment.Data
                 .ToList();
             for (int i = 0; i < countryCodes.Count; i++)
             {
-                Country country = new Country
-                {
-                    CountryId = i,
-                    CountryCode = countryCodes[i]
-                };
-                countries.Add(country);
+                countries.Add(countryCodes[i]);
 
             }
             return countries;

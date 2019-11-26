@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Reflection;
+using System.Text;
 using System.Xml;
 using CsvHelper;
 using log4net;
@@ -13,12 +14,11 @@ using TechnicalAssessment.Services.Interfaces;
 
 namespace TechnicalAssessment.Services
 {
-    public class TransactionService : IServiceUpload
+    public class TransactionService : IServiceUpload, IServiceExport<Transaction>
     {
         private DatabaseContext databaseContext;
         private readonly IFormatProvider formatProvider;
         private readonly ILog logger;
-
 
         public TransactionService(DatabaseContext databaseContext)
         {
@@ -29,7 +29,7 @@ namespace TechnicalAssessment.Services
 
         public void UploadCsv(IFormFile file)
         {
-            if (file != null)
+            if (file != null && file.ContentType.Contains("csv"))
             {
                 try
                 {
@@ -66,7 +66,7 @@ namespace TechnicalAssessment.Services
         public void UploadXml(IFormFile file)
         {
             XmlDocument doc = new XmlDocument();
-            if (file != null)
+            if (file != null && file.ContentType.Contains("xml"))
             {
                 try
                 {
@@ -94,6 +94,25 @@ namespace TechnicalAssessment.Services
             }
 
             databaseContext.SaveChanges();
+        }
+
+        public string CsvExport(List<Transaction> transactions, string csvFile, string csvPath)
+        {
+            var csv = new StringBuilder();
+            if (transactions != null)
+            {
+                foreach (Transaction transaction in transactions)
+                {
+                    csv.AppendLine(string.Join(",", transaction));
+                }
+
+            }
+            return csv.ToString();
+        }
+
+        public void XmlExport(List<Transaction> items)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -1,16 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Hosting;
+using TechnicalAssessment.Models;
 
 namespace TechnicalAssessment.Services.Interfaces
 {
-    public interface IRepositoryWithCommandsQueries
+    public interface ITransactionRepositoryWithCommandsQueries
     {
-        IEnumerable<T> Get<T>(T query) where T : IQueryHandler<IEnumerable<T>>;
-        Task<IEnumerable<T>> GetAsync<T>(T query) where T : IQueryHandlerAsync<IEnumerable<T>>;
-        //T GetSingle<T>(T query) where T : IQueryHandler<T>;
-        //Task<T> GetSingleAsync<T>(T query) where T : IQueryHandlerAsync<Host>;
+        IEnumerable<Transaction> Get<T>(T query) where T : IQueryHandler<IEnumerable<Transaction>>;
+        Task<IEnumerable<Transaction>> GetAsync<T>(T query) where T : IQueryHandlerAsync<IEnumerable<Transaction>>;
+        Transaction GetSingle<T>(T query) where T : IQueryHandler<Transaction>;
+        Task<Transaction> GetSingleAsync<T>(T query) where T : IQueryHandlerAsync<Transaction>;
         int Execute<T>(T command) where T : ICommandHandler<int>;
         Task<int> ExecuteAsync<T>(T command) where T : ICommandHandlerAsync<int>;
     }
