@@ -13,13 +13,13 @@ using TechnicalAssessment.Services.Interfaces;
 
 namespace TechnicalAssessment.Services
 {
-    public class CustomerService : IServiceUpload
+    public class CustomerUploadService : IServiceUpload<Customer>
     {
         private DatabaseContext databaseContext;
         private readonly IFormatProvider formatProvider;
         private readonly ILog logger;
 
-        public CustomerService(DatabaseContext databaseContext)
+        public CustomerUploadService(DatabaseContext databaseContext)
         {
             this.databaseContext = databaseContext;
             formatProvider = CultureInfo.CreateSpecificCulture(CultureInfo.CurrentCulture.ThreeLetterISOLanguageName);
@@ -69,18 +69,11 @@ namespace TechnicalAssessment.Services
                 doc.Load(file.OpenReadStream());
                 try
                 {
+                    doc.Load(file.OpenReadStream());
                     XmlNodeList nodes = doc.DocumentElement.SelectNodes("/Customers/Customer");
-
-                    foreach (XmlNode node in nodes)
+                    var customers = ParseXmlNodes(nodes);
+                    foreach (Customer customer in customers)
                     {
-                        Customer customer = new Customer
-                        {
-                            CustomerId = int.Parse(node.Attributes["id"].Value, formatProvider),
-                            CustomerName = node.SelectSingleNode("CustomerName").InnerText,
-                            Email = node.SelectSingleNode("Email").InnerText,
-                            MobileNumber = node.SelectSingleNode("MobileNumber").InnerText
-                        };
-
                         databaseContext.Customers.Add(customer);
                     }
                 }
@@ -91,6 +84,25 @@ namespace TechnicalAssessment.Services
             }
 
             databaseContext.SaveChanges();
+        }
+
+        public List<Customer> ParseXmlNodes(XmlNodeList xmlNodes)
+        {
+            List<Customer> customers = new List<Customer>();
+            foreach (XmlNode xmlNode in xmlNodes)
+            {
+                Customer customer = new Customer
+                {
+                    CustomerId = int.Parse(xmlNode.Attributes["id"].Value, formatProvider),
+                    CustomerName = xmlNode.SelectSingleNode("CustomerName").InnerText,
+                    Email = xmlNode.SelectSingleNode("Email").InnerText,
+                    MobileNumber = xmlNode.SelectSingleNode("MobileNumber").InnerText
+                };
+
+                customers.Add(customer);
+            }
+
+            return customers;
         }
     }
 }

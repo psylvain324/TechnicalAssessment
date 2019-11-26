@@ -17,14 +17,15 @@ namespace Test
     {
         private readonly IWebDriver webDriver;
         private readonly DatabaseContext databaseContext;
-        private readonly IServiceUpload transactionService;
+        private readonly IServiceUpload<Transaction> transactionServiceUpload;
         private readonly ILogger<TransactionController> logger;
 
-        public TransactionUnitTests(IWebDriver webDriver, DatabaseContext databaseContext, IServiceUpload transactionService, ILogger<TransactionController> logger)
+        public TransactionUnitTests(IWebDriver webDriver, DatabaseContext databaseContext, 
+            IServiceUpload<Transaction> transactionServiceUpload, ILogger<TransactionController> logger)
         {
             this.webDriver = webDriver;
             this.databaseContext = databaseContext;
-            this.transactionService = transactionService;
+            this.transactionServiceUpload = transactionServiceUpload;
             this.logger = logger;
         }
 

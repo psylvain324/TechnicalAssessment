@@ -21,13 +21,16 @@ namespace TechnicalAssessment.Controllers
     {
         private readonly ILogger<TransactionController> logger;
         private readonly DatabaseContext databaseContext;
-        private readonly TransactionService transactionService;
+        private readonly IServiceUpload<Transaction> transactionUploadService;
+        private readonly IServiceExport<Transaction> transactionExportService;
 
-        public TransactionController(ILogger<TransactionController> logger, DatabaseContext databaseContext, TransactionService transactionService)
+        public TransactionController(ILogger<TransactionController> logger, DatabaseContext databaseContext, 
+            IServiceUpload<Transaction> transactionUploadService, IServiceExport<Transaction> transactionExportService)
         {
             this.logger = logger;
             this.databaseContext = databaseContext;
-            this.transactionService = transactionService;
+            this.transactionUploadService = transactionUploadService;
+            this.transactionExportService = transactionExportService;
         }
 
         //GET: Transaction
@@ -165,6 +168,7 @@ namespace TechnicalAssessment.Controllers
             return View(transactions);
         }
 
+        //TODO: Refactor this.
         [HttpPost, ActionName("Upload")]
         public ActionResult UploadTransaction(List<IFormFile> files)
         {
@@ -180,11 +184,11 @@ namespace TechnicalAssessment.Controllers
                     var filePath = file.FileName;
                     if (Path.GetExtension(filePath) == ".csv")
                     {
-                        transactionService.UploadCsv(file);
+                        transactionUploadService.UploadCsv(file);
                     }
                     else if (Path.GetExtension(filePath) == ".xml")
                     {
-                        transactionService.UploadXml(file);
+                        transactionUploadService.UploadXml(file);
                     }
                     else
                     {
@@ -201,6 +205,7 @@ namespace TechnicalAssessment.Controllers
             return RedirectToAction("TransactionIndex", "Transaction");
         }
 
+        //TODO: Refactor this.
         [HttpPost, ActionName("Export")]
         public ActionResult ExportTransaction(List<Transaction> transactions, string fileType)
         {
@@ -214,8 +219,8 @@ namespace TechnicalAssessment.Controllers
                 try
                 {
                     fileContentType = "text/csv";
-                    docPath = transactionService.CsvExport(transactions, docName);
-                    fileContent = transactionService.CsvExport(transactions, docName);
+                    docPath = transactionExportService.CsvExport(transactions, docName);
+                    fileContent = transactionExportService.CsvExport(transactions, docName);
                 }
                 catch (Exception e)
                 {
@@ -228,10 +233,10 @@ namespace TechnicalAssessment.Controllers
                 try
                 {
                     fileContentType = "text/xml";
-                    docPath = transactionService.XmlExport(transactions, docName);
+                    docPath = transactionExportService.XmlExport(transactions, docName);
                     xmlDoc.Load(docPath);
                     XmlNodeList nodes = xmlDoc.DocumentElement.SelectNodes("/Transactions/Transaction");
-                    fileContent = transactionService.ParseTransactionXml(nodes).ToString();
+                    fileContent = transactionUploadService.ParseXmlNodes(nodes).ToString();
                 }
                 catch (Exception e)
                 {
