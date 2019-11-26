@@ -2,13 +2,11 @@ using System;
 using System.Globalization;
 using System.IO;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
 using Moq;
 using OpenQA.Selenium;
-using TechnicalAssessment.Controllers;
 using TechnicalAssessment.Data;
 using TechnicalAssessment.Models;
-using TechnicalAssessment.Services.Interfaces;
+using TechnicalAssessment.Services;
 using Xunit;
 
 namespace Test
@@ -17,15 +15,13 @@ namespace Test
     {
         private readonly IWebDriver webDriver;
         private readonly DatabaseContext databaseContext;
-        private readonly IServiceUpload transactionService;
-        private readonly ILogger<TransactionController> logger;
+        private readonly TransactionService transactionService;
 
-        public TransactionUnitTests(IWebDriver webDriver, DatabaseContext databaseContext, IServiceUpload transactionService, ILogger<TransactionController> logger)
+        public TransactionUnitTests(IWebDriver webDriver, DatabaseContext databaseContext, TransactionService transactionService)
         {
             this.webDriver = webDriver;
             this.databaseContext = databaseContext;
             this.transactionService = transactionService;
-            this.logger = logger;
         }
 
         private Transaction[] GetTestTransactions()
@@ -77,19 +73,22 @@ namespace Test
         {
             var transactions = GetTestTransactions();
             var fileMock = new Mock<IFormFile>();
-            var physicalFile = new FileInfo("Test.csv");
-            var ms = new MemoryStream();
-            var writer = new StreamWriter(ms);
-            writer.Write(physicalFile.OpenRead());
-            writer.Flush();
-            ms.Position = 0;
+            var physicalFile = new FileInfo("Test.Resources.TestTransactions.csv");
+
+            var memoryStream = new MemoryStream();
+            var streamWriter = new StreamWriter(memoryStream);
+            streamWriter.Write(physicalFile.OpenRead());
+            streamWriter.Flush();
+            memoryStream.Position = 0;
 
             var fileName = physicalFile.Name;
             fileMock.Setup(mock => mock.FileName).Returns(fileName);
-            fileMock.Setup(mock => mock.Length).Returns(ms.Length);
-            fileMock.Setup(mock => mock.OpenReadStream()).Returns(ms);
+            fileMock.Setup(mock => mock.Length).Returns(memoryStream.Length);
+            fileMock.Setup(mock => mock.OpenReadStream()).Returns(memoryStream);
             fileMock.Setup(mock => mock.ContentDisposition).Returns(string.Format("inline; filename={0}", fileName));
             var file = fileMock.Object;
+
+            transactionService.UploadCsv(file);
         }
     }
 }

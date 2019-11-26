@@ -6,12 +6,12 @@
 
 <div>
     <fieldset>
-        <legend style="padding-bottom: 5px;">Transactions</legend>
+        <legend>Transactions</legend>
         <hr />
         <p>
             <a asp-controller="Transaction" asp-action="TransactionCreate">Create New Transaction</a>
         </p>
-        <div style="padding-top: 5px; padding-bottom: 5px;">
+        <div>
             <div>
                 <h5>Upload CSV or XML Transaction data</h5>
             </div>
@@ -24,7 +24,7 @@
             <input type="file" name="files" onchange="checkfile(this)" />
         </div>
         <br />
-        <div class="col-xs-12" style="padding-top: 5px;">
+        <div class="col-xs-12">
             <input type="submit" value="Upload">
         </div>
     </div>
@@ -33,13 +33,18 @@
 <form asp-action="TransactionSearch" asp-controller="Transaction" method="get">
     <div class="form-actions no-color">
         <p>
-            Select Search Parameter:
-            <br /><br />
+            <h6>Select Search Parameter:</h6>
             <input type="radio" name="SearchParam" value="TransactionId"> Transaction Identificator
             <input type="radio" name="SearchParam" value="CurrencyName"> Currency Name
-            <input type="radio" name="SearchParam" value="Status"> Other 
-            <input type="text" name="SearchString" value="@ViewData["currentFilter"]" />
-            <br /><br />
+            <input type="radio" name="SearchParam" value="Status"> Status 
+        </p>
+    </div>
+    <br />
+    <div>
+        <p><input type="text" name="SearchString" value="@ViewData["currentFilter"]" /></p>
+    </div>
+    <div class="form-actions no-color">
+        <p>
             <input type="submit" value="Search" /> |
             <a asp-action="CurrencyIndex">Back to Full List</a>
         </p>
@@ -115,7 +120,11 @@ else
     Next
 </a>
     <div class="col-md-offset-2 col-md-10">
-        <input asp-action="" asp-controller="" type="button" value="Export" /> 
+        <input type="radio" name="exportParam" value="Csv" style="padding-right:10px;"> CSV File
+        <input type="radio" name="exportParam" value="Xml"> XML File
+    </div>
+    <div class="col-md-offset-2 col-md-10">
+        <input asp-action="Export" asp-controller="Transaction" type="button" value="Export" /> 
     </div>
 </form>
 }

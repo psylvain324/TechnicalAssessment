@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TechnicalAssessment.Data;
 using TechnicalAssessment.Models;
-using TechnicalAssessment.Models.ViewModels;
 
 namespace TechnicalAssessment.ApiControllers
 {
@@ -170,6 +169,39 @@ namespace TechnicalAssessment.ApiControllers
                 return CreatedAtRoute("Api/Transactions/Update/{transactionId}", transaction);
             }
             return BadRequest(ModelState);
+        }
+
+        /// <summary>
+        /// DELETE: Transaction
+        /// </summary>
+        /// <param name="id"></param>
+        /// <response code="400">If the Customer is null or invalid</response>
+        /// <response code="409">If there is a concurrency or database exception</response>  
+        [HttpDelete]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
+        [ValidateAntiForgeryToken]
+        [Route("/Delete/{id}")]
+        public IActionResult DeleteCustomer([FromRoute]int id)
+        {
+            if (ModelState.IsValid)
+            {
+                var transaction = databaseContext.Transactions.Single(m => m.Id == id);
+                try
+                {
+                    databaseContext.Transactions.Remove(transaction);
+                    databaseContext.SaveChanges();
+                }
+                catch (DbUpdateException e)
+                {
+                    if (TransactionExists(transaction.TransactionId))
+                    {
+                        return Conflict(e.InnerException);
+                    }
+                    return NotFound();
+                }
+            }
+            return AcceptedAtAction("Api/Transactions/Delete/{id}", id);
         }
 
         private bool TransactionExists(string transactionId)

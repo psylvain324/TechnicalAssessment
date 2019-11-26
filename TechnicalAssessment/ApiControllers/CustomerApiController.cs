@@ -40,7 +40,7 @@ namespace TechnicalAssessment.ApiControllers
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [Route("/GetById/{customerId}")]
+        [Route("/GetByCustomerId/{customerId}")]
         public IActionResult CustomerById([FromRoute] int customerId)
         {
             var customer = databaseContext.Customers.Single(m => m.CustomerId == customerId);
@@ -76,33 +76,28 @@ namespace TechnicalAssessment.ApiControllers
         }
 
         /// <summary>
-        /// GET: Customer by CustomerId and Email
+        /// GET: Customer like CustomerName or Email
         /// </summary>
-        /// <param name="customerId"></param>
-        /// <param name="email"></param>
+        /// <param name="search"></param>
         /// <response code="200">If a valid request was made</response>
-        /// <response code="400">If the CustomerID or Email is null or invalid</response>
-        /// <response code="404">If the Customer was not found</response>   
+        /// <response code="404">If no Customers were not found</response>   
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [Route("/GetByIdAndEmail/{customerId}/{email}")]
-        public IActionResult CustomerByIdAndEmail([FromRoute]int customerId, [FromRoute] string email)
+        [Route("GetLikeNameOrEmail/{search}")]
+        public IActionResult CustomerLikeNameOrEmail([FromRoute]string search)
         {
-            if (!customerId.Equals(typeof(int)) || email == null || !email.Equals(typeof(MailAddress)))
+            var customers = from c in databaseContext.Customers select c;
+            if (!string.IsNullOrEmpty(search))
             {
-                return BadRequest();
+                customers = customers.Where(s => s.CustomerName.Contains(search) || s.Email.Contains(search));
             }
-
-            var customer = databaseContext.Customers.Select(c =>
-                new { customerId, email }).FirstOrDefault();
-            if (customer == null)
+            if (customers == null || customers.Count<Customer>() < 1)
             {
                 return NotFound();
             }
 
-            return Ok(customer);
+            return Ok(customers);
         }
 
         /// <summary>
@@ -131,8 +126,10 @@ namespace TechnicalAssessment.ApiControllers
         /// PATCH: Customer
         /// </summary>
         /// <param name="customer"></param>
+        /// <param name="customerId"></param>
         /// <response code="201">Returns the newly updated Customer</response>
-        /// <response code="400">If the Customer is null or invalid</response>            
+        /// <response code="400">If the Customer is null or invalid</response>
+        /// <response code="409">If there is a concurrency exception</response>  
         [HttpPatch]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -163,6 +160,39 @@ namespace TechnicalAssessment.ApiControllers
                 }
             }
             return CreatedAtRoute("Api/Customers/Update/{customerId}", customer);
+        }
+
+        /// <summary>
+        /// DELETE: Customer
+        /// </summary>
+        /// <param name="customerId"></param>
+        /// <response code="400">If the Customer is null or invalid</response>
+        /// <response code="409">If there is a concurrency or database exception</response>  
+        [HttpDelete]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
+        [ValidateAntiForgeryToken]
+        [Route("/Delete/{customerId}")]
+        public IActionResult DeleteCustomer([FromRoute]int customerId)
+        {
+            if (ModelState.IsValid)
+            {
+                var customer = databaseContext.Customers.Single(m => m.CustomerId == customerId);
+                try
+                {
+                    databaseContext.Customers.Remove(customer);
+                    databaseContext.SaveChanges();
+                }
+                catch (DbUpdateException e)
+                {
+                    if (CustomerExists(customer.CustomerId))
+                    {
+                        return Conflict(e.InnerException);
+                    }
+                    return NotFound();
+                }
+            }
+            return AcceptedAtAction("Api/Customers/Delete/{customerId}", customerId);
         }
 
         private bool CustomerExists(int customerId)
